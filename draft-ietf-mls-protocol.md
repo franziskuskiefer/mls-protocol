@@ -849,6 +849,7 @@ following primitives to be used in group key computations:
   * A Key Encapsulation Mechanism (KEM)
   * A Key Derivation Function (KDF)
   * An AEAD encryption algorithm
+* A hash algorithm
 * A signature algorithm
 
 The HPKE parameters are used to instantiate HPKE {{!I-D.irtf-cfrg-hpke}} for the
@@ -1313,7 +1314,7 @@ A number of secrets are derived from the epoch secret for different purposes:
 
 | Secret                | Label         |
 |:----------------------|:--------------|
-| `sender_data_secret`  | "sender data" |
+| `sender_data_key`     | "sender data" |
 | `handshake_secret`    | "handshake"   |
 | `application_secret`  | "app"         |
 | `exporter_secret`     | "exporter"    |
@@ -1353,14 +1354,9 @@ types of information:
 * Handshake messages (Proposal and Commit)
 * Application messages
 
-The sender information used to look up the key for the content encryption
-is encrypted under AEAD using a random nonce and the `sender_data_key`
-which is derived from the `sender_data_secret` as follows:
-
-~~~~~
-sender_data_key =
-    ExpandWithLabel(sender_data_secret, "sd key", "", key_length)
-~~~~~
+The sender information used to look up the key for content encryption is
+encrypted with an AEAD under the shared `sender_data_key` and with a nonce
+derived from the encrypted message content.
 
 For handshake and application messages, a sequence of keys is derived via a
 "sender ratchet".  Each sender has their own sender ratchet, and each step along
@@ -1383,7 +1379,7 @@ key/nonce pair in the sequence to encrypt (using the AEAD) the j-th message they
 send during that epoch.  In particular, each key/nonce pair MUST NOT be used to
 encrypt more than one message.
 
-Keys, nonces and secrets of ratchets are derived using
+Keys, nonces, and the secrets in ratchets are derived using
 DeriveAppSecret. The context in a given call consists of the index
 of the sender's leaf in the ratchet tree and the current position in
 the ratchet.  In particular, the index of the sender's leaf in the
@@ -1497,9 +1493,8 @@ struct {
     opaque group_id<0..255>;
     uint64 epoch;
     ContentType content_type;
-    opaque authenticated_data<0..2^32-1>;
-    opaque sender_data_nonce<0..255>;
     opaque encrypted_sender_data<0..255>;
+    opaque authenticated_data<0..2^32-1>;
     opaque ciphertext<0..2^32-1>;
 } MLSCiphertext;
 ~~~~~
@@ -1514,67 +1509,22 @@ MLSPlaintext object and how to convert it to an MLSCiphertext object for
 * Set group_id, epoch, content_type and authenticated_data fields from the
   MLSPlaintext object directly
 
-* Randomly generate the sender_data_nonce field
-
 * Identify the key and key generation depending on the content type
 
-* Encrypt an MLSSenderData object for the encrypted_sender_data field from
-  MLSPlaintext and the key generation
-
-* Generate and sign an MLSPlaintextTBS object from the MLSPlaintext
-  object
-
 * Encrypt an MLSCiphertextContent for the ciphertext field using the key
-  identified, the signature, and MLSPlaintext object
+  identified and MLSPlaintext object
 
-Decryption is done by decrypting the metadata, then the message, and then
+* Encrypt the sender data using the sender data key for the epoch and a
+  nonce sampled from encrypted MLSCiphertextContent.
+
+Decryption is done by decrypting the sender data, then the message, and then
 verifying the content signature.
 
 The following sections describe the encryption and signing processes in detail.
 
-## Metadata Encryption
+## Content Signing
 
-The "sender data" used to look up the key for the content encryption
-is encrypted under AEAD using the MLSCiphertext sender_data_nonce and
-the sender_data_key from the keyschedule. It is encoded as an
-object of the following form:
-
-~~~~~
-struct {
-    uint32 sender;
-    uint32 generation;
-    opaque reuse_guard[4];
-} MLSSenderData;
-~~~~~
-
-MLSSenderData.sender is assumed to be a `member` sender type.  When constructing
-an MLSSenderData from a Sender object, the sender MUST verify Sender.sender_type
-is `member` and use Sender.sender for MLSSenderData.sender.
-
-The `reuse_guard` field contains a fresh random value used to avoid nonce reuse
-in the case of state loss or corruption, as described in
-{{content-signing-and-encryption}}.
-
-The Additional Authenticated Data (AAD) for the SenderData ciphertext
-computation is its prefix in the MLSCiphertext, namely:
-
-~~~~~
-struct {
-    opaque group_id<0..255>;
-    uint64 epoch;
-    ContentType content_type;
-    opaque authenticated_data<0..2^32-1>;
-} MLSSenderDataAAD;
-~~~~~
-
-When parsing a SenderData struct as part of message decryption, the
-recipient MUST verify that the sender field represents an occupied
-leaf in the ratchet tree.  In particular, the sender index value
-MUST be less than the number of leaves in the tree.
-
-## Content Signing and Encryption
-
-The signature field in an MLSPlaintext object is computed using the
+The `signature` field in an MLSPlaintext object is computed using the
 signing private key corresponding to the credential at the leaf in
 the tree indicated by the sender field.  The signature covers the
 plaintext metadata and message content, which is all of
@@ -1612,7 +1562,9 @@ struct {
 <!-- OPEN ISSUE: group_id and epoch are duplicated in the TBS and in
 GroupContext. Think about how to de-duplicate. -->
 
-The ciphertext field of the MLSCiphertext object is produced by
+## Content Encryption
+
+The `ciphertext` field of the MLSCiphertext object is produced by
 supplying the inputs described below to the AEAD function specified
 by the ciphersuite in use.  The plaintext input contains content and
 signature of the MLSPlaintext, plus optional padding.  These values
@@ -1679,15 +1631,57 @@ struct {
     opaque group_id<0..255>;
     uint64 epoch;
     ContentType content_type;
-    opaque authenticated_data<0..2^32-1>;
-    opaque sender_data_nonce<0..255>;
     opaque encrypted_sender_data<0..255>;
+    opaque authenticated_data<0..2^32-1>;
 } MLSCiphertextContentAAD;
 ~~~~~
 
-The ciphertext field of the MLSCiphertext object is produced by
-supplying these inputs to the AEAD function specified by the
-ciphersuite in use.
+## Sender Data Encryption
+
+The "sender data" used to look up the key for the content encryption is
+encrypted with the ciphersuite's AEAD under the `sender_data_key` and with a
+nonce derived from the encrypted content. Before being encrypted, the sender
+data is encoded as an object of the following form:
+
+~~~~~
+struct {
+    uint32 sender;
+    uint32 generation;
+    opaque reuse_guard[4];
+} MLSSenderData;
+~~~~~
+
+MLSSenderData.sender is assumed to be a `member` sender type.  When constructing
+an MLSSenderData from a Sender object, the sender MUST verify Sender.sender_type
+is `member` and use Sender.sender for MLSSenderData.sender.
+
+The `reuse_guard` field contains a fresh random value used to avoid nonce reuse
+in the case of state loss or corruption, as described in {{content-encryption}}.
+
+The nonce provided to the AEAD is computed as the HKDF of the first
+`nonce_length` bytes of the ciphertext generated in the previous section. If the
+length of the ciphertext is less than `nonce_bytes`, the whole ciphertext is
+used without padding. In pseudocode:
+
+```
+sender_data_nonce = HKDF-Expand(ciphertext[0..nonce-length-1], "sender data nonce", nonce_length)
+```
+
+The Additional Authenticated Data (AAD) for the SenderData ciphertext is all the
+fields of MLSCiphertext excluding `encrypted_sender_data`:
+
+~~~~~
+struct {
+    opaque group_id<0..255>;
+    uint64 epoch;
+    ContentType content_type;
+} MLSSenderDataAAD;
+~~~~~
+
+When parsing a SenderData struct as part of message decryption, the
+recipient MUST verify that the sender field represents an occupied
+leaf in the ratchet tree.  In particular, the sender index value
+MUST be less than the number of leaves in the tree.
 
 # Group Creation
 
@@ -2812,9 +2806,8 @@ functions is paired with the security level of the curves.
 
 The mandatory-to-implement ciphersuite for MLS 1.0 is
 `MLS10\_128\_HPKE25519\_AES128GCM\_SHA256\_Ed25519` which uses
-Curve25519, HKDF over SHA2-256 and AES-128-GCM for HPKE,
-and AES-128-GCM with Ed25519 for symmetric encryption and
-signatures.
+Curve25519 for key exchange, AES-128-GCM for HPKE, HKDF over SHA2-256,
+AES for metadata masking, and Ed25519 for signatures.
 
 Values with the first byte 255 (decimal) are reserved for Private Use.
 
