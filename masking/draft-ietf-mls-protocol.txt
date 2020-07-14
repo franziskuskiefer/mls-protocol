@@ -1820,7 +1820,7 @@ Internet-Draft                     MLS                         July 2020
    Derive-App-Secret(., "secret", N, j, Hash.length)
    = ratchet_secret_[N]_[j+1]
 
-   Here, AEAD.nonce_length and AEAD.key_length denotes the lengths in
+   Here, AEAD.nonce_length and AEAD.key_length denote the lengths in
    bytes of the nonce and key for the AEAD scheme defined by the
    ciphersuite.  "ratchet" should be understood to mean "handshake" or
    "application" depending on the context.
