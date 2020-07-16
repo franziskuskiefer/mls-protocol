@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-07-14T00:31:59.084428+00:00",
+  "timestamp": "2020-07-16T00:32:11.080758+00:00",
   "repo": "mlswg/mls-protocol",
   "labels": [
     {
@@ -3348,7 +3348,7 @@
       "id": "MDU6SXNzdWU1NzUxNDE1MjU=",
       "title": "Add IANA considerations for Extensions ",
       "url": "https://github.com/mlswg/mls-protocol/issues/312",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "bifurcation",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -3357,8 +3357,8 @@
       ],
       "body": "Now that we have a more robust extension mechanism, we need to have an IANA registry to manage extensions, including:\r\n\r\n* Registry structure\r\n* Registry policy and (probably) designated experts\r\n* Reserved vendor space",
       "createdAt": "2020-03-04T05:10:07Z",
-      "updatedAt": "2020-03-04T05:10:16Z",
-      "closedAt": null,
+      "updatedAt": "2020-07-14T17:25:16Z",
+      "closedAt": "2020-07-14T17:25:16Z",
       "comments": []
     },
     {
@@ -22545,7 +22545,7 @@
       ],
       "body": "We propose to replace the two-stage Extract-Expand-\r\nExtract-Expand method to derive a single key from\r\nmultiple input keys by an Expand-XOR-Expand method.\r\n\r\nAs a small fix we added the Context argument to the\r\nDerive-Secret function and pass it on to the\r\nHKDF-Extract-Label function. In the key schedule\r\ngraph the function was called with the Context\r\nargument, but it wasn't present in the function\r\ndefinition of Derive-Secret.\r\n\r\nMotivation for the Expand-XOR-Expand method:\r\n- Extract was not used before, KDF was used as DPRF only.\r\n- Previous construction relied on ad hoc assumption on DPRF/DKDF\r\n- Previous construction required uniqueness of secrets to obtain distinct and independent keys (can be fragile when keys are under adversarial control)\r\n- n-PRF reduces reliance on uniqueness of secrets and instead relies on the uniqueness of a public value under the protocol designer's control\r\n\r\nTodo: Find/Design a unique public value.\r\n\r\nThis commit was co-authored by @keks and @chrisbrzuska.",
       "createdAt": "2020-05-17T12:57:24Z",
-      "updatedAt": "2020-06-22T15:13:53Z",
+      "updatedAt": "2020-07-14T22:19:41Z",
       "baseRepository": "mlswg/mls-protocol",
       "baseRefName": "master",
       "baseRefOid": "c519e9d8ac723ed19fa114198abb09922d1027f7",
@@ -22598,6 +22598,27 @@
           "body": "Hi @chrisbrzuska\r\n\r\nI tried to read the proof by following just the proof for the NPRF. I wanted to see all the stages in their simplest form.\r\nI read the paper from start to finish, just skimming the proofs, just to get a sense of what was going on, and then I started to work backwards from Claim 1.\r\nThe first step of the proof is to compare Figure 20a, Figure 17a, and Figure 15a, or pages 35, 26, and 21. \r\nThen one must refer to Fig. 14, Fig. 13a, and Fig. 10 or pages 18, 16, and 12.\r\n\r\nFigure 19 brings them all together, but I like to compare the details. The big jumps from 35 to 26 and 21 are particularly frustrating.\r\nI ended up screenshotting all the definitions and putting them side by side in powerpoint. \r\n\r\nI was able to convince myself that claim 1 is true, but I didn't really follow the proof in Section 6.2. \r\n\r\nI struggled with both the logic of the steps, i.e. that each step followed from the previous step, and with understanding the conclusion.\r\nIn very informal terms, my understanding of the reduction in Fig 20a-d is:\r\nReplace the PRF with the collision resistant PRF.\r\nThe XOR can now be replaced with the collision resistant XOR.\r\nThe PRF can then be replaced with the non-collision resistant PRF.\r\nFig. 20d thus describes the collision resistant NPRF.\r\nIs that approximately right?\r\n\r\nWith respect to the result, the probability equation has terms that I can't evaluate.\r\nWhat does e_{PRF}(B\u2192R^1_{NPRF}) actually evaluate to? \r\nIs it obvious that it is \u2264 e_{PRF}(A)?\r\n\r\nNits / Clarification questions:\r\n1. In the Key package, is there a requirement that the public name be _cryptographically_ bound to the key? \r\n2. Figure 7. could use a more permanent reference, i.e. \"current\" will change eventually.\r\n3. On pg. 12 should `skXi = skY = \u22a5` read `skXi = skYi = \u22a5`?\r\n4. Is there a significance to `sort` being unstable?\r\n5. On pg. 14 you write \"Finally in Section 3.2\", when 3.2 is not the last subsection of section 3.\r\n6. Some of your references have gone a bit weird, specifically [1,3,4,5,8,10,11,12,16]. \"in [name], editor\" seems wrong.\r\n7. Please add a reference to [Kra10] by the min-entropy def. \r\n8. The pseudo-code in Fig. 12 is out of order. `Set(h, k, ctr)` should read `Set(ctr, k, h)` I think.\r\n9. In Fig. 13b. should the lower `Key^{00}` read `Key^{b0}`?\r\n10. Ditto with Fig. 13c.\r\n11. In Fig. 13c. `k <- xtr(S, pkX^Y)` should read `k <- xtr(S, pkX^y)` (i.e. the `Y` should be in lower case.)\r\n12. In Fig. 14 `S: {0, 1}^{l}` should probably read `S: {0,1}^{sl}`. \r\n13. \"thus duped\" should probably read \"thus dubbed\".\r\n14. The package CRPRF is never defined as such. The definition appears in Fig. 14 with the label GcrPRF^b. Without a glossary it's hard to know whether GcrPRF \u225f NPRF \u225f CRPRF.\r\n15. The final column of Fig. 19 replaces code with f_{cfNPRF}, but the code does not exactly match. `f_{PRF}(k_i, (ctx1, i), ol)`  is replaced with `f_{PRF}(k_i, (ctx1, i))`, i.e. the final parameter disappears.\r\n\r\nI didn't try and go through the other 2 code comparisons exactly, but if I have time I will.  ",
           "createdAt": "2020-06-22T15:13:53Z",
           "updatedAt": "2020-06-22T15:13:53Z"
+        },
+        {
+          "author": "chrisbrzuska",
+          "authorAssociation": "NONE",
+          "body": "Hi @jhoyla \r\n\r\nThanks a lot for the thorough read and the reading feedback! It took me a while to get around integrating your suggested changes into the document. I started with the nits and clarifications (comments below). Will post the new document within the next days.\r\n\r\n> Nits / Clarification questions:\r\n> \r\n> 1. In the Key package, is there a requirement that the public name be _cryptographically_ bound to the key?\r\n\r\nNo, it can be a purely administrative value. However, in the NamePRF and the DHNPRF construction, we explore the use of cryptographic public names (handles).\r\n\r\n> 2. Figure 7. could use a more permanent reference, i.e. \"current\" will change eventually.\r\n\r\nGood point. Done.\r\n\r\n> 3. On pg. 12 should `skXi = skY = \u22a5` read `skXi = skYi = \u22a5`?\r\n\r\nThank you for catching this. Fixed.\r\n\r\n> 4. Is there a significance to `sort` being unstable?\r\n\r\nWhat does 'unstable' mean in this context?\r\n\r\n> 5. On pg. 14 you write \"Finally in Section 3.2\", when 3.2 is not the last subsection of section 3.\r\n\r\nFixed.\r\n\r\n> 6. Some of your references have gone a bit weird, specifically [1,3,4,5,8,10,11,12,16]. \"in [name], editor\" seems wrong.\r\n\r\nThank you, not yet fixed.\r\n\r\n> 7. Please add a reference to [Kra10] by the min-entropy def.\r\n\r\nFixed.\r\n\r\n> 8. The pseudo-code in Fig. 12 is out of order. `Set(h, k, ctr)` should read `Set(ctr, k, h)` I think.\r\n\r\nThat's correct. Thanks! Fixed.\r\n\r\n> 9. In Fig. 13b. should the lower `Key^{00}` read `Key^{b0}`?\r\n> 10. Ditto with Fig. 13c.\r\n\r\nIndeed. Fixed.\r\n\r\n> 11. In Fig. 13c. `k <- xtr(S, pkX^Y)` should read `k <- xtr(S, pkX^y)` (i.e. the `Y` should be in lower case.)\r\n> 12. In Fig. 14 `S: {0, 1}^{l}` should probably read `S: {0,1}^{sl}`.\r\n\r\nFixed.\r\n\r\n> 13. \"thus duped\" should probably read \"thus dubbed\".\r\n\r\nFixed :-D\r\n\r\n> 14. The package CRPRF is never defined as such. The definition appears in Fig. 14 with the label GcrPRF^b. Without a glossary it's hard to know whether GcrPRF \u225f NPRF \u225f CRPRF.\r\n\r\nClarified Fig. 14 to describe the packages crPRF and PRF. There should be no \"CRPRF\", this is a typo. Removed throughout the paper. NPRF is not equal to CPRF, too bad there was a confusion.\r\n\r\n> 15. The final column of Fig. 19 replaces code with f_{cfNPRF}, but the code does not exactly match. `f_{PRF}(k_i, (ctx1, i), ol)`  is replaced with `f_{PRF}(k_i, (ctx1, i))`, i.e. the final parameter disappears.\r\n\r\nRight. We are still wondering whether different output lengths are needed or not and are inconsistent w.r.t. this currently in the paper. Will make it uniform once we determined whether this is needed.",
+          "createdAt": "2020-07-14T16:17:36Z",
+          "updatedAt": "2020-07-14T16:17:36Z"
+        },
+        {
+          "author": "seanturner",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@chrisbrzuska Here's a link to the [CFRG](https://irtf.org/cfrg) (Crypto Forum Research Group).  It's in IRTF (Internet Research Task Force) the sister organization of the IETF. As noted during the interim, there a lot of cryptographers there and IETF WGs often go to get a review of crypto-related items. You can subscribe [here](https://www.irtf.org/mailman/listinfo/cfrg).",
+          "createdAt": "2020-07-14T17:03:56Z",
+          "updatedAt": "2020-07-14T17:03:56Z"
+        },
+        {
+          "author": "chrisbrzuska",
+          "authorAssociation": "NONE",
+          "body": "> @chrisbrzuska Here's a link to the [CFRG](https://irtf.org/cfrg) (Crypto Forum Research Group). It's in IRTF (Internet Research Task Force) the sister organization of the IETF. As noted during the interim, there a lot of cryptographers there and IETF WGs often go to get a review of crypto-related items. You can subscribe [here](https://www.irtf.org/mailman/listinfo/cfrg).\r\n\r\n@seanturner: Excellent, thank you! I subscribed and will be there tomorrow in case I get an opportunity to present the design.",
+          "createdAt": "2020-07-14T22:19:40Z",
+          "updatedAt": "2020-07-14T22:19:40Z"
         }
       ],
       "reviews": [
@@ -22818,6 +22839,46 @@
               "body": "Thanks for the clarification.  We would want a defined injective encoding here.  But if we agree that GroupContext is unique enough, maybe we can just use that?",
               "createdAt": "2020-06-13T19:38:44Z",
               "updatedAt": "2020-06-13T19:38:44Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDQ4MTY1MDM3",
+          "commit": {
+            "abbreviatedOid": "1785e97"
+          },
+          "author": "chrisbrzuska",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-14T14:32:44Z",
+          "updatedAt": "2020-07-14T14:32:45Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "Sorry for the delay in my response. Is the length of Secrets equal to the number of secrets?",
+              "createdAt": "2020-07-14T14:32:44Z",
+              "updatedAt": "2020-07-14T14:32:45Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDQ4MzY2NTcw",
+          "commit": {
+            "abbreviatedOid": "1785e97"
+          },
+          "author": "chrisbrzuska",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-14T18:38:09Z",
+          "updatedAt": "2020-07-14T18:38:09Z",
+          "comments": [
+            {
+              "originalPosition": 95,
+              "body": "Okay, this sounds very good, thank you!",
+              "createdAt": "2020-07-14T18:38:09Z",
+              "updatedAt": "2020-07-14T18:38:09Z"
             }
           ]
         }
@@ -23411,26 +23472,49 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NDM1NDUwMjM0",
       "title": "IANA updates and their consequences",
       "url": "https://github.com/mlswg/mls-protocol/pull/350",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "bifurcation",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "This started off just fixing #312, then grew a bit.\r\n\r\n* Defines an IANA registry for ExtensionType values\r\n* Defines an IANA registry for CredentialType values\r\n* Updates the Ciphersuites registry to share formatting with the other two, and to be more explicit about its ties to HPKE algorithms\r\n* Removes the unnecessary `signature_scheme` field from `BasicCredential`\r\n* ... and as a result removes the definition of `SignatureScheme` (which is used nowhere else)\r\n\r\nFixes #312 ",
       "createdAt": "2020-06-16T20:29:29Z",
-      "updatedAt": "2020-07-07T19:26:28Z",
+      "updatedAt": "2020-07-14T17:25:16Z",
       "baseRepository": "mlswg/mls-protocol",
       "baseRefName": "master",
-      "baseRefOid": "85b5cdad9aa59408e6fc1f1390dbba60351413e5",
+      "baseRefOid": "7d7b07325f618acd7d254be3bf5ea45615a1445e",
       "headRepository": "mlswg/mls-protocol",
       "headRefName": "iana-extensions",
-      "headRefOid": "46db2021e018bb23bc195da2225f68c1fddecb12",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "31bb22aab47bdb6d84f21a3deff1627e02072dba",
+      "closedAt": "2020-07-14T17:25:16Z",
+      "mergedAt": "2020-07-14T17:25:16Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "5970817438e45c3bdb6f3c92d338a983dcbe45b1"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDQ3NzIyODQ5",
+          "commit": {
+            "abbreviatedOid": "46db202"
+          },
+          "author": "seanturner",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-14T01:30:58Z",
+          "updatedAt": "2020-07-14T01:30:58Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "Okay I see that we are referring to the uncompressed key format in SECG. I know there's a reference for that somewhere else, but I can't think of it right now. Go ahead and don't block on me and I can submit reference updates later.",
+              "createdAt": "2020-07-14T01:30:58Z",
+              "updatedAt": "2020-07-14T17:23:29Z"
+            }
+          ]
+        }
+      ]
     },
     {
       "number": 352,
@@ -23872,20 +23956,62 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NDQ3OTQ4NDc3",
       "title": "Fix bugs in tree math and cleanup docs.",
       "url": "https://github.com/mlswg/mls-protocol/pull/359",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "Bren2010",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2020-07-12T20:09:04Z",
-      "updatedAt": "2020-07-12T20:09:04Z",
+      "updatedAt": "2020-07-14T18:17:01Z",
       "baseRepository": "mlswg/mls-protocol",
       "baseRefName": "master",
       "baseRefOid": "1f9f90578eecd61103cc02f98b8a0d058d265e65",
       "headRepository": "mlswg/mls-protocol",
       "headRefName": "brendan/fix-tree-math",
       "headRefOid": "46854f86605d01dd597992a12aab12c9fcee675b",
+      "closedAt": "2020-07-14T18:17:01Z",
+      "mergedAt": "2020-07-14T18:17:01Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "5433610fbdde8989df929cd44bd97c9656fcbb91"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDQ4MzUxNDAz",
+          "commit": {
+            "abbreviatedOid": "46854f8"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-07-14T18:16:56Z",
+          "updatedAt": "2020-07-14T18:16:56Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 360,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDQ4NjA1ODMx",
+      "title": "#302: Reduce encryption overhead to just auth tag",
+      "url": "https://github.com/mlswg/mls-protocol/pull/360",
+      "state": "OPEN",
+      "author": "Bren2010",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-07-14T02:34:30Z",
+      "updatedAt": "2020-07-14T02:34:30Z",
+      "baseRepository": "mlswg/mls-protocol",
+      "baseRefName": "master",
+      "baseRefOid": "7d7b07325f618acd7d254be3bf5ea45615a1445e",
+      "headRepository": "mlswg/mls-protocol",
+      "headRefName": "brendan/masking",
+      "headRefOid": "8de7bda2dd6da440549e63c6487a7cd7cb24f6a8",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
