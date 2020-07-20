@@ -1064,6 +1064,9 @@ in size ranging from two to thousands.<a href="#section-abstract-1" class="pilcr
 </li>
                 </ul>
 </li>
+              <li class="toc ulEmpty compact" id="section-toc.1-1.10.2.3">
+                <p id="section-toc.1-1.10.2.3.1"><a href="#section-10.3" class="xref">10.3</a>.  <a href="#name-ratchet-tree-extension" class="xref">Ratchet Tree Extension</a><a href="#section-toc.1-1.10.2.3.1" class="pilcrow">¶</a></p>
+</li>
             </ul>
 </li>
           <li class="toc ulEmpty compact" id="section-toc.1-1.11">
@@ -2287,20 +2290,6 @@ struct {
     }
 } optional&lt;T&gt;;
 
-enum {
-    leaf(0),
-    parent(1),
-    (255)
-} NodeType;
-
-struct {
-    NodeType node_type;
-    select (Node.node_type) {
-        case leaf:   optional&lt;KeyPackage&gt; key_package;
-        case parent: optional&lt;ParentNode&gt; node;
-    };
-} Node;
-
 struct {
     HPKEPublicKey public_key;
     uint32 unmerged_leaves&lt;0..2^32-1&gt;;
@@ -2488,6 +2477,7 @@ HKDF-Expand-Label(Secret, Label, Context, Length) =
 Where HKDFLabel is specified as:
 
 struct {
+    opaque group_context&lt;0..255&gt; = Hash(GroupContext_[n]);
     uint16 length = Length;
     opaque label&lt;7..255&gt; = "mls10 " + Label;
     opaque context&lt;0..2^32-1&gt; = Context;
@@ -2520,40 +2510,39 @@ following information to derive new epoch secrets:<a href="#section-7.8-5" class
 proceeds as shown in the following diagram:<a href="#section-7.8-7" class="pilcrow">¶</a></p>
 <div class="artwork art-text alignLeft" id="section-7.8-8">
 <pre>
-                  init_secret_[n-1] (or 0)
-                        |
-                        V
-   commit_secret -&gt; HKDF-Extract = joiner_secret
-                        |
-                        +--&gt; Derive-Secret(., "welcome")
-                        |    = welcome_secret
-                        |
-                        V
-      PSK (or 0) -&gt; HKDF-Extract = member_secret
-                        |
-                        V
-GroupContext_[n] -&gt; HKDF-Extract = epoch_secret
-                        |
-                        +--&gt; Derive-Secret(., "sender data")
-                        |    = sender_data_secret
-                        |
-                        +--&gt; Derive-Secret(., "handshake")
-                        |    = handshake_secret
-                        |
-                        +--&gt; Derive-Secret(., "app")
-                        |    = application_secret
-                        |
-                        +--&gt; Derive-Secret(., "exporter")
-                        |    = exporter_secret
-                        |
-                        +--&gt; Derive-Secret(., "confirm")
-                        |    = confirmation_key
-                        |
-                        V
-                  Derive-Secret(., "init")
-                        |
-                        V
-                  init_secret_[n]
+               init_secret_[n-1] (or 0)
+                     |
+                     V
+    PSK (or 0) -&gt; HKDF-Extract = early_secret
+                     |
+               Derive-Secret(., "derived", "")
+                     |
+                     V
+commit_secret -&gt; HKDF-Extract = epoch_secret
+                     |
+                     +--&gt; HKDF-Expand(., "mls 1.0 welcome", Hash.length)
+                     |    = welcome_secret
+                     |
+                     +--&gt; Derive-Secret(., "sender data")
+                     |    = sender_data_secret
+                     |
+                     +--&gt; Derive-Secret(., "handshake")
+                     |    = handshake_secret
+                     |
+                     +--&gt; Derive-Secret(., "app")
+                     |    = application_secret
+                     |
+                     +--&gt; Derive-Secret(., "exporter")
+                     |    = exporter_secret
+                     |
+                     +--&gt; Derive-Secret(., "confirm")
+                     |    = confirmation_key
+                     |
+                     V
+               Derive-Secret(., "init")
+                     |
+                     V
+               init_secret_[n]
 </pre><a href="#section-7.8-8" class="pilcrow">¶</a>
 </div>
 </section>
@@ -3301,7 +3290,7 @@ hash from the new state<a href="#section-10.2-10.9.2.1" class="pilcrow">¶</a>
 </li>
               <li class="normal" id="section-10.2-10.9.2.3">Sign the GroupInfo using the member's private signing key<a href="#section-10.2-10.9.2.3" class="pilcrow">¶</a>
 </li>
-              <li class="normal" id="section-10.2-10.9.2.4">Encrypt the GroupInfo using the key and nonce derived from the <code>joiner_secret</code>
+              <li class="normal" id="section-10.2-10.9.2.4">Encrypt the GroupInfo using the key and nonce derived from the <code>epoch_secret</code>
 for the new epoch (see <a href="#welcoming-new-members" class="xref">Section 10.2.1</a>)<a href="#section-10.2-10.9.2.4" class="pilcrow">¶</a>
 </li>
             </ul>
@@ -3420,7 +3409,7 @@ Commit.<a href="#section-10.2.1-2" class="pilcrow">¶</a></p>
 struct {
   opaque group_id&lt;0..255&gt;;
   uint64 epoch;
-  optional&lt;Node&gt; tree&lt;1..2^32-1&gt;;
+  opaque tree_hash&lt;0..255&gt;;
   opaque confirmed_transcript_hash&lt;0..255&gt;;
   opaque interim_transcript_hash&lt;0..255&gt;;
   Extension extensions&lt;0..2^16-1&gt;;
@@ -3434,7 +3423,7 @@ struct {
 } PathSecret;
 
 struct {
-  opaque joiner_secret&lt;1..255&gt;;
+  opaque epoch_secret&lt;1..255&gt;;
   optional&lt;PathSecret&gt; path_secret;
 } GroupSecrets;
 
@@ -3451,9 +3440,11 @@ struct {
 } Welcome;
 </pre><a href="#section-10.2.1-3" class="pilcrow">¶</a>
 </div>
-<p id="section-10.2.1-4">In the description of the tree as a list of nodes, the <code>key_package</code>
-field for a node MUST be populated if and only if that node is a
-leaf in the tree.<a href="#section-10.2.1-4" class="pilcrow">¶</a></p>
+<p id="section-10.2.1-4">The client processing a Welcome message will need to have a copy of the group's
+ratchet tree.  The tree can be provided in the Welcome message, in an extension
+of type <code>ratchet_tree</code>.  If it is sent otherwise (e.g., provided by a caching
+service on the Delivery Service), then the client MUST download the tree before
+processing the Welcome.<a href="#section-10.2.1-4" class="pilcrow">¶</a></p>
 <p id="section-10.2.1-5">On receiving a Welcome message, a client processes it using the following steps:<a href="#section-10.2.1-5" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-10.2.1-6.1">Identify an entry in the <code>secrets</code> array where the <code>key_package_hash</code>
@@ -3465,14 +3456,14 @@ Welcome message, return an error.<a href="#section-10.2.1-6.1" class="pilcrow">�
             <li class="normal" id="section-10.2.1-6.2">Decrypt the <code>encrypted_group_secrets</code> using HPKE with the algorithms indicated
 by the ciphersuite and the HPKE private key corresponding to the GroupSecrets.<a href="#section-10.2.1-6.2" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="section-10.2.1-6.3">From the <code>joiner_secret</code> in the decrypted GroupSecrets object, derive the
+            <li class="normal" id="section-10.2.1-6.3">From the <code>epoch_secret</code> in the decrypted GroupSecrets object, derive the
 <code>welcome_secret</code>, <code>welcome_key</code>, and <code>welcome_nonce</code>.  Use the key
 and nonce to decrypt the <code>encrypted_group_info</code> field.<a href="#section-10.2.1-6.3" class="pilcrow">¶</a>
 </li>
           </ul>
 <div class="artwork art-text alignLeft" id="section-10.2.1-7">
 <pre>
-welcome_secret = HKDF-Expand(joiner_secret, "mls 1.0 welcome", Hash.length)
+welcome_secret = HKDF-Expand(epoch_secret, "mls 1.0 welcome", Hash.length)
 welcome_nonce = HKDF-Expand(welcome_secret, "nonce", nonce_length)
 welcome_key = HKDF-Expand(welcome_secret, "key", key_length)
 </pre><a href="#section-10.2.1-7" class="pilcrow">¶</a>
@@ -3486,13 +3477,16 @@ position <code>signer_index</code>.  If this verification fails, return an error
             <li class="normal" id="section-10.2.1-8.2">
               <p id="section-10.2.1-8.2.1">Verify the integrity of the ratchet tree.<a href="#section-10.2.1-8.2.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-10.2.1-8.2.2.1">For each non-empty parent node, verify that exactly one of the node's
+<li class="normal" id="section-10.2.1-8.2.2.1">Verify that the tree hash of the ratchet tree matches the <code>tree_hash</code> field
+in the GroupInfo.<a href="#section-10.2.1-8.2.2.1" class="pilcrow">¶</a>
+</li>
+                <li class="normal" id="section-10.2.1-8.2.2.2">For each non-empty parent node, verify that exactly one of the node's
 children are non-empty and have the hash of this node set as their
 <code>parent_hash</code> value (if the child is another parent) or has a <code>parent_hash</code>
 extension in the KeyPackage containing the same value (if the child is a
-leaf).<a href="#section-10.2.1-8.2.2.1" class="pilcrow">¶</a>
+leaf).<a href="#section-10.2.1-8.2.2.2" class="pilcrow">¶</a>
 </li>
-                <li class="normal" id="section-10.2.1-8.2.2.2">For each non-empty leaf node, verify the signature on the KeyPackage.<a href="#section-10.2.1-8.2.2.2" class="pilcrow">¶</a>
+                <li class="normal" id="section-10.2.1-8.2.2.3">For each non-empty leaf node, verify the signature on the KeyPackage.<a href="#section-10.2.1-8.2.2.3" class="pilcrow">¶</a>
 </li>
               </ul>
 </li>
@@ -3523,7 +3517,7 @@ that corresponds to the public key in the node.<a href="#section-10.2.1-8.4.2.3"
 </li>
               </ul>
 </li>
-            <li class="normal" id="section-10.2.1-8.5">Use the <code>joiner_secret</code> from the GroupSecrets object to generate the epoch secret
+            <li class="normal" id="section-10.2.1-8.5">Use the <code>epoch_secret</code> from the GroupSecrets object to generate the epoch secret
 and other derived secrets for the current epoch.<a href="#section-10.2.1-8.5" class="pilcrow">¶</a>
 </li>
             <li class="normal" id="section-10.2.1-8.6">Set the confirmed transcript hash in the new state to the value of the
@@ -3535,6 +3529,51 @@ key and the <code>confirmed_transcript_hash</code> from the GroupInfo.<a href="#
           </ul>
 </section>
 </div>
+</section>
+</div>
+<div id="ratchet-tree-extension">
+<section id="section-10.3">
+        <h3 id="name-ratchet-tree-extension">
+<a href="#section-10.3" class="section-number selfRef">10.3. </a><a href="#name-ratchet-tree-extension" class="section-name selfRef">Ratchet Tree Extension</a>
+        </h3>
+<p id="section-10.3-1">By default, a GroupInfo message only provides the joiner with a commitment
+to the group's ratchet tree.  In order to process or generate handshake
+messages, the joiner will need to get a copy of the ratchet tree from some other
+source.  (For example, the DS might provide a cached copy.)  The inclusion of
+the tree hash in the GroupInfo message means that the source of the ratchet
+tree need not be trusted to maintain the integrity of tree.<a href="#section-10.3-1" class="pilcrow">¶</a></p>
+<p id="section-10.3-2">In cases where the application does not wish to provide such an external source,
+the whole public state of the ratchet tree can be provided in an extension of
+type <code>ratchet_tree</code>, containing a <code>ratchet_tree</code> object of the following form:<a href="#section-10.3-2" class="pilcrow">¶</a></p>
+<div class="artwork art-text alignLeft" id="section-10.3-3">
+<pre>
+enum {
+    leaf(0),
+    parent(1),
+    (255)
+} NodeType;
+
+struct {
+    NodeType node_type;
+    select (Node.node_type) {
+        case leaf:   KeyPackage key_package;
+        case parent: ParentNode node;
+    };
+} Node;
+
+optional&lt;Node&gt; ratchet_tree&lt;1..2^32-1&gt;;
+</pre><a href="#section-10.3-3" class="pilcrow">¶</a>
+</div>
+<p id="section-10.3-4">The presence of a <code>ratchet_tree</code> extension in a GroupInfo message does not
+result in any changes to the GroupContext extensions for the group.  The ratchet
+tree provided is simply stored by the client and used for MLS operations.<a href="#section-10.3-4" class="pilcrow">¶</a></p>
+<p id="section-10.3-5">If this extension is not provided in a Welcome message, then the client will
+need to fetch the ratchet tree over some other channel before it can generate or
+process Commit messages.  Applications should ensure that this out-of-band
+channel is provided with security protections equivalent to the protections that
+are afforded to Proposal and Commit messages.  For example, an application that
+encrypts Proposal and Commit messages might distribute ratchet trees encrypted
+using a key exchanged over the MLS channel.<a href="#section-10.3-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -3584,11 +3623,12 @@ have an extension of the same type, and the contents of the extension MUST be
 consistent with the value of the extension in the GroupContext, according to
 the semantics of the specific extension.<a href="#section-11-5.3" class="pilcrow">¶</a>
 </li>
-        <li class="normal" id="section-11-5.4">A client joining a group MUST populate the GroupContext extensions with
-exactly the contents of the extensions field in the Welcome message.  If any
-extension is unrecognized (i.e., not contained in the corresponding
-KeyPackage), then the client MUST reject the Welcome message and not join
-the group.<a href="#section-11-5.4" class="pilcrow">¶</a>
+        <li class="normal" id="section-11-5.4">If any extension in a GroupInfo message is unrecognized (i.e., not contained
+in the corresponding KeyPackage), then the client MUST reject the Welcome
+message and not join the group.<a href="#section-11-5.4" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="section-11-5.5">The extensions populated into a GroupContext object are drawn from those in
+the GroupInfo object, according to the definitions of those extensions.<a href="#section-11-5.5" class="pilcrow">¶</a>
 </li>
       </ul>
 <p id="section-11-6">Note that the latter two requirements mean that all MLS extensions are
