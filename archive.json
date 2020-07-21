@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-07-16T00:32:11.080758+00:00",
+  "timestamp": "2020-07-21T00:33:09.939937+00:00",
   "repo": "mlswg/mls-protocol",
   "labels": [
     {
@@ -3406,7 +3406,7 @@
       "id": "MDU6SXNzdWU1ODg0NTUwMzI=",
       "title": "Use consistent arguments to Derive-Secret",
       "url": "https://github.com/mlswg/mls-protocol/issues/324",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "bifurcation",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -3415,8 +3415,8 @@
       ],
       "body": "The document is not consistent about how many arguments go into Derive-Secret:\r\n\r\n* The definition takes two labels, and some invocations provide two, e.g., MLS-Exporter\r\n* The derivations in the key schedule provide an extra argument\r\n\r\nI'm pretty sure the latter is wrong, and we should just delete the explicit context from the three-argument version.  At the same time, I'm wary that using the GroupContext in every invocation of HKDF-Expand-Label will get us into some unimplementable situations if we try to use HKDF-Expand-Label outside an established group.",
       "createdAt": "2020-03-26T14:16:40Z",
-      "updatedAt": "2020-05-17T17:34:12Z",
-      "closedAt": null,
+      "updatedAt": "2020-07-20T18:21:51Z",
+      "closedAt": "2020-07-20T18:21:51Z",
       "comments": [
         {
           "author": "GaPhil",
@@ -23383,13 +23383,13 @@
       "labels": [],
       "body": "Fixes #344 ",
       "createdAt": "2020-06-12T22:31:09Z",
-      "updatedAt": "2020-07-07T15:05:38Z",
+      "updatedAt": "2020-07-20T18:42:15Z",
       "baseRepository": "mlswg/mls-protocol",
       "baseRefName": "master",
-      "baseRefOid": "48442a2491bfd8e044ddfb044d8db9f029204384",
+      "baseRefOid": "90a85c4144d5904ce31f36d5cdc07e49c219d721",
       "headRepository": "mlswg/mls-protocol",
       "headRefName": "deforest",
-      "headRefOid": "8dbaaa25b3e9ab3c51ef8e422555b769afa889bb",
+      "headRefOid": "4ef739a4644c7c26b94f59005724ae03ee6cf6db",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -23578,7 +23578,7 @@
       "labels": [],
       "body": "Fixes #340 ",
       "createdAt": "2020-06-16T20:53:33Z",
-      "updatedAt": "2020-07-07T19:18:25Z",
+      "updatedAt": "2020-07-20T18:40:43Z",
       "baseRepository": "mlswg/mls-protocol",
       "baseRefName": "master",
       "baseRefOid": "ee969f006752b34ff94da67908b184f95a5c7870",
@@ -23648,6 +23648,26 @@
               "body": "So an empty commit is essentially what used to be an Update, i.e. fresh key material for the committers leaf, which is then KDFed up the tree. Functionally, I am ok with this, but it seems a little counter-intuitive to me. Wouldn't it be clearer if we disallowed empty commits and a party that would like to keep the tree full simply committed an Update proposal targeting their own leaf? That would yield the same result, wouldn't it?\r\n\r\nAlso: Advancing an epoch doesn't always give PCS guarantees. If an Add proposal is committed without an Update and `path` is empty, the epoch changes, but we don't get PCS (this is why I was critical of allowing Adds without Updates. It breaks the assumption that epoch change implies PCS).",
               "createdAt": "2020-06-18T14:59:57Z",
               "updatedAt": "2020-07-07T19:18:25Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDUxODYzOTkw",
+          "commit": {
+            "abbreviatedOid": "b9bd601"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-20T18:40:42Z",
+          "updatedAt": "2020-07-20T18:40:43Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "Advancing the epoch gives you PCS with respect to the committer and and any nodes that were updated/removed in the epoch.  That doesn't change here.",
+              "createdAt": "2020-07-20T18:40:42Z",
+              "updatedAt": "2020-07-20T18:40:43Z"
             }
           ]
         }
@@ -23832,24 +23852,26 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NDQ3NTkwMzIy",
       "title": "Fix all compiler warnings.",
       "url": "https://github.com/mlswg/mls-protocol/pull/357",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "Bren2010",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Previously we used [[ ... ]] for comments, and the body of the comment was only getting elided because the compiler didn't know what that syntax meant.",
       "createdAt": "2020-07-10T18:43:26Z",
-      "updatedAt": "2020-07-12T20:57:55Z",
+      "updatedAt": "2020-07-20T21:01:48Z",
       "baseRepository": "mlswg/mls-protocol",
       "baseRefName": "master",
-      "baseRefOid": "7d7b07325f618acd7d254be3bf5ea45615a1445e",
+      "baseRefOid": "90a85c4144d5904ce31f36d5cdc07e49c219d721",
       "headRepository": "Bren2010/mls-protocol",
       "headRefName": "brendan/2020.7.0",
-      "headRefOid": "024fa7d3abe6583ae405a56ed666adce399c1f2c",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "4047ddc883a73a50d7d2ac201bf8ec368b7fea68",
+      "closedAt": "2020-07-20T21:01:47Z",
+      "mergedAt": "2020-07-20T21:01:47Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "d68b832e69abcee6150eb69d5d82500f161175db"
+      },
       "comments": [
         {
           "author": "Bren2010",
@@ -23876,13 +23898,13 @@
               "originalPosition": 342,
               "body": "I don't think this quite matches the intent -- we want these OPEN ISSUES to be visible in the rendered HTML",
               "createdAt": "2020-07-12T20:44:42Z",
-              "updatedAt": "2020-07-12T20:57:55Z"
+              "updatedAt": "2020-07-20T21:01:27Z"
             },
             {
               "originalPosition": 317,
               "body": "I think we can delete this TODO.",
               "createdAt": "2020-07-12T20:45:15Z",
-              "updatedAt": "2020-07-12T20:57:55Z"
+              "updatedAt": "2020-07-20T21:01:27Z"
             }
           ]
         },
@@ -23902,9 +23924,22 @@
               "originalPosition": 342,
               "body": "I noticed this is how QUIC WG does it: https://github.com/quicwg/base-drafts/commit/09338d0e237e67c648aa172c32b872e10bf737ff",
               "createdAt": "2020-07-12T20:57:32Z",
-              "updatedAt": "2020-07-12T20:57:55Z"
+              "updatedAt": "2020-07-20T21:01:27Z"
             }
           ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDUxOTU1ODAy",
+          "commit": {
+            "abbreviatedOid": "024fa7d"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-07-20T21:00:27Z",
+          "updatedAt": "2020-07-20T21:00:27Z",
+          "comments": []
         }
       ]
     },
@@ -24005,13 +24040,120 @@
       "labels": [],
       "body": "",
       "createdAt": "2020-07-14T02:34:30Z",
-      "updatedAt": "2020-07-14T02:34:30Z",
+      "updatedAt": "2020-07-20T19:58:05Z",
       "baseRepository": "mlswg/mls-protocol",
       "baseRefName": "master",
       "baseRefOid": "7d7b07325f618acd7d254be3bf5ea45615a1445e",
       "headRepository": "mlswg/mls-protocol",
       "headRefName": "brendan/masking",
       "headRefOid": "8de7bda2dd6da440549e63c6487a7cd7cb24f6a8",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDUxODg5NDAx",
+          "commit": {
+            "abbreviatedOid": "8de7bda"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-20T19:17:54Z",
+          "updatedAt": "2020-07-20T19:58:05Z",
+          "comments": [
+            {
+              "originalPosition": 132,
+              "body": "I think the overview steps are important to have here, especially since the ciphertext sampling makes the order of things a bit complex (you have to encrypt the content, then loop back to the sender data).  But I think we streamline a little bit:\r\n\r\n```\r\n* Set group_id, epoch, content_type and authenticated_data fields from the\r\n  MLSPlaintext object directly\r\n\r\n* Identify the key and key generation depending on the content type\r\n\r\n* Encrypt an MLSCiphertextContent for the ciphertext field using the key\r\n  identified and MLSPlaintext object\r\n\r\n* Encrypt the sender data using the sender data key for the epoch and a\r\n   nonce sampled from  encrypted MLSCiphertextContent.\r\n```",
+              "createdAt": "2020-07-20T19:17:55Z",
+              "updatedAt": "2020-07-20T19:58:05Z"
+            },
+            {
+              "originalPosition": 241,
+              "body": "You've removed the AAD from the main content encryption, which seems wrong.  it seems like we should have the unencrypted sender data feed in the ciphertext AAD, and the ciphertext (or the derived nonce) in the sender data AAD.  Something like:\r\n\r\n```\r\n      /  group_id            \\\r\n      |  epoch               |--+\r\n   +--|  content_type        /  |\r\n   |  |  sender_data         <--+\r\n   |  \\  authenticated_data  \\__|\r\n   +-->  content             /\r\n\r\nstruct {\r\n    opaque group_id<0..255>;\r\n    uint64 epoch;\r\n    ContentType content_type;\r\n    opaque authenticated_data<0..2^32-1>; // <---\r\n    opaque ciphertext<0..2^32-1>;\r\n} SenderDataAAD;\r\n\r\nstruct {\r\n    opaque group_id<0..255>;\r\n    uint64 epoch;\r\n    ContentType content_type;\r\n    SenderData sender_data;\r\n    opaque authenticated_data<0..2^32-1>; // <--- \r\n} ContentAAD;\r\n```",
+              "createdAt": "2020-07-20T19:24:04Z",
+              "updatedAt": "2020-07-20T19:58:05Z"
+            },
+            {
+              "originalPosition": 281,
+              "body": "Can't we just use the existing KDF we have on hand?",
+              "createdAt": "2020-07-20T19:25:16Z",
+              "updatedAt": "2020-07-20T19:58:05Z"
+            },
+            {
+              "originalPosition": 181,
+              "body": "Since we're going to have an auth tag anyway, it seems like we could simplify this a fair bit by just using the ciphersuite's AEAD to encrypt the SenderData (as we do now), and just sampling the *nonce* from the ciphertext.\r\n\r\nThat obviously removes the need to do XOR in addition to normal AEAD, and may allow us to simplify the sampling as well.  Since the nonce only needs to be random and not secret, we might be able to get away with just using the first `nonce_size` bytes of the ciphertext (or HKDF-Extract thereof).  So it gets rid of the AES-ECB dependency as well.\r\n\r\nAnd since this changes from (AEAD + XOR + AEAD) to (AEAD + AEAD), we no longer need the `authentication_key`.\r\n\r\n```\r\nciphertext = AEAD.Seal(key=generation.key,\r\n                       nonce=generation.nonce,\r\n                       pt=content,\r\n                       aad=header_with_plaintext_sender_data)\r\nsender_data_nonce = ciphertext[:nonce_size]\r\nencrypted_sender_data = AEAD.Seal(key=sender_data_key,\r\n                                  nonce=sender_data_nonce,\r\n                                  pt=sender_data,\r\n                                  aad=header_without_sender_data_and_with_ciphertext)\r\n```",
+              "createdAt": "2020-07-20T19:57:47Z",
+              "updatedAt": "2020-07-20T19:58:05Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 361,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDUzNjg5MzY0",
+      "title": "Use correct arguments to Derive-Secret",
+      "url": "https://github.com/mlswg/mls-protocol/pull/361",
+      "state": "MERGED",
+      "author": "bifurcation",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes #324 ",
+      "createdAt": "2020-07-20T17:56:46Z",
+      "updatedAt": "2020-07-20T18:21:51Z",
+      "baseRepository": "mlswg/mls-protocol",
+      "baseRefName": "master",
+      "baseRefOid": "5433610fbdde8989df929cd44bd97c9656fcbb91",
+      "headRepository": "mlswg/mls-protocol",
+      "headRefName": "derive-secret",
+      "headRefOid": "0bae585e6f48de1721aee383f37412c15ac78eb2",
+      "closedAt": "2020-07-20T18:21:51Z",
+      "mergedAt": "2020-07-20T18:21:51Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "90a85c4144d5904ce31f36d5cdc07e49c219d721"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDUxODUwMjU3",
+          "commit": {
+            "abbreviatedOid": "0bae585"
+          },
+          "author": "beurdouche",
+          "authorAssociation": "MEMBER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-07-20T18:20:49Z",
+          "updatedAt": "2020-07-20T18:20:49Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 362,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDUzNzE1OTg5",
+      "title": "Reorder key schedule inputs",
+      "url": "https://github.com/mlswg/mls-protocol/pull/362",
+      "state": "OPEN",
+      "author": "bifurcation",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This PR rearranges the key schedule so that the following values are all fed into the init secret to form epoch secret:\r\n\r\n1. The commit secret\r\n2. The PSK (if any)\r\n3. The group context\r\n\r\nThis assures that new joiners know the PSK for the epoch, since they now need to know it to compute the epoch secret.  It also moves the group context from the `Derive-Secret` calls under the epoch secret to the derivation of the epoch secret itself, ensuring that everything derived in the epoch has the same context folded in.\r\n\r\nFixes #326 ",
+      "createdAt": "2020-07-20T18:29:58Z",
+      "updatedAt": "2020-07-20T18:29:58Z",
+      "baseRepository": "mlswg/mls-protocol",
+      "baseRefName": "master",
+      "baseRefOid": "90a85c4144d5904ce31f36d5cdc07e49c219d721",
+      "headRepository": "mlswg/mls-protocol",
+      "headRefName": "key-schedule",
+      "headRefOid": "50882ff555704f3a6a37741a06506b679c3aba37",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
