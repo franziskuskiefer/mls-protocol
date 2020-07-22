@@ -818,7 +818,7 @@ address div.right {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Barnes, et al.</td>
-<td class="center">Expires 21 January 2021</td>
+<td class="center">Expires 23 January 2021</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -831,12 +831,12 @@ address div.right {
 <dd class="internet-draft">draft-ietf-mls-protocol-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2020-07-20" class="published">20 July 2020</time>
+<time datetime="2020-07-22" class="published">22 July 2020</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2021-01-21">21 January 2021</time></dd>
+<dd class="expires"><time datetime="2021-01-23">23 January 2021</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -907,7 +907,7 @@ in size ranging from two to thousands.<a href="#section-abstract-1" class="pilcr
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 21 January 2021.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 23 January 2021.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1026,10 +1026,13 @@ in size ranging from two to thousands.<a href="#section-abstract-1" class="pilcr
             <p id="section-toc.1-1.8.1"><a href="#section-8" class="xref">8</a>.  <a href="#name-message-framing" class="xref">Message Framing</a><a href="#section-toc.1-1.8.1" class="pilcrow">¶</a></p>
 <ul class="ulEmpty toc compact">
 <li class="ulEmpty toc compact" id="section-toc.1-1.8.2.1">
-                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="xref">8.1</a>.  <a href="#name-metadata-encryption" class="xref">Metadata Encryption</a><a href="#section-toc.1-1.8.2.1.1" class="pilcrow">¶</a></p>
+                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="xref">8.1</a>.  <a href="#name-content-signing" class="xref">Content Signing</a><a href="#section-toc.1-1.8.2.1.1" class="pilcrow">¶</a></p>
 </li>
               <li class="ulEmpty toc compact" id="section-toc.1-1.8.2.2">
-                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="xref">8.2</a>.  <a href="#name-content-signing-and-encrypt" class="xref">Content Signing and Encryption</a><a href="#section-toc.1-1.8.2.2.1" class="pilcrow">¶</a></p>
+                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="xref">8.2</a>.  <a href="#name-content-encryption" class="xref">Content Encryption</a><a href="#section-toc.1-1.8.2.2.1" class="pilcrow">¶</a></p>
+</li>
+              <li class="ulEmpty toc compact" id="section-toc.1-1.8.2.3">
+                <p id="section-toc.1-1.8.2.3.1"><a href="#section-8.3" class="xref">8.3</a>.  <a href="#name-sender-data-encryption" class="xref">Sender Data Encryption</a><a href="#section-toc.1-1.8.2.3.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -2030,11 +2033,11 @@ public key K.<a href="#section-5.5-9" class="pilcrow">¶</a></p>
 <p id="section-6.1-1">Each MLS session uses a single ciphersuite that specifies the
 following primitives to be used in group key computations:<a href="#section-6.1-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-6.1-2.1">A hash function<a href="#section-6.1-2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-6.1-2.1">A key encapsulation mechanism (KEM)<a href="#section-6.1-2.1" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-6.1-2.2">A key encapsulation mechanism (KEM)<a href="#section-6.1-2.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-6.1-2.2">An AEAD encryption algorithm <span>[<a href="#RFC5116" class="xref">RFC5116</a>]</span><a href="#section-6.1-2.2" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-6.1-2.3">An AEAD encryption algorithm <span>[<a href="#RFC5116" class="xref">RFC5116</a>]</span><a href="#section-6.1-2.3" class="pilcrow">¶</a>
+          <li class="normal" id="section-6.1-2.3">A hash function<a href="#section-6.1-2.3" class="pilcrow">¶</a>
 </li>
           <li class="normal" id="section-6.1-2.4">A signature algorithm<a href="#section-6.1-2.4" class="pilcrow">¶</a>
 </li>
@@ -2528,7 +2531,7 @@ commit_secret -&gt; HKDF-Extract = epoch_secret
                      |    = welcome_secret
                      |
                      +--&gt; Derive-Secret(., "sender data")
-                     |    = sender_data_secret
+                     |    = sender_data_key
                      |
                      +--&gt; Derive-Secret(., "handshake")
                      |    = handshake_secret
@@ -2588,41 +2591,35 @@ types of information:<a href="#section-7.10-1" class="pilcrow">¶</a></p>
           <li class="normal" id="section-7.10-2.3">Application messages<a href="#section-7.10-2.3" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-7.10-3">The sender information used to look up the key for the content encryption
-is encrypted under AEAD using a random nonce and the <code>sender_data_key</code>
-which is derived from the <code>sender_data_secret</code> as follows:<a href="#section-7.10-3" class="pilcrow">¶</a></p>
-<div class="artwork art-text alignLeft" id="section-7.10-4">
-<pre>
-sender_data_key =
-    HKDF-Expand-Label(sender_data_secret, "sd key", "", key_length)
-</pre><a href="#section-7.10-4" class="pilcrow">¶</a>
-</div>
-<p id="section-7.10-5">For handshake and application messages, a sequence of keys is derived via a
+<p id="section-7.10-3">The sender information used to look up the key for content encryption is
+encrypted with an AEAD under the shared <code>sender_data_key</code> and with a nonce
+derived from the encrypted message content.<a href="#section-7.10-3" class="pilcrow">¶</a></p>
+<p id="section-7.10-4">For handshake and application messages, a sequence of keys is derived via a
 "sender ratchet".  Each sender has their own sender ratchet, and each step along
-the ratchet is called a "generation".<a href="#section-7.10-5" class="pilcrow">¶</a></p>
-<p id="section-7.10-6">A sender ratchet starts from a per-sender base secret.  For application keys,
+the ratchet is called a "generation".<a href="#section-7.10-4" class="pilcrow">¶</a></p>
+<p id="section-7.10-5">A sender ratchet starts from a per-sender base secret.  For application keys,
 the base secret is derived as described in <a href="#astree" class="xref">Section 13.1</a>.  For handshake keys, base
-secrets are derived directly from the <code>handshake_secret</code>.<a href="#section-7.10-6" class="pilcrow">¶</a></p>
-<div class="artwork art-text alignLeft" id="section-7.10-7">
+secrets are derived directly from the <code>handshake_secret</code>.<a href="#section-7.10-5" class="pilcrow">¶</a></p>
+<div class="artwork art-text alignLeft" id="section-7.10-6">
 <pre>
 application_secret_[sender]_[0] = astree_node_[N]_secret
 
 handshake_secret_[sender]_[0] =
     HKDF-Expand-Label(handshake_secret, "hs", [sender], nonce_length)
-</pre><a href="#section-7.10-7" class="pilcrow">¶</a>
+</pre><a href="#section-7.10-6" class="pilcrow">¶</a>
 </div>
-<p id="section-7.10-8">The base secret for each sender is used to initiate a symmetric hash ratchet
+<p id="section-7.10-7">The base secret for each sender is used to initiate a symmetric hash ratchet
 which generates a sequence of keys and nonces. The sender uses the j-th
 key/nonce pair in the sequence to encrypt (using the AEAD) the j-th message they
 send during that epoch.  In particular, each key/nonce pair MUST NOT be used to
-encrypt more than one message.<a href="#section-7.10-8" class="pilcrow">¶</a></p>
-<p id="section-7.10-9">Keys, nonces and secrets of ratchets are derived using
+encrypt more than one message.<a href="#section-7.10-7" class="pilcrow">¶</a></p>
+<p id="section-7.10-8">Keys, nonces, and the secrets in ratchets are derived using
 Derive-App-Secret. The context in a given call consists of the index
 of the sender's leaf in the ratchet tree and the current position in
 the ratchet.  In particular, the index of the sender's leaf in the
 ratchet tree is the same as the index of the leaf in the AS Tree
-used to initialize the sender's ratchet.<a href="#section-7.10-9" class="pilcrow">¶</a></p>
-<div class="artwork art-text alignLeft" id="section-7.10-10">
+used to initialize the sender's ratchet.<a href="#section-7.10-8" class="pilcrow">¶</a></p>
+<div class="artwork art-text alignLeft" id="section-7.10-9">
 <pre>
 ratchet_secret_[N]_[j]
       |
@@ -2635,12 +2632,12 @@ ratchet_secret_[N]_[j]
       V
 Derive-App-Secret(., "secret", N, j, Hash.length)
 = ratchet_secret_[N]_[j+1]
-</pre><a href="#section-7.10-10" class="pilcrow">¶</a>
+</pre><a href="#section-7.10-9" class="pilcrow">¶</a>
 </div>
-<p id="section-7.10-11">Here, AEAD.nonce_length and AEAD.key_length denote the lengths
+<p id="section-7.10-10">Here, AEAD.nonce_length and AEAD.key_length denote the lengths
 in bytes of the nonce and key for the AEAD scheme defined by
 the ciphersuite.  "ratchet" should be understood to mean "handshake" or
-"application" depending on the context.<a href="#section-7.10-11" class="pilcrow">¶</a></p>
+"application" depending on the context.<a href="#section-7.10-10" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="exporters">
@@ -2737,9 +2734,8 @@ struct {
     opaque group_id&lt;0..255&gt;;
     uint64 epoch;
     ContentType content_type;
-    opaque authenticated_data&lt;0..2^32-1&gt;;
-    opaque sender_data_nonce&lt;0..255&gt;;
     opaque encrypted_sender_data&lt;0..255&gt;;
+    opaque authenticated_data&lt;0..2^32-1&gt;;
     opaque ciphertext&lt;0..2^32-1&gt;;
 } MLSCiphertext;
 </pre><a href="#section-8-3" class="pilcrow">¶</a>
@@ -2753,78 +2749,31 @@ MLSPlaintext object and how to convert it to an MLSCiphertext object for
 <li class="normal" id="section-8-6.1">Set group_id, epoch, content_type and authenticated_data fields from the
 MLSPlaintext object directly<a href="#section-8-6.1" class="pilcrow">¶</a>
 </li>
-        <li class="normal" id="section-8-6.2">Randomly generate the sender_data_nonce field<a href="#section-8-6.2" class="pilcrow">¶</a>
+        <li class="normal" id="section-8-6.2">Identify the key and key generation depending on the content type<a href="#section-8-6.2" class="pilcrow">¶</a>
 </li>
-        <li class="normal" id="section-8-6.3">Identify the key and key generation depending on the content type<a href="#section-8-6.3" class="pilcrow">¶</a>
+        <li class="normal" id="section-8-6.3">Encrypt an MLSCiphertextContent for the ciphertext field using the key
+identified and MLSPlaintext object<a href="#section-8-6.3" class="pilcrow">¶</a>
 </li>
-        <li class="normal" id="section-8-6.4">Encrypt an MLSSenderData object for the encrypted_sender_data field from
-MLSPlaintext and the key generation<a href="#section-8-6.4" class="pilcrow">¶</a>
-</li>
-        <li class="normal" id="section-8-6.5">Generate and sign an MLSPlaintextTBS object from the MLSPlaintext
-object<a href="#section-8-6.5" class="pilcrow">¶</a>
-</li>
-        <li class="normal" id="section-8-6.6">Encrypt an MLSCiphertextContent for the ciphertext field using the key
-identified, the signature, and MLSPlaintext object<a href="#section-8-6.6" class="pilcrow">¶</a>
+        <li class="normal" id="section-8-6.4">Encrypt the sender data using the sender data key for the epoch and a
+ nonce sampled from encrypted MLSCiphertextContent.<a href="#section-8-6.4" class="pilcrow">¶</a>
 </li>
       </ul>
-<p id="section-8-7">Decryption is done by decrypting the metadata, then the message, and then
+<p id="section-8-7">Decryption is done by decrypting the sender data, then the message, and then
 verifying the content signature.<a href="#section-8-7" class="pilcrow">¶</a></p>
 <p id="section-8-8">The following sections describe the encryption and signing processes in detail.<a href="#section-8-8" class="pilcrow">¶</a></p>
-<div id="metadata-encryption">
+<div id="content-signing">
 <section id="section-8.1">
-        <h3 id="name-metadata-encryption">
-<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-metadata-encryption" class="section-name selfRef">Metadata Encryption</a>
+        <h3 id="name-content-signing">
+<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-content-signing" class="section-name selfRef">Content Signing</a>
         </h3>
-<p id="section-8.1-1">The "sender data" used to look up the key for the content encryption
-is encrypted under AEAD using the MLSCiphertext sender_data_nonce and
-the sender_data_key from the keyschedule. It is encoded as an
-object of the following form:<a href="#section-8.1-1" class="pilcrow">¶</a></p>
-<div class="artwork art-text alignLeft" id="section-8.1-2">
-<pre>
-struct {
-    uint32 sender;
-    uint32 generation;
-    opaque reuse_guard[4];
-} MLSSenderData;
-</pre><a href="#section-8.1-2" class="pilcrow">¶</a>
-</div>
-<p id="section-8.1-3">MLSSenderData.sender is assumed to be a <code>member</code> sender type.  When constructing
-an MLSSenderData from a Sender object, the sender MUST verify Sender.sender_type
-is <code>member</code> and use Sender.sender for MLSSenderData.sender.<a href="#section-8.1-3" class="pilcrow">¶</a></p>
-<p id="section-8.1-4">The <code>reuse_guard</code> field contains a fresh random value used to avoid nonce reuse
-in the case of state loss or corruption, as described in
-<a href="#content-signing-and-encryption" class="xref">Section 8.2</a>.<a href="#section-8.1-4" class="pilcrow">¶</a></p>
-<p id="section-8.1-5">The Additional Authenticated Data (AAD) for the SenderData ciphertext
-computation is its prefix in the MLSCiphertext, namely:<a href="#section-8.1-5" class="pilcrow">¶</a></p>
-<div class="artwork art-text alignLeft" id="section-8.1-6">
-<pre>
-struct {
-    opaque group_id&lt;0..255&gt;;
-    uint64 epoch;
-    ContentType content_type;
-    opaque authenticated_data&lt;0..2^32-1&gt;;
-} MLSSenderDataAAD;
-</pre><a href="#section-8.1-6" class="pilcrow">¶</a>
-</div>
-<p id="section-8.1-7">When parsing a SenderData struct as part of message decryption, the
-recipient MUST verify that the sender field represents an occupied
-leaf in the ratchet tree.  In particular, the sender index value
-MUST be less than the number of leaves in the tree.<a href="#section-8.1-7" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="content-signing-and-encryption">
-<section id="section-8.2">
-        <h3 id="name-content-signing-and-encrypt">
-<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-content-signing-and-encrypt" class="section-name selfRef">Content Signing and Encryption</a>
-        </h3>
-<p id="section-8.2-1">The signature field in an MLSPlaintext object is computed using the
+<p id="section-8.1-1">The signature field in an MLSPlaintext object is computed using the
 signing private key corresponding to the credential at the leaf in
 the tree indicated by the sender field.  The signature covers the
 plaintext metadata and message content, which is all of
 MLSPlaintext except for the <code>signature</code> field.  The signature also covers the
 GroupContext for the current epoch, so that signatures are specific to a given
-group and epoch.<a href="#section-8.2-1" class="pilcrow">¶</a></p>
-<div class="artwork art-text alignLeft" id="section-8.2-2">
+group and epoch.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
+<div class="artwork art-text alignLeft" id="section-8.1-2">
 <pre>
 struct {
     select (MLSPlaintextTBS.sender.sender_type) {
@@ -2850,14 +2799,21 @@ struct {
           opaque confirmation&lt;0..255&gt;;
     }
 } MLSPlaintextTBS;
-</pre><a href="#section-8.2-2" class="pilcrow">¶</a>
+</pre><a href="#section-8.1-2" class="pilcrow">¶</a>
 </div>
-<p id="section-8.2-3">The ciphertext field of the MLSCiphertext object is produced by
-supplying the inputs described below to the AEAD function specified
-by the ciphersuite in use.  The plaintext input contains content and
-signature of the MLSPlaintext, plus optional padding.  These values
-are encoded in the following form:<a href="#section-8.2-3" class="pilcrow">¶</a></p>
-<div class="artwork art-text alignLeft" id="section-8.2-4">
+</section>
+</div>
+<div id="content-encryption">
+<section id="section-8.2">
+        <h3 id="name-content-encryption">
+<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-content-encryption" class="section-name selfRef">Content Encryption</a>
+        </h3>
+<p id="section-8.2-1">The <code>ciphertext</code> field of the MLSCiphertext object is produced by supplying the
+inputs described below to the AEAD function specified by the ciphersuite in use
+and truncating the authentication tag from the end. The plaintext input contains
+the content and signature of the MLSPlaintext, plus optional padding. These
+values are encoded in the following form:<a href="#section-8.2-1" class="pilcrow">¶</a></p>
+<div class="artwork art-text alignLeft" id="section-8.2-2">
 <pre>
 struct {
     select (MLSCiphertext.content_type) {
@@ -2875,25 +2831,25 @@ struct {
     opaque signature&lt;0..2^16-1&gt;;
     opaque padding&lt;0..2^16-1&gt;;
 } MLSCiphertextContent;
-</pre><a href="#section-8.2-4" class="pilcrow">¶</a>
+</pre><a href="#section-8.2-2" class="pilcrow">¶</a>
 </div>
-<p id="section-8.2-5">The key and nonce used for the encryption of the message depend on the
+<p id="section-8.2-3">The key and nonce used for the encryption of the message depend on the
 content type of the message.  The sender chooses the handshake key for a
 handshake message or an unused generation from its (per-sender)
 application key chain for the current epoch, according to the type
-of message being encrypted.<a href="#section-8.2-5" class="pilcrow">¶</a></p>
-<p id="section-8.2-6">Before use in the encryption operation, the nonce is XORed with a fresh random
+of message being encrypted.<a href="#section-8.2-3" class="pilcrow">¶</a></p>
+<p id="section-8.2-4">Before use in the encryption operation, the nonce is XORed with a fresh random
 value to guard against reuse.  Because the key schedule generates nonces
 deterministically, a client must keep persistent state as to where in the key
 schedule it is; if this persistent state is lost or corrupted, a client might
-reuse a generation that has already been used, causing reuse of a key/nonce pair.<a href="#section-8.2-6" class="pilcrow">¶</a></p>
-<p id="section-8.2-7">To avoid this situation, the sender of a message MUST generate a fresh random
+reuse a generation that has already been used, causing reuse of a key/nonce pair.<a href="#section-8.2-4" class="pilcrow">¶</a></p>
+<p id="section-8.2-5">To avoid this situation, the sender of a message MUST generate a fresh random
 4-byte "reuse guard" value and XOR it with the first four bytes of the nonce
 from the key schedule before using the nonce for encryption.  The sender MUST
 include the reuse guard in the <code>reuse_guard</code> field of the sender data object, so
 that the recipient of the message can use it to compute the nonce to be used for
-decryption.<a href="#section-8.2-7" class="pilcrow">¶</a></p>
-<div class="artwork art-text alignLeft" id="section-8.2-8">
+decryption.<a href="#section-8.2-5" class="pilcrow">¶</a></p>
+<div class="artwork art-text alignLeft" id="section-8.2-6">
 <pre>
 +-+-+-+-+---------...---+
 |   Key Schedule Nonce  |
@@ -2906,26 +2862,57 @@ decryption.<a href="#section-8.2-7" class="pilcrow">¶</a></p>
 +-+-+-+-+---------...---+
 | Encrypt/Decrypt Nonce |
 +-+-+-+-+---------...---+
-</pre><a href="#section-8.2-8" class="pilcrow">¶</a>
+</pre><a href="#section-8.2-6" class="pilcrow">¶</a>
 </div>
-<p id="section-8.2-9">The Additional Authenticated Data (AAD) input to the encryption
-contains an object of the following form, with the values used to
-identify the key and nonce:<a href="#section-8.2-9" class="pilcrow">¶</a></p>
-<div class="artwork art-text alignLeft" id="section-8.2-10">
+</section>
+</div>
+<div id="sender-data-encryption">
+<section id="section-8.3">
+        <h3 id="name-sender-data-encryption">
+<a href="#section-8.3" class="section-number selfRef">8.3. </a><a href="#name-sender-data-encryption" class="section-name selfRef">Sender Data Encryption</a>
+        </h3>
+<p id="section-8.3-1">The "sender data" used to look up the key for the content encryption is
+encrypted with the ciphersuite's AEAD under the <code>sender_data_key</code> and with a
+nonce derived from the encrypted content. Before being encrypted, the sender
+data is encoded as an object of the following form:<a href="#section-8.3-1" class="pilcrow">¶</a></p>
+<div class="artwork art-text alignLeft" id="section-8.3-2">
+<pre>
+struct {
+    uint32 sender;
+    uint32 generation;
+    opaque reuse_guard[4];
+} MLSSenderData;
+</pre><a href="#section-8.3-2" class="pilcrow">¶</a>
+</div>
+<p id="section-8.3-3">MLSSenderData.sender is assumed to be a <code>member</code> sender type.  When constructing
+an MLSSenderData from a Sender object, the sender MUST verify Sender.sender_type
+is <code>member</code> and use Sender.sender for MLSSenderData.sender.<a href="#section-8.3-3" class="pilcrow">¶</a></p>
+<p id="section-8.3-4">The <code>reuse_guard</code> field contains a fresh random value used to avoid nonce reuse
+in the case of state loss or corruption, as described in <a href="#content-encryption" class="xref">Section 8.2</a>.<a href="#section-8.3-4" class="pilcrow">¶</a></p>
+<p id="section-8.3-5">The nonce provided to the AEAD is computed as the HKDF of the first
+<code>nonce_length</code> bytes of the ciphertext generated in the previous section. If the
+length of the ciphertext is less than <code>nonce_bytes</code>, the whole ciphertext is
+used without padding. In pseudocode:<a href="#section-8.3-5" class="pilcrow">¶</a></p>
+<p id="section-8.3-6"><code>
+sender_data_nonce = HKDF-Expand(ciphertext[0..nonce-length-1], "sender data nonce", nonce_length)
+</code><a href="#section-8.3-6" class="pilcrow">¶</a></p>
+<p id="section-8.3-7">The Additional Authenticated Data (AAD) for the SenderData ciphertext is all the
+fields of MLSCiphertext excluding <code>encrypted_sender_data</code>:<a href="#section-8.3-7" class="pilcrow">¶</a></p>
+<div class="artwork art-text alignLeft" id="section-8.3-8">
 <pre>
 struct {
     opaque group_id&lt;0..255&gt;;
     uint64 epoch;
     ContentType content_type;
     opaque authenticated_data&lt;0..2^32-1&gt;;
-    opaque sender_data_nonce&lt;0..255&gt;;
-    opaque encrypted_sender_data&lt;0..255&gt;;
-} MLSCiphertextContentAAD;
-</pre><a href="#section-8.2-10" class="pilcrow">¶</a>
+    opaque ciphertext&lt;0..2^32-1&gt;;
+} MLSSenderDataAAD;
+</pre><a href="#section-8.3-8" class="pilcrow">¶</a>
 </div>
-<p id="section-8.2-11">The ciphertext field of the MLSCiphertext object is produced by
-supplying these inputs to the AEAD function specified by the
-ciphersuite in use.<a href="#section-8.2-11" class="pilcrow">¶</a></p>
+<p id="section-8.3-9">When parsing a SenderData struct as part of message decryption, the
+recipient MUST verify that the sender field represents an occupied
+leaf in the ratchet tree.  In particular, the sender index value
+MUST be less than the number of leaves in the tree.<a href="#section-8.3-9" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -4185,9 +4172,8 @@ compliant curves. The security level of symmetric encryption algorithms and hash
 functions is paired with the security level of the curves.<a href="#section-15.1-14" class="pilcrow">¶</a></p>
 <p id="section-15.1-15">The mandatory-to-implement ciphersuite for MLS 1.0 is
 <code>MLS10\_128\_HPKE25519\_AES128GCM\_SHA256\_Ed25519</code> which uses
-Curve25519, HKDF over SHA2-256 and AES-128-GCM for HPKE,
-and AES-128-GCM with Ed25519 for symmetric encryption and
-signatures.<a href="#section-15.1-15" class="pilcrow">¶</a></p>
+Curve25519 for key exchange, AES-128-GCM for HPKE, HKDF over SHA2-256,
+AES for metadata masking, and Ed25519 for signatures.<a href="#section-15.1-15" class="pilcrow">¶</a></p>
 <p id="section-15.1-16">Values with the first byte 255 (decimal) are reserved for Private Use.<a href="#section-15.1-16" class="pilcrow">¶</a></p>
 <p id="section-15.1-17">New ciphersuite values are assigned by IANA as described in
 <a href="#iana-considerations" class="xref">Section 15</a>.<a href="#section-15.1-17" class="pilcrow">¶</a></p>
