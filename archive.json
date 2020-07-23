@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-07-21T00:33:09.939937+00:00",
+  "timestamp": "2020-07-23T00:33:16.205315+00:00",
   "repo": "mlswg/mls-protocol",
   "labels": [
     {
@@ -24040,13 +24040,13 @@
       "labels": [],
       "body": "",
       "createdAt": "2020-07-14T02:34:30Z",
-      "updatedAt": "2020-07-20T19:58:05Z",
+      "updatedAt": "2020-07-22T00:53:43Z",
       "baseRepository": "mlswg/mls-protocol",
       "baseRefName": "master",
-      "baseRefOid": "7d7b07325f618acd7d254be3bf5ea45615a1445e",
+      "baseRefOid": "d68b832e69abcee6150eb69d5d82500f161175db",
       "headRepository": "mlswg/mls-protocol",
       "headRefName": "brendan/masking",
-      "headRefOid": "8de7bda2dd6da440549e63c6487a7cd7cb24f6a8",
+      "headRefOid": "d379e371fbe5fa2f082bd0b68543eafc5d5952fa",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -24069,25 +24069,45 @@
               "originalPosition": 132,
               "body": "I think the overview steps are important to have here, especially since the ciphertext sampling makes the order of things a bit complex (you have to encrypt the content, then loop back to the sender data).  But I think we streamline a little bit:\r\n\r\n```\r\n* Set group_id, epoch, content_type and authenticated_data fields from the\r\n  MLSPlaintext object directly\r\n\r\n* Identify the key and key generation depending on the content type\r\n\r\n* Encrypt an MLSCiphertextContent for the ciphertext field using the key\r\n  identified and MLSPlaintext object\r\n\r\n* Encrypt the sender data using the sender data key for the epoch and a\r\n   nonce sampled from  encrypted MLSCiphertextContent.\r\n```",
               "createdAt": "2020-07-20T19:17:55Z",
-              "updatedAt": "2020-07-20T19:58:05Z"
+              "updatedAt": "2020-07-22T00:53:43Z"
             },
             {
               "originalPosition": 241,
               "body": "You've removed the AAD from the main content encryption, which seems wrong.  it seems like we should have the unencrypted sender data feed in the ciphertext AAD, and the ciphertext (or the derived nonce) in the sender data AAD.  Something like:\r\n\r\n```\r\n      /  group_id            \\\r\n      |  epoch               |--+\r\n   +--|  content_type        /  |\r\n   |  |  sender_data         <--+\r\n   |  \\  authenticated_data  \\__|\r\n   +-->  content             /\r\n\r\nstruct {\r\n    opaque group_id<0..255>;\r\n    uint64 epoch;\r\n    ContentType content_type;\r\n    opaque authenticated_data<0..2^32-1>; // <---\r\n    opaque ciphertext<0..2^32-1>;\r\n} SenderDataAAD;\r\n\r\nstruct {\r\n    opaque group_id<0..255>;\r\n    uint64 epoch;\r\n    ContentType content_type;\r\n    SenderData sender_data;\r\n    opaque authenticated_data<0..2^32-1>; // <--- \r\n} ContentAAD;\r\n```",
               "createdAt": "2020-07-20T19:24:04Z",
-              "updatedAt": "2020-07-20T19:58:05Z"
+              "updatedAt": "2020-07-22T00:53:43Z"
             },
             {
               "originalPosition": 281,
               "body": "Can't we just use the existing KDF we have on hand?",
               "createdAt": "2020-07-20T19:25:16Z",
-              "updatedAt": "2020-07-20T19:58:05Z"
+              "updatedAt": "2020-07-22T00:53:43Z"
             },
             {
               "originalPosition": 181,
               "body": "Since we're going to have an auth tag anyway, it seems like we could simplify this a fair bit by just using the ciphersuite's AEAD to encrypt the SenderData (as we do now), and just sampling the *nonce* from the ciphertext.\r\n\r\nThat obviously removes the need to do XOR in addition to normal AEAD, and may allow us to simplify the sampling as well.  Since the nonce only needs to be random and not secret, we might be able to get away with just using the first `nonce_size` bytes of the ciphertext (or HKDF-Extract thereof).  So it gets rid of the AES-ECB dependency as well.\r\n\r\nAnd since this changes from (AEAD + XOR + AEAD) to (AEAD + AEAD), we no longer need the `authentication_key`.\r\n\r\n```\r\nciphertext = AEAD.Seal(key=generation.key,\r\n                       nonce=generation.nonce,\r\n                       pt=content,\r\n                       aad=header_with_plaintext_sender_data)\r\nsender_data_nonce = ciphertext[:nonce_size]\r\nencrypted_sender_data = AEAD.Seal(key=sender_data_key,\r\n                                  nonce=sender_data_nonce,\r\n                                  pt=sender_data,\r\n                                  aad=header_without_sender_data_and_with_ciphertext)\r\n```",
               "createdAt": "2020-07-20T19:57:47Z",
-              "updatedAt": "2020-07-20T19:58:05Z"
+              "updatedAt": "2020-07-22T00:53:43Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDUyOTE2OTc2",
+          "commit": {
+            "abbreviatedOid": "8de7bda"
+          },
+          "author": "Bren2010",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-22T00:28:58Z",
+          "updatedAt": "2020-07-22T00:28:58Z",
+          "comments": [
+            {
+              "originalPosition": 241,
+              "body": "The ciphertext's auth tag is truncated so there's no point in having AAD on the content. All AAD is against the sender data.",
+              "createdAt": "2020-07-22T00:28:58Z",
+              "updatedAt": "2020-07-22T00:53:43Z"
             }
           ]
         }
@@ -24154,6 +24174,32 @@
       "headRepository": "mlswg/mls-protocol",
       "headRefName": "key-schedule",
       "headRefOid": "50882ff555704f3a6a37741a06506b679c3aba37",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 363,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDU0ODIzNzM3",
+      "title": "Fix compile errors again.",
+      "url": "https://github.com/mlswg/mls-protocol/pull/363",
+      "state": "OPEN",
+      "author": "Bren2010",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-07-22T01:16:10Z",
+      "updatedAt": "2020-07-22T15:07:01Z",
+      "baseRepository": "mlswg/mls-protocol",
+      "baseRefName": "master",
+      "baseRefOid": "d68b832e69abcee6150eb69d5d82500f161175db",
+      "headRepository": "Bren2010/mls-protocol",
+      "headRefName": "brendan/2020.7.3",
+      "headRefOid": "45ca0afd974c554d4b668c80a1e00b6aabe5f1de",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
