@@ -5,7 +5,7 @@
 Network Working Group                                          R. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Informational                             B. Beurdouche
-Expires: 23 January 2021                                           Inria
+Expires: 25 January 2021                                           Inria
                                                              J. Millican
                                                                 Facebook
                                                                 E. Omara
@@ -14,7 +14,7 @@ Expires: 23 January 2021                                           Inria
                                                     University of Oxford
                                                                R. Robert
                                                                     Wire
-                                                            22 July 2020
+                                                            24 July 2020
 
 
               The Messaging Layer Security (MLS) Protocol
@@ -53,7 +53,7 @@ Status of This Memo
 
 
 
-Barnes, et al.           Expires 23 January 2021                [Page 1]
+Barnes, et al.           Expires 25 January 2021                [Page 1]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -63,7 +63,7 @@ Internet-Draft                     MLS                         July 2020
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 23 January 2021.
+   This Internet-Draft will expire on 25 January 2021.
 
 Copyright Notice
 
@@ -109,24 +109,23 @@ Table of Contents
 
 
 
-Barnes, et al.           Expires 23 January 2021                [Page 2]
+Barnes, et al.           Expires 25 January 2021                [Page 2]
 
 Internet-Draft                     MLS                         July 2020
 
 
      7.11. Exporters . . . . . . . . . . . . . . . . . . . . . . . .  32
    8.  Message Framing . . . . . . . . . . . . . . . . . . . . . . .  33
-     8.1.  Content Signing . . . . . . . . . . . . . . . . . . . . .  35
-     8.2.  Content Encryption  . . . . . . . . . . . . . . . . . . .  35
-     8.3.  Sender Data Encryption  . . . . . . . . . . . . . . . . .  37
+     8.1.  Metadata Encryption . . . . . . . . . . . . . . . . . . .  35
+     8.2.  Content Signing and Encryption  . . . . . . . . . . . . .  36
    9.  Group Creation  . . . . . . . . . . . . . . . . . . . . . . .  38
-   10. Group Evolution . . . . . . . . . . . . . . . . . . . . . . .  39
+   10. Group Evolution . . . . . . . . . . . . . . . . . . . . . . .  40
      10.1.  Proposals  . . . . . . . . . . . . . . . . . . . . . . .  40
-       10.1.1.  Add  . . . . . . . . . . . . . . . . . . . . . . . .  40
+       10.1.1.  Add  . . . . . . . . . . . . . . . . . . . . . . . .  41
        10.1.2.  Update . . . . . . . . . . . . . . . . . . . . . . .  41
-       10.1.3.  Remove . . . . . . . . . . . . . . . . . . . . . . .  41
+       10.1.3.  Remove . . . . . . . . . . . . . . . . . . . . . . .  42
        10.1.4.  External Proposals . . . . . . . . . . . . . . . . .  42
-     10.2.  Commit . . . . . . . . . . . . . . . . . . . . . . . . .  42
+     10.2.  Commit . . . . . . . . . . . . . . . . . . . . . . . . .  43
        10.2.1.  Welcoming New Members  . . . . . . . . . . . . . . .  47
    11. Extensibility . . . . . . . . . . . . . . . . . . . . . . . .  50
    12. Sequencing of State Changes . . . . . . . . . . . . . . . . .  51
@@ -153,7 +152,7 @@ Internet-Draft                     MLS                         July 2020
      17.1.  Normative References . . . . . . . . . . . . . . . . . .  66
      17.2.  Informative References . . . . . . . . . . . . . . . . .  67
    Appendix A.  Tree Math  . . . . . . . . . . . . . . . . . . . . .  68
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  72
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  71
 
 1.  Introduction
 
@@ -165,7 +164,8 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021                [Page 3]
+
+Barnes, et al.           Expires 25 January 2021                [Page 3]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -221,7 +221,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021                [Page 4]
+Barnes, et al.           Expires 25 January 2021                [Page 4]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -277,7 +277,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021                [Page 5]
+Barnes, et al.           Expires 25 January 2021                [Page 5]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -333,7 +333,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021                [Page 6]
+Barnes, et al.           Expires 25 January 2021                [Page 6]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -389,7 +389,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021                [Page 7]
+Barnes, et al.           Expires 25 January 2021                [Page 7]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -445,7 +445,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021                [Page 8]
+Barnes, et al.           Expires 25 January 2021                [Page 8]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -501,7 +501,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021                [Page 9]
+Barnes, et al.           Expires 25 January 2021                [Page 9]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -557,7 +557,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 10]
+Barnes, et al.           Expires 25 January 2021               [Page 10]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -613,7 +613,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 11]
+Barnes, et al.           Expires 25 January 2021               [Page 11]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -669,7 +669,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 12]
+Barnes, et al.           Expires 25 January 2021               [Page 12]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -725,7 +725,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 13]
+Barnes, et al.           Expires 25 January 2021               [Page 13]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -781,7 +781,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 14]
+Barnes, et al.           Expires 25 January 2021               [Page 14]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -807,14 +807,17 @@ Internet-Draft                     MLS                         July 2020
 
 5.2.  Ratchet Tree Nodes
 
-   A particular instance of a ratchet tree is based on the following
-   cryptographic primitives, defined by the ciphersuite in use:
+   A particular instance of a ratchet tree is defined by the same
+   parameters that define an instance of HPKE, namely:
 
-   *  An HPKE ciphersuite, which specifies a Key Encapsulation Mechanism
-      (KEM), an AEAD encryption scheme, and a hash function
+   *  A Key Encapsulation Mechanism (KEM), including a "DeriveKeyPair"
+      function that creates a key pair for the KEM from a symmetric
+      secret
 
-   *  A Derive-Key-Pair function that produces an asymmetric key pair
-      for the specified KEM from a symmetric secret
+   *  A Key Derivation Function (KDF), including "Extract" and "Expand"
+      functions
+
+   *  An AEAD encryption scheme
 
    Each node in a ratchet tree contains up to five values:
 
@@ -830,17 +833,17 @@ Internet-Draft                     MLS                         July 2020
    *  A hash of the node's parent, as of the last time the node was
       changed.
 
-   The conditions under which each of these values must or must not be
-   present are laid out in Section 5.3.
 
 
 
 
-
-Barnes, et al.           Expires 23 January 2021               [Page 15]
+Barnes, et al.           Expires 25 January 2021               [Page 15]
 
 Internet-Draft                     MLS                         July 2020
 
+
+   The conditions under which each of these values must or must not be
+   present are laid out in Section 5.3.
 
    A node in the tree may also be _blank_, indicating that no value is
    present at that node.  The _resolution_ of a node is an ordered list
@@ -890,10 +893,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-
-
-
-Barnes, et al.           Expires 23 January 2021               [Page 16]
+Barnes, et al.           Expires 25 January 2021               [Page 16]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -940,16 +940,16 @@ Internet-Draft                     MLS                         July 2020
    secret is used to derive a new secret value for the corresponding
    node, from which the node's key pair is derived.
 
-   path_secret[0] = HKDF-Expand-Label(leaf_hpke_secret,
+   path_secret[0] = ExpandWithLabel(leaf_hpke_secret,
                                       "path", "", KEM.Nsk)
-   path_secret[n] = HKDF-Expand-Label(path_secret[n-1],
+   path_secret[n] = ExpandWithLabel(path_secret[n-1],
                                       "path", "", KEM.Nsk)
-   node_priv[n], node_pub[n] = Derive-Key-Pair(path_secret[n])
+   node_priv[n], node_pub[n] = KEM.DeriveKeyPair(path_secret[n])
 
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 17]
+Barnes, et al.           Expires 25 January 2021               [Page 17]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -1005,7 +1005,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 18]
+Barnes, et al.           Expires 25 January 2021               [Page 18]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -1061,7 +1061,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 19]
+Barnes, et al.           Expires 25 January 2021               [Page 19]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -1087,20 +1087,20 @@ Internet-Draft                     MLS                         July 2020
    Each MLS session uses a single ciphersuite that specifies the
    following primitives to be used in group key computations:
 
-   *  A key encapsulation mechanism (KEM)
+   *  HPKE parameters:
 
-   *  An AEAD encryption algorithm [RFC5116]
+      -  A Key Encapsulation Mechanism (KEM)
 
-   *  A hash function
+      -  A Key Derivation Fucntion (KDF)
+
+      -  An AEAD encryption algorithm
 
    *  A signature algorithm
 
-   The ciphersuite's KEM used to instantiate an HPKE
-   [I-D.irtf-cfrg-hpke] instance for the purpose of public-key
-   encryption.  Each ciphersuite has a "Derive-Key-Pair" function that
-   maps octet strings of length "Nsk" (a KEM-specific constant defined
-   by HPKE) to HPKE key pairs.  This function is defined to be HPKE's
-   "DeriveKeyPair" function.
+   The HPKE parameters are used to instantiate HPKE [I-D.irtf-cfrg-hpke]
+   for the purpose of public-key encryption.  The "DeriveKeyPair"
+   function associated to the KEM for the ciphersuite maps octet strings
+   to HPKE key pairs.
 
    Ciphersuites are represented with the CipherSuite type.  HPKE public
    keys are opaque values in a format defined by the underlying protocol
@@ -1117,7 +1117,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 20]
+Barnes, et al.           Expires 25 January 2021               [Page 20]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -1173,7 +1173,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 21]
+Barnes, et al.           Expires 25 January 2021               [Page 21]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -1229,7 +1229,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 22]
+Barnes, et al.           Expires 25 January 2021               [Page 22]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -1285,7 +1285,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 23]
+Barnes, et al.           Expires 25 January 2021               [Page 23]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -1341,7 +1341,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 24]
+Barnes, et al.           Expires 25 January 2021               [Page 24]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -1397,7 +1397,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 25]
+Barnes, et al.           Expires 25 January 2021               [Page 25]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -1453,7 +1453,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 26]
+Barnes, et al.           Expires 25 January 2021               [Page 26]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -1509,7 +1509,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 27]
+Barnes, et al.           Expires 25 January 2021               [Page 27]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -1559,39 +1559,39 @@ Internet-Draft                     MLS                         July 2020
 
 7.8.  Key Schedule
 
-   Group keys are derived using the HKDF-Extract and HKDF-Expand
-   functions as defined in [RFC5869], as well as the functions defined
-   below:
+   Group keys are derived using the "Extract" and "Expand" functions
+   from the KDF for the group's ciphersuite, as well as the functions
+   defined below:
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 28]
+Barnes, et al.           Expires 25 January 2021               [Page 28]
 
 Internet-Draft                     MLS                         July 2020
 
 
-   HKDF-Expand-Label(Secret, Label, Context, Length) =
-       HKDF-Expand(Secret, HKDFLabel, Length)
+   ExpandWithLabel(Secret, Label, Context, Length) =
+       KDF.Expand(Secret, KDFLabel, Length)
 
-   Where HKDFLabel is specified as:
+   Where KDFLabel is specified as:
 
    struct {
        opaque group_context<0..255> = Hash(GroupContext_[n]);
        uint16 length = Length;
        opaque label<7..255> = "mls10 " + Label;
        opaque context<0..2^32-1> = Context;
-   } HKDFLabel;
+   } KDFLabel;
 
-   Derive-Secret(Secret, Label) =
-       HKDF-Expand-Label(Secret, Label, "", Hash.length)
+   DeriveSecret(Secret, Label) =
+       ExpandWithLabel(Secret, Label, "", KDF.Nh)
 
-   The Hash function used by HKDF is the ciphersuite hash algorithm.
-   Hash.length is its output length in bytes.  In the below diagram:
+   The value "KDF.Nh" is the size of an output from "KDF.Extract", in
+   bytes.  In the below diagram:
 
-   *  HKDF-Extract takes its salt argument from the top and its IKM
+   *  KDF.Extract takes its salt argument from the top and its IKM
       argument from the left
 
-   *  Derive-Secret takes its Secret argument from the incoming arrow
+   *  DeriveSecret takes its Secret argument from the incoming arrow
 
    When processing a handshake message, a client combines the following
    information to derive new epoch secrets:
@@ -1621,44 +1621,44 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 29]
+Barnes, et al.           Expires 25 January 2021               [Page 29]
 
 Internet-Draft                     MLS                         July 2020
 
 
-               init_secret_[n-1] (or 0)
-                     |
-                     V
-    PSK (or 0) -> HKDF-Extract = early_secret
-                     |
-               Derive-Secret(., "derived", "")
-                     |
-                     V
-commit_secret -> HKDF-Extract = epoch_secret
-                     |
-                     +--> HKDF-Expand(., "mls 1.0 welcome", Hash.length)
-                     |    = welcome_secret
-                     |
-                     +--> Derive-Secret(., "sender data")
-                     |    = sender_data_key
-                     |
-                     +--> Derive-Secret(., "handshake")
-                     |    = handshake_secret
-                     |
-                     +--> Derive-Secret(., "app")
-                     |    = application_secret
-                     |
-                     +--> Derive-Secret(., "exporter")
-                     |    = exporter_secret
-                     |
-                     +--> Derive-Secret(., "confirm")
-                     |    = confirmation_key
-                     |
-                     V
-               Derive-Secret(., "init")
-                     |
-                     V
-               init_secret_[n]
+                  init_secret_[n-1] (or 0)
+                        |
+                        V
+      PSK (or 0) -> KDF.Extract = early_secret
+                        |
+                  DeriveSecret(., "derived", "")
+                        |
+                        V
+   commit_secret -> KDF.Extract = epoch_secret
+                        |
+                        +--> KDF.Expand(., "mls 1.0 welcome", KDF.Nh)
+                        |    = welcome_secret
+                        |
+                        +--> DeriveSecret(., "sender data")
+                        |    = sender_data_secret
+                        |
+                        +--> DeriveSecret(., "handshake")
+                        |    = handshake_secret
+                        |
+                        +--> DeriveSecret(., "app")
+                        |    = application_secret
+                        |
+                        +--> DeriveSecret(., "exporter")
+                        |    = exporter_secret
+                        |
+                        +--> DeriveSecret(., "confirm")
+                        |    = confirmation_key
+                        |
+                        V
+                  DeriveSecret(., "init")
+                        |
+                        V
+                  init_secret_[n]
 
 7.9.  Pre-Shared Keys
 
@@ -1677,7 +1677,7 @@ commit_secret -> HKDF-Extract = epoch_secret
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 30]
+Barnes, et al.           Expires 25 January 2021               [Page 30]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -1701,9 +1701,13 @@ Internet-Draft                     MLS                         July 2020
 
    *  Application messages
 
-   The sender information used to look up the key for content encryption
-   is encrypted with an AEAD under the shared "sender_data_key" and with
-   a nonce derived from the encrypted message content.
+   The sender information used to look up the key for the content
+   encryption is encrypted under AEAD using a random nonce and the
+   "sender_data_key" which is derived from the "sender_data_secret" as
+   follows:
+
+   sender_data_key =
+       ExpandWithLabel(sender_data_secret, "sd key", "", key_length)
 
    For handshake and application messages, a sequence of keys is derived
    via a "sender ratchet".  Each sender has their own sender ratchet,
@@ -1717,7 +1721,7 @@ Internet-Draft                     MLS                         July 2020
    application_secret_[sender]_[0] = astree_node_[N]_secret
 
    handshake_secret_[sender]_[0] =
-       HKDF-Expand-Label(handshake_secret, "hs", [sender], nonce_length)
+       ExpandWithLabel(handshake_secret, "hs", [sender], nonce_length)
 
    The base secret for each sender is used to initiate a symmetric hash
    ratchet which generates a sequence of keys and nonces.  The sender
@@ -1729,32 +1733,28 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-
-
-
-
-Barnes, et al.           Expires 23 January 2021               [Page 31]
+Barnes, et al.           Expires 25 January 2021               [Page 31]
 
 Internet-Draft                     MLS                         July 2020
 
 
-   Keys, nonces, and the secrets in ratchets are derived using Derive-
-   App-Secret.  The context in a given call consists of the index of the
-   sender's leaf in the ratchet tree and the current position in the
-   ratchet.  In particular, the index of the sender's leaf in the
+   Keys, nonces and secrets of ratchets are derived using
+   DeriveAppSecret.  The context in a given call consists of the index
+   of the sender's leaf in the ratchet tree and the current position in
+   the ratchet.  In particular, the index of the sender's leaf in the
    ratchet tree is the same as the index of the leaf in the AS Tree used
    to initialize the sender's ratchet.
 
    ratchet_secret_[N]_[j]
          |
-         +--> Derive-App-Secret(., "nonce", N, j, AEAD.nonce_length)
+         +--> DeriveAppSecret(., "nonce", N, j, AEAD.nonce_length)
          |    = ratchet_nonce_[N]_[j]
          |
-         +--> Derive-App-Secret(., "key", N, j, AEAD.key_length)
+         +--> DeriveAppSecret(., "key", N, j, AEAD.key_length)
          |    = ratchet_key_[N]_[j]
          |
          V
-   Derive-App-Secret(., "secret", N, j, Hash.length)
+   DeriveAppSecret(., "secret", N, j, Hash.length)
    = ratchet_secret_[N]_[j+1]
 
    Here, AEAD.nonce_length and AEAD.key_length denote the lengths in
@@ -1769,12 +1769,12 @@ Internet-Draft                     MLS                         July 2020
    "exported_value" outside the MLS layer.
 
    MLS-Exporter(Label, Context, key_length) =
-          HKDF-Expand-Label(Derive-Secret(exporter_secret, Label),
+          ExpandWithLabel(DeriveSecret(exporter_secret, Label),
                             "exporter", Hash(Context), key_length)
 
    The context used for the derivation of the "exported_value" MAY be
    empty while each application SHOULD provide a unique label as an
-   input of the HKDF-Expand-Label for each use case.  This is to prevent
+   input of the ExpandWithLabel for each use case.  This is to prevent
    two exported outputs from being generated with the same values and
    used for different functionalities.
 
@@ -1789,7 +1789,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 32]
+Barnes, et al.           Expires 25 January 2021               [Page 32]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -1845,7 +1845,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 33]
+Barnes, et al.           Expires 25 January 2021               [Page 33]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -1865,8 +1865,9 @@ Internet-Draft                     MLS                         July 2020
        opaque group_id<0..255>;
        uint64 epoch;
        ContentType content_type;
-       opaque encrypted_sender_data<0..255>;
        opaque authenticated_data<0..2^32-1>;
+       opaque sender_data_nonce<0..255>;
+       opaque encrypted_sender_data<0..255>;
        opaque ciphertext<0..2^32-1>;
    } MLSCiphertext;
 
@@ -1880,33 +1881,88 @@ Internet-Draft                     MLS                         July 2020
    *  Set group_id, epoch, content_type and authenticated_data fields
       from the MLSPlaintext object directly
 
+   *  Randomly generate the sender_data_nonce field
+
    *  Identify the key and key generation depending on the content type
 
+   *  Encrypt an MLSSenderData object for the encrypted_sender_data
+      field from MLSPlaintext and the key generation
+
+   *  Generate and sign an MLSPlaintextTBS object from the MLSPlaintext
+      object
+
    *  Encrypt an MLSCiphertextContent for the ciphertext field using the
-      key identified and MLSPlaintext object
+      key identified, the signature, and MLSPlaintext object
 
-   *  Encrypt the sender data using the sender data key for the epoch
-      and a nonce sampled from encrypted MLSCiphertextContent.
-
-   Decryption is done by decrypting the sender data, then the message,
-   and then verifying the content signature.
-
-   The following sections describe the encryption and signing processes
-   in detail.
+   Decryption is done by decrypting the metadata, then the message, and
+   then verifying the content signature.
 
 
 
 
 
-
-
-
-Barnes, et al.           Expires 23 January 2021               [Page 34]
+Barnes, et al.           Expires 25 January 2021               [Page 34]
 
 Internet-Draft                     MLS                         July 2020
 
 
-8.1.  Content Signing
+   The following sections describe the encryption and signing processes
+   in detail.
+
+8.1.  Metadata Encryption
+
+   The "sender data" used to look up the key for the content encryption
+   is encrypted under AEAD using the MLSCiphertext sender_data_nonce and
+   the sender_data_key from the keyschedule.  It is encoded as an object
+   of the following form:
+
+   struct {
+       uint32 sender;
+       uint32 generation;
+       opaque reuse_guard[4];
+   } MLSSenderData;
+
+   MLSSenderData.sender is assumed to be a "member" sender type.  When
+   constructing an MLSSenderData from a Sender object, the sender MUST
+   verify Sender.sender_type is "member" and use Sender.sender for
+   MLSSenderData.sender.
+
+   The "reuse_guard" field contains a fresh random value used to avoid
+   nonce reuse in the case of state loss or corruption, as described in
+   Section 8.2.
+
+   The Additional Authenticated Data (AAD) for the SenderData ciphertext
+   computation is its prefix in the MLSCiphertext, namely:
+
+   struct {
+       opaque group_id<0..255>;
+       uint64 epoch;
+       ContentType content_type;
+       opaque authenticated_data<0..2^32-1>;
+   } MLSSenderDataAAD;
+
+   When parsing a SenderData struct as part of message decryption, the
+   recipient MUST verify that the sender field represents an occupied
+   leaf in the ratchet tree.  In particular, the sender index value MUST
+   be less than the number of leaves in the tree.
+
+
+
+
+
+
+
+
+
+
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 35]
+
+Internet-Draft                     MLS                         July 2020
+
+
+8.2.  Content Signing and Encryption
 
    The signature field in an MLSPlaintext object is computed using the
    signing private key corresponding to the credential at the leaf in
@@ -1941,14 +1997,11 @@ Internet-Draft                     MLS                         July 2020
        }
    } MLSPlaintextTBS;
 
-8.2.  Content Encryption
-
-   The "ciphertext" field of the MLSCiphertext object is produced by
+   The ciphertext field of the MLSCiphertext object is produced by
    supplying the inputs described below to the AEAD function specified
-   by the ciphersuite in use and truncating the authentication tag from
-   the end.  The plaintext input contains the content and signature of
-   the MLSPlaintext, plus optional padding.  These values are encoded in
-   the following form:
+   by the ciphersuite in use.  The plaintext input contains content and
+   signature of the MLSPlaintext, plus optional padding.  These values
+   are encoded in the following form:
 
 
 
@@ -1957,7 +2010,10 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 35]
+
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 36]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -2013,7 +2069,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 36]
+Barnes, et al.           Expires 25 January 2021               [Page 37]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -2030,62 +2086,22 @@ Internet-Draft                     MLS                         July 2020
    | Encrypt/Decrypt Nonce |
    +-+-+-+-+---------...---+
 
-8.3.  Sender Data Encryption
-
-   The "sender data" used to look up the key for the content encryption
-   is encrypted with the ciphersuite's AEAD under the "sender_data_key"
-   and with a nonce derived from the encrypted content.  Before being
-   encrypted, the sender data is encoded as an object of the following
-   form:
-
-   struct {
-       uint32 sender;
-       uint32 generation;
-       opaque reuse_guard[4];
-   } MLSSenderData;
-
-   MLSSenderData.sender is assumed to be a "member" sender type.  When
-   constructing an MLSSenderData from a Sender object, the sender MUST
-   verify Sender.sender_type is "member" and use Sender.sender for
-   MLSSenderData.sender.
-
-   The "reuse_guard" field contains a fresh random value used to avoid
-   nonce reuse in the case of state loss or corruption, as described in
-   Section 8.2.
-
-   The nonce provided to the AEAD is computed as the HKDF of the first
-   "nonce_length" bytes of the ciphertext generated in the previous
-   section.  If the length of the ciphertext is less than "nonce_bytes",
-   the whole ciphertext is used without padding.  In pseudocode:
-
-   "sender_data_nonce = HKDF-Expand(ciphertext[0..nonce-length-1],
-   "sender data nonce", nonce_length)"
-
-   The Additional Authenticated Data (AAD) for the SenderData ciphertext
-   is all the fields of MLSCiphertext excluding "encrypted_sender_data":
-
-
-
-
-
-
-Barnes, et al.           Expires 23 January 2021               [Page 37]
-
-Internet-Draft                     MLS                         July 2020
-
+   The Additional Authenticated Data (AAD) input to the encryption
+   contains an object of the following form, with the values used to
+   identify the key and nonce:
 
    struct {
        opaque group_id<0..255>;
        uint64 epoch;
        ContentType content_type;
        opaque authenticated_data<0..2^32-1>;
-       opaque ciphertext<0..2^32-1>;
-   } MLSSenderDataAAD;
+       opaque sender_data_nonce<0..255>;
+       opaque encrypted_sender_data<0..255>;
+   } MLSCiphertextContentAAD;
 
-   When parsing a SenderData struct as part of message decryption, the
-   recipient MUST verify that the sender field represents an occupied
-   leaf in the ratchet tree.  In particular, the sender index value MUST
-   be less than the number of leaves in the tree.
+   The ciphertext field of the MLSCiphertext object is produced by
+   supplying these inputs to the AEAD function specified by the
+   ciphersuite in use.
 
 9.  Group Creation
 
@@ -2105,6 +2121,15 @@ Internet-Draft                     MLS                         July 2020
       in these KeyPackages to verify that the chosen version and
       ciphersuite is the best option supported by all members.
 
+
+
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 38]
+
+Internet-Draft                     MLS                         July 2020
+
+
    *  Initialize a one-member group with the following initial values
       (where "0" represents an all-zero vector of size Hash.length):
 
@@ -2122,13 +2147,6 @@ Internet-Draft                     MLS                         July 2020
       -  Interim transcript hash: 0
 
       -  Init secret: 0
-
-
-
-Barnes, et al.           Expires 23 January 2021               [Page 38]
-
-Internet-Draft                     MLS                         July 2020
-
 
    *  For each member, construct an Add proposal from the KeyPackage for
       that member (see Section 10.1.1)
@@ -2161,6 +2179,13 @@ Internet-Draft                     MLS                         July 2020
    transcript hashes and epoch secret match those found in the Welcome
    message.
 
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 39]
+
+Internet-Draft                     MLS                         July 2020
+
+
 10.  Group Evolution
 
    Over the lifetime of a group, its membership can change, and existing
@@ -2178,14 +2203,6 @@ Internet-Draft                     MLS                         July 2020
    time a Commit message is sent and processed.  These states are
    referred to as "epochs" and are uniquely identified among states of
    the group by eight-octet epoch values.  When a new group is
-
-
-
-Barnes, et al.           Expires 23 January 2021               [Page 39]
-
-Internet-Draft                     MLS                         July 2020
-
-
    initialized, its initial state epoch is 0x0000000000000000.  Each
    time a state transition occurs, the epoch number is incremented by
    one.
@@ -2218,6 +2235,13 @@ Internet-Draft                     MLS                         July 2020
    way that it can be retrieved using a ProposalID in a later Commit
    message.
 
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 40]
+
+Internet-Draft                     MLS                         July 2020
+
+
 10.1.1.  Add
 
    An Add proposal requests that a client with a specified KeyPackage be
@@ -2231,16 +2255,6 @@ Internet-Draft                     MLS                         July 2020
    tree the new member is added.  Instead, the sender of the Commit
    message chooses a location for each added member and states it in the
    Commit message.
-
-
-
-
-
-
-Barnes, et al.           Expires 23 January 2021               [Page 40]
-
-Internet-Draft                     MLS                         July 2020
-
 
    An Add is applied after being included in a Commit message.  The
    position of the Add in the list of adds determines the leaf index
@@ -2275,6 +2289,15 @@ Internet-Draft                     MLS                         July 2020
    *  Replace the sender's leaf KeyPackage with the one contained in the
       Update proposal
 
+
+
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 41]
+
+Internet-Draft                     MLS                         July 2020
+
+
    *  Blank the intermediate nodes along the path from the sender's leaf
       to the root
 
@@ -2289,14 +2312,6 @@ Internet-Draft                     MLS                         July 2020
 
    A member of the group applies a Remove message by taking the
    following steps:
-
-
-
-
-Barnes, et al.           Expires 23 January 2021               [Page 41]
-
-Internet-Draft                     MLS                         July 2020
-
 
    *  Replace the leaf node at position "removed" with a blank node
 
@@ -2332,6 +2347,13 @@ Internet-Draft                     MLS                         July 2020
    have the same mapping and apply the same policies to external
    proposals.
 
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 42]
+
+Internet-Draft                     MLS                         July 2020
+
+
    An external proposal MUST be sent as an MLSPlaintext object, since
    the sender will not have the keys necessary to construct an
    MLSCiphertext object.
@@ -2342,17 +2364,6 @@ Internet-Draft                     MLS                         July 2020
    collection of Proposals.  It instructs group members to update their
    representation of the state of the group by applying the proposals
    and advancing the key schedule.
-
-
-
-
-
-
-
-Barnes, et al.           Expires 23 January 2021               [Page 42]
-
-Internet-Draft                     MLS                         July 2020
-
 
    Each proposal covered by the Commit is identified by a ProposalID
    value, which contains the hash of the MLSPlaintext in which the
@@ -2391,6 +2402,14 @@ Internet-Draft                     MLS                         July 2020
    In the event that a valid proposal is omitted from the next Commit,
    the sender of the proposal SHOULD retransmit it in the new epoch.
 
+
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 43]
+
+Internet-Draft                     MLS                         July 2020
+
+
    The "path" field of a Commit message MUST be populated if the Commit
    covers at least one Update or Remove proposal, i.e., if the length of
    the "updates" or "removes vectors is greater than zero.
@@ -2399,16 +2418,6 @@ Internet-Draft                     MLS                         July 2020
    The"path"field MAY be omitted if the Commit covers only Add
    proposals.  In pseudocode, the logic for whether the"path` field is
    required is as follows:
-
-
-
-
-
-
-Barnes, et al.           Expires 23 January 2021               [Page 43]
-
-Internet-Draft                     MLS                         July 2020
-
 
    haveUpdates = len(commit.Updates) > 0
    haveRemoves = len(commit.Removes) > 0
@@ -2447,6 +2456,16 @@ Internet-Draft                     MLS                         July 2020
 
       -  Assign this DirectPath to the "path" field in the Commit.
 
+
+
+
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 44]
+
+Internet-Draft                     MLS                         July 2020
+
+
       -  Apply the DirectPath to the tree, as described in Section 5.5.
          Define "commit_secret" as the value "path_secret[n+1]" derived
          from the "path_secret[n]" value assigned to the root node.
@@ -2458,13 +2477,6 @@ Internet-Draft                     MLS                         July 2020
    *  Generate a new KeyPackage for the Committer's own leaf, with a
       "parent_hash" extension.  Store it in the ratchet tree and assign
       it to the "key_package" field in the Commit object.
-
-
-
-Barnes, et al.           Expires 23 January 2021               [Page 44]
-
-Internet-Draft                     MLS                         July 2020
-
 
    *  Construct an MLSPlaintext object containing the Commit object.
       Use the "commit_secret" to advance the key schedule and compute
@@ -2501,6 +2513,15 @@ Internet-Draft                     MLS                         July 2020
    *  Construct a Welcome message from the encrypted GroupInfo object
       and the encrypted group secrets.
 
+
+
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 45]
+
+Internet-Draft                     MLS                         July 2020
+
+
    A member of the group applies a Commit message by taking the
    following steps:
 
@@ -2511,16 +2532,6 @@ Internet-Draft                     MLS                         July 2020
    *  Verify that the signature on the MLSPlaintext message verifies
       using the public key from the credential stored at the leaf in the
       tree indicated by the "sender" field.
-
-
-
-
-
-
-Barnes, et al.           Expires 23 January 2021               [Page 45]
-
-Internet-Draft                     MLS                         July 2020
-
 
    *  Generate a provisional GroupContext object by applying the
       proposals referenced in the commit object in the order provided,
@@ -2560,6 +2571,13 @@ Internet-Draft                     MLS                         July 2020
       init secret from the previous epoch to compute the epoch secret
       and derived secrets for the new epoch.
 
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 46]
+
+Internet-Draft                     MLS                         July 2020
+
+
    *  Use the "confirmation_key" for the new epoch to compute the
       confirmation MAC for this message, as described below, and verify
       that it is the same as the "confirmation" field in the
@@ -2570,13 +2588,6 @@ Internet-Draft                     MLS                         July 2020
 
    The confirmation value confirms that the members of the group have
    arrived at the same state of the group:
-
-
-
-Barnes, et al.           Expires 23 January 2021               [Page 46]
-
-Internet-Draft                     MLS                         July 2020
-
 
    MLSPlaintext.confirmation =
        HMAC(confirmation_key, GroupContext.confirmed_transcript_hash)
@@ -2618,18 +2629,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-Barnes, et al.           Expires 23 January 2021               [Page 47]
+Barnes, et al.           Expires 25 January 2021               [Page 47]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -2685,7 +2685,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 48]
+Barnes, et al.           Expires 25 January 2021               [Page 48]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -2698,9 +2698,9 @@ Internet-Draft                     MLS                         July 2020
       derive the "welcome_secret", "welcome_key", and "welcome_nonce".
       Use the key and nonce to decrypt the "encrypted_group_info" field.
 
-welcome_secret = HKDF-Expand(epoch_secret, "mls 1.0 welcome", Hash.length)
-welcome_nonce = HKDF-Expand(welcome_secret, "nonce", nonce_length)
-welcome_key = HKDF-Expand(welcome_secret, "key", key_length)
+welcome_secret = KDF.Expand(epoch_secret, "mls 1.0 welcome", Hash.length)
+welcome_nonce = KDF.Expand(welcome_secret, "nonce", nonce_length)
+welcome_key = KDF.Expand(welcome_secret, "key", key_length)
 
    *  Verify the signature on the GroupInfo object.  The signature input
       comprises all of the fields in the GroupInfo object except the
@@ -2741,7 +2741,7 @@ welcome_key = HKDF-Expand(welcome_secret, "key", key_length)
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 49]
+Barnes, et al.           Expires 25 January 2021               [Page 49]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -2797,7 +2797,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 50]
+Barnes, et al.           Expires 25 January 2021               [Page 50]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -2853,7 +2853,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 51]
+Barnes, et al.           Expires 25 January 2021               [Page 51]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -2909,7 +2909,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 52]
+Barnes, et al.           Expires 25 January 2021               [Page 52]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -2965,7 +2965,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 53]
+Barnes, et al.           Expires 25 January 2021               [Page 53]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -2980,10 +2980,10 @@ Internet-Draft                     MLS                         July 2020
    astree_node_[root]_secret = application_secret
 
    The secret of any other node in the tree is derived from its parent's
-   secret using a call to Derive-App-Secret.
+   secret using a call to DeriveAppSecret.
 
-   Derive-App-Secret(Secret, Label, Node, Generation, Length) =
-       HKDF-Expand-Label(Secret, Label, ApplicationContext, Length)
+   DeriveAppSecret(Secret, Label, Node, Generation, Length) =
+       ExpandWithLabel(Secret, Label, ApplicationContext, Length)
 
    Where ApplicationContext is specified as:
 
@@ -2998,10 +2998,10 @@ Internet-Draft                     MLS                         July 2020
    astree_node_[N]_secret
            |
            |
-           +--> Derive-App-Secret(., "tree", left(N), 0, Hash.length)
+           +--> DeriveAppSecret(., "tree", left(N), 0, Hash.length)
            |    = astree_node_[left(N)]_secret
            |
-           +--> Derive-App-Secret(., "tree", right(N), 0, Hash.length)
+           +--> DeriveAppSecret(., "tree", right(N), 0, Hash.length)
                 = astree_node_[right(N)]_secret
 
    Note that fixing concrete values for GroupContext_[n] and
@@ -3021,14 +3021,14 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 54]
+Barnes, et al.           Expires 25 January 2021               [Page 54]
 
 Internet-Draft                     MLS                         July 2020
 
 
    *  a key, nonce, or secret derived from S has been consumed.  (This
-      goes for values derived via Derive-Secret as well as HKDF-Expand-
-      Label.)
+      goes for values derived via DeriveSecret as well as
+      ExpandWithLabel.)
 
    Here, S may be the "init_secret", "commit_secret", "epoch_secret",
    "application_secret" as well as any secret in the AS Tree or one of
@@ -3077,7 +3077,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 55]
+Barnes, et al.           Expires 25 January 2021               [Page 55]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -3133,7 +3133,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 56]
+Barnes, et al.           Expires 25 January 2021               [Page 56]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -3189,7 +3189,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 57]
+Barnes, et al.           Expires 25 January 2021               [Page 57]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -3245,7 +3245,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 58]
+Barnes, et al.           Expires 25 January 2021               [Page 58]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -3301,7 +3301,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 59]
+Barnes, et al.           Expires 25 January 2021               [Page 59]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -3357,7 +3357,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 60]
+Barnes, et al.           Expires 25 January 2021               [Page 60]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -3408,12 +3408,12 @@ Internet-Draft                     MLS                         July 2020
 
                                  Table 4
 
-   The hash used for HKDF computations in MLS is the same hash used in
-   the HPKE KDF for the ciphersuite.
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 61]
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 61]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -3434,8 +3434,8 @@ Internet-Draft                     MLS                         July 2020
 
    The mandatory-to-implement ciphersuite for MLS 1.0 is
    "MLS10\_128\_HPKE25519\_AES128GCM\_SHA256\_Ed25519" which uses
-   Curve25519 for key exchange, AES-128-GCM for HPKE, HKDF over
-   SHA2-256, AES for metadata masking, and Ed25519 for signatures.
+   Curve25519, HKDF over SHA2-256 and AES-128-GCM for HPKE, and AES-
+   128-GCM with Ed25519 for symmetric encryption and signatures.
 
    Values with the first byte 255 (decimal) are reserved for Private
    Use.
@@ -3469,7 +3469,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 62]
+Barnes, et al.           Expires 25 January 2021               [Page 62]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -3525,7 +3525,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 63]
+Barnes, et al.           Expires 25 January 2021               [Page 63]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -3581,7 +3581,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 64]
+Barnes, et al.           Expires 25 January 2021               [Page 64]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -3637,7 +3637,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 65]
+Barnes, et al.           Expires 25 January 2021               [Page 65]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -3693,7 +3693,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 66]
+Barnes, et al.           Expires 25 January 2021               [Page 66]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -3702,15 +3702,6 @@ Internet-Draft                     MLS                         July 2020
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/info/rfc2119>.
-
-   [RFC5116]  McGrew, D., "An Interface and Algorithms for Authenticated
-              Encryption", RFC 5116, DOI 10.17487/RFC5116, January 2008,
-              <https://www.rfc-editor.org/info/rfc5116>.
-
-   [RFC5869]  Krawczyk, H. and P. Eronen, "HMAC-based Extract-and-Expand
-              Key Derivation Function (HKDF)", RFC 5869,
-              DOI 10.17487/RFC5869, May 2010,
-              <https://www.rfc-editor.org/info/rfc5869>.
 
    [RFC8126]  Cotton, M., Leiba, B., and T. Narten, "Guidelines for
               Writing an IANA Considerations Section in RFCs", BCP 26,
@@ -3746,17 +3737,22 @@ Internet-Draft                     MLS                         July 2020
    [doubleratchet]
               Cohn-Gordon, K., Cremers, C., Dowling, B., Garratt, L.,
               and D. Stebila, "A Formal Security Analysis of the Signal
-
-
-
-Barnes, et al.           Expires 23 January 2021               [Page 67]
-
-Internet-Draft                     MLS                         July 2020
-
-
               Messaging Protocol", DOI 10.1109/eurosp.2017.27, 2017 IEEE
               European Symposium on Security and Privacy (EuroS&P),
               April 2017, <https://doi.org/10.1109/eurosp.2017.27>.
+
+
+
+
+
+
+
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 67]
+
+Internet-Draft                     MLS                         July 2020
+
 
    [HCJ16]    Husák, M., Čermák, M., Jirsík, T., and P. Čeleda, "HTTPS
               traffic analysis and client identification using passive
@@ -3801,20 +3797,18 @@ Appendix A.  Tree Math
    X     X     X     X     X     X     X     X     X     X     X
    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20
 
-
-
-
-
-Barnes, et al.           Expires 23 January 2021               [Page 68]
-
-Internet-Draft                     MLS                         July 2020
-
-
    This allows us to compute relationships between tree nodes simply by
    manipulating indices, rather than having to maintain complicated
    structures in memory, even for partial trees.  The basic rule is that
    the high-order bits of parent and child nodes have the following
    relation (where "x" is an arbitrary bit string):
+
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 68]
+
+Internet-Draft                     MLS                         July 2020
+
 
    parent=01x => left=00x, right=10x
 
@@ -3858,19 +3852,19 @@ def root(n):
     return (1 << log2(w)) - 1
 
 # The left child of an intermediate node. Note that because the tree is
-
-
-
-Barnes, et al.           Expires 23 January 2021               [Page 69]
-
-Internet-Draft                     MLS                         July 2020
-
-
 # left-balanced, there is no dependency on the size of the tree.
 def left(x):
     k = level(x)
     if k == 0:
         raise Exception('leaf node has no children')
+
+
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 69]
+
+Internet-Draft                     MLS                         July 2020
+
 
     return x ^ (0x01 << (k - 1))
 
@@ -3914,20 +3908,20 @@ def sibling(x, n):
         return left(p)
 
 # The direct path of a node, ordered from leaf to root.
-
-
-
-Barnes, et al.           Expires 23 January 2021               [Page 70]
-
-Internet-Draft                     MLS                         July 2020
-
-
 def direct_path(x, n):
     r = root(n)
     if x == r:
         return []
 
     d = []
+
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 70]
+
+Internet-Draft                     MLS                         July 2020
+
+
     while x != r:
         x = parent(x, n)
         d.append(x)
@@ -3970,17 +3964,19 @@ def common_ancestor_direct(x, y, _):
     while xn != yn:
        xn, yn = xn >> 1, yn >> 1
        k += 1
-
-
-
-Barnes, et al.           Expires 23 January 2021               [Page 71]
-
-Internet-Draft                     MLS                         July 2020
-
-
     return (xn << k) + (1 << (k-1)) - 1
 
 Authors' Addresses
+
+
+
+
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 71]
+
+Internet-Draft                     MLS                         July 2020
+
 
    Richard Barnes
    Cisco
@@ -4029,4 +4025,8 @@ Authors' Addresses
 
 
 
-Barnes, et al.           Expires 23 January 2021               [Page 72]
+
+
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 72]
