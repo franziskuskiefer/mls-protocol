@@ -152,7 +152,7 @@ Internet-Draft                     MLS                         July 2020
      17.1.  Normative References . . . . . . . . . . . . . . . . . .  66
      17.2.  Informative References . . . . . . . . . . . . . . . . .  67
    Appendix A.  Tree Math  . . . . . . . . . . . . . . . . . . . . .  68
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  71
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  72
 
 1.  Introduction
 
@@ -807,17 +807,14 @@ Internet-Draft                     MLS                         July 2020
 
 5.2.  Ratchet Tree Nodes
 
-   A particular instance of a ratchet tree is defined by the same
-   parameters that define an instance of HPKE, namely:
+   A particular instance of a ratchet tree is based on the following
+   cryptographic primitives, defined by the ciphersuite in use:
 
-   *  A Key Encapsulation Mechanism (KEM), including a "DeriveKeyPair"
-      function that creates a key pair for the KEM from a symmetric
-      secret
+   *  An HPKE ciphersuite, which specifies a Key Encapsulation Mechanism
+      (KEM), an AEAD encryption scheme, and a hash function
 
-   *  A Key Derivation Function (KDF), including "Extract" and "Expand"
-      functions
-
-   *  An AEAD encryption scheme
+   *  A Derive-Key-Pair function that produces an asymmetric key pair
+      for the specified KEM from a symmetric secret
 
    Each node in a ratchet tree contains up to five values:
 
@@ -833,6 +830,9 @@ Internet-Draft                     MLS                         July 2020
    *  A hash of the node's parent, as of the last time the node was
       changed.
 
+   The conditions under which each of these values must or must not be
+   present are laid out in Section 5.3.
+
 
 
 
@@ -841,9 +841,6 @@ Barnes, et al.           Expires 25 January 2021               [Page 15]
 
 Internet-Draft                     MLS                         July 2020
 
-
-   The conditions under which each of these values must or must not be
-   present are laid out in Section 5.3.
 
    A node in the tree may also be _blank_, indicating that no value is
    present at that node.  The _resolution_ of a node is an ordered list
@@ -890,6 +887,9 @@ Internet-Draft                     MLS                         July 2020
    up-to-date view of the public state of the group's ratchet tree,
    including the public keys for all nodes and the credentials
    associated with the leaf nodes.
+
+
+
 
 
 
@@ -940,11 +940,11 @@ Internet-Draft                     MLS                         July 2020
    secret is used to derive a new secret value for the corresponding
    node, from which the node's key pair is derived.
 
-   path_secret[0] = ExpandWithLabel(leaf_hpke_secret,
+   path_secret[0] = HKDF-Expand-Label(leaf_hpke_secret,
                                       "path", "", KEM.Nsk)
-   path_secret[n] = ExpandWithLabel(path_secret[n-1],
+   path_secret[n] = HKDF-Expand-Label(path_secret[n-1],
                                       "path", "", KEM.Nsk)
-   node_priv[n], node_pub[n] = KEM.DeriveKeyPair(path_secret[n])
+   node_priv[n], node_pub[n] = Derive-Key-Pair(path_secret[n])
 
 
 
@@ -1087,20 +1087,20 @@ Internet-Draft                     MLS                         July 2020
    Each MLS session uses a single ciphersuite that specifies the
    following primitives to be used in group key computations:
 
-   *  HPKE parameters:
+   *  A hash function
 
-      -  A Key Encapsulation Mechanism (KEM)
+   *  A key encapsulation mechanism (KEM)
 
-      -  A Key Derivation Fucntion (KDF)
-
-      -  An AEAD encryption algorithm
+   *  An AEAD encryption algorithm [RFC5116]
 
    *  A signature algorithm
 
-   The HPKE parameters are used to instantiate HPKE [I-D.irtf-cfrg-hpke]
-   for the purpose of public-key encryption.  The "DeriveKeyPair"
-   function associated to the KEM for the ciphersuite maps octet strings
-   to HPKE key pairs.
+   The ciphersuite's KEM used to instantiate an HPKE
+   [I-D.irtf-cfrg-hpke] instance for the purpose of public-key
+   encryption.  Each ciphersuite has a "Derive-Key-Pair" function that
+   maps octet strings of length "Nsk" (a KEM-specific constant defined
+   by HPKE) to HPKE key pairs.  This function is defined to be HPKE's
+   "DeriveKeyPair" function.
 
    Ciphersuites are represented with the CipherSuite type.  HPKE public
    keys are opaque values in a format defined by the underlying protocol
@@ -1559,9 +1559,9 @@ Internet-Draft                     MLS                         July 2020
 
 7.8.  Key Schedule
 
-   Group keys are derived using the "Extract" and "Expand" functions
-   from the KDF for the group's ciphersuite, as well as the functions
-   defined below:
+   Group keys are derived using the HKDF-Extract and HKDF-Expand
+   functions as defined in [RFC5869], as well as the functions defined
+   below:
 
 
 
@@ -1570,28 +1570,28 @@ Barnes, et al.           Expires 25 January 2021               [Page 28]
 Internet-Draft                     MLS                         July 2020
 
 
-   ExpandWithLabel(Secret, Label, Context, Length) =
-       KDF.Expand(Secret, KDFLabel, Length)
+   HKDF-Expand-Label(Secret, Label, Context, Length) =
+       HKDF-Expand(Secret, HKDFLabel, Length)
 
-   Where KDFLabel is specified as:
+   Where HKDFLabel is specified as:
 
    struct {
        opaque group_context<0..255> = Hash(GroupContext_[n]);
        uint16 length = Length;
        opaque label<7..255> = "mls10 " + Label;
        opaque context<0..2^32-1> = Context;
-   } KDFLabel;
+   } HKDFLabel;
 
-   DeriveSecret(Secret, Label) =
-       ExpandWithLabel(Secret, Label, "", KDF.Nh)
+   Derive-Secret(Secret, Label) =
+       HKDF-Expand-Label(Secret, Label, "", Hash.length)
 
-   The value "KDF.Nh" is the size of an output from "KDF.Extract", in
-   bytes.  In the below diagram:
+   The Hash function used by HKDF is the ciphersuite hash algorithm.
+   Hash.length is its output length in bytes.  In the below diagram:
 
-   *  KDF.Extract takes its salt argument from the top and its IKM
+   *  HKDF-Extract takes its salt argument from the top and its IKM
       argument from the left
 
-   *  DeriveSecret takes its Secret argument from the incoming arrow
+   *  Derive-Secret takes its Secret argument from the incoming arrow
 
    When processing a handshake message, a client combines the following
    information to derive new epoch secrets:
@@ -1626,39 +1626,39 @@ Barnes, et al.           Expires 25 January 2021               [Page 29]
 Internet-Draft                     MLS                         July 2020
 
 
-                  init_secret_[n-1] (or 0)
-                        |
-                        V
-      PSK (or 0) -> KDF.Extract = early_secret
-                        |
-                  DeriveSecret(., "derived", "")
-                        |
-                        V
-   commit_secret -> KDF.Extract = epoch_secret
-                        |
-                        +--> KDF.Expand(., "mls 1.0 welcome", KDF.Nh)
-                        |    = welcome_secret
-                        |
-                        +--> DeriveSecret(., "sender data")
-                        |    = sender_data_secret
-                        |
-                        +--> DeriveSecret(., "handshake")
-                        |    = handshake_secret
-                        |
-                        +--> DeriveSecret(., "app")
-                        |    = application_secret
-                        |
-                        +--> DeriveSecret(., "exporter")
-                        |    = exporter_secret
-                        |
-                        +--> DeriveSecret(., "confirm")
-                        |    = confirmation_key
-                        |
-                        V
-                  DeriveSecret(., "init")
-                        |
-                        V
-                  init_secret_[n]
+               init_secret_[n-1] (or 0)
+                     |
+                     V
+    PSK (or 0) -> HKDF-Extract = early_secret
+                     |
+               Derive-Secret(., "derived")
+                     |
+                     V
+commit_secret -> HKDF-Extract = epoch_secret
+                     |
+                     +--> HKDF-Expand(., "mls 1.0 welcome", Hash.length)
+                     |    = welcome_secret
+                     |
+                     +--> Derive-Secret(., "sender data")
+                     |    = sender_data_secret
+                     |
+                     +--> Derive-Secret(., "handshake")
+                     |    = handshake_secret
+                     |
+                     +--> Derive-Secret(., "app")
+                     |    = application_secret
+                     |
+                     +--> Derive-Secret(., "exporter")
+                     |    = exporter_secret
+                     |
+                     +--> Derive-Secret(., "confirm")
+                     |    = confirmation_key
+                     |
+                     V
+               Derive-Secret(., "init")
+                     |
+                     V
+               init_secret_[n]
 
 7.9.  Pre-Shared Keys
 
@@ -1707,7 +1707,7 @@ Internet-Draft                     MLS                         July 2020
    follows:
 
    sender_data_key =
-       ExpandWithLabel(sender_data_secret, "sd key", "", key_length)
+       HKDF-Expand-Label(sender_data_secret, "sd key", "", key_length)
 
    For handshake and application messages, a sequence of keys is derived
    via a "sender ratchet".  Each sender has their own sender ratchet,
@@ -1721,7 +1721,7 @@ Internet-Draft                     MLS                         July 2020
    application_secret_[sender]_[0] = astree_node_[N]_secret
 
    handshake_secret_[sender]_[0] =
-       ExpandWithLabel(handshake_secret, "hs", [sender], nonce_length)
+       HKDF-Expand-Label(handshake_secret, "hs", [sender], nonce_length)
 
    The base secret for each sender is used to initiate a symmetric hash
    ratchet which generates a sequence of keys and nonces.  The sender
@@ -1738,23 +1738,23 @@ Barnes, et al.           Expires 25 January 2021               [Page 31]
 Internet-Draft                     MLS                         July 2020
 
 
-   Keys, nonces and secrets of ratchets are derived using
-   DeriveAppSecret.  The context in a given call consists of the index
-   of the sender's leaf in the ratchet tree and the current position in
-   the ratchet.  In particular, the index of the sender's leaf in the
+   Keys, nonces and secrets of ratchets are derived using Derive-App-
+   Secret.  The context in a given call consists of the index of the
+   sender's leaf in the ratchet tree and the current position in the
+   ratchet.  In particular, the index of the sender's leaf in the
    ratchet tree is the same as the index of the leaf in the AS Tree used
    to initialize the sender's ratchet.
 
    ratchet_secret_[N]_[j]
          |
-         +--> DeriveAppSecret(., "nonce", N, j, AEAD.nonce_length)
+         +--> Derive-App-Secret(., "nonce", N, j, AEAD.nonce_length)
          |    = ratchet_nonce_[N]_[j]
          |
-         +--> DeriveAppSecret(., "key", N, j, AEAD.key_length)
+         +--> Derive-App-Secret(., "key", N, j, AEAD.key_length)
          |    = ratchet_key_[N]_[j]
          |
          V
-   DeriveAppSecret(., "secret", N, j, Hash.length)
+   Derive-App-Secret(., "secret", N, j, Hash.length)
    = ratchet_secret_[N]_[j+1]
 
    Here, AEAD.nonce_length and AEAD.key_length denote the lengths in
@@ -1769,12 +1769,12 @@ Internet-Draft                     MLS                         July 2020
    "exported_value" outside the MLS layer.
 
    MLS-Exporter(Label, Context, key_length) =
-          ExpandWithLabel(DeriveSecret(exporter_secret, Label),
+          HKDF-Expand-Label(Derive-Secret(exporter_secret, Label),
                             "exporter", Hash(Context), key_length)
 
    The context used for the derivation of the "exported_value" MAY be
    empty while each application SHOULD provide a unique label as an
-   input of the ExpandWithLabel for each use case.  This is to prevent
+   input of the HKDF-Expand-Label for each use case.  This is to prevent
    two exported outputs from being generated with the same values and
    used for different functionalities.
 
@@ -2698,9 +2698,9 @@ Internet-Draft                     MLS                         July 2020
       derive the "welcome_secret", "welcome_key", and "welcome_nonce".
       Use the key and nonce to decrypt the "encrypted_group_info" field.
 
-welcome_secret = KDF.Expand(epoch_secret, "mls 1.0 welcome", Hash.length)
-welcome_nonce = KDF.Expand(welcome_secret, "nonce", nonce_length)
-welcome_key = KDF.Expand(welcome_secret, "key", key_length)
+welcome_secret = HKDF-Expand(epoch_secret, "mls 1.0 welcome", Hash.length)
+welcome_nonce = HKDF-Expand(welcome_secret, "nonce", nonce_length)
+welcome_key = HKDF-Expand(welcome_secret, "key", key_length)
 
    *  Verify the signature on the GroupInfo object.  The signature input
       comprises all of the fields in the GroupInfo object except the
@@ -2980,10 +2980,10 @@ Internet-Draft                     MLS                         July 2020
    astree_node_[root]_secret = application_secret
 
    The secret of any other node in the tree is derived from its parent's
-   secret using a call to DeriveAppSecret.
+   secret using a call to Derive-App-Secret.
 
-   DeriveAppSecret(Secret, Label, Node, Generation, Length) =
-       ExpandWithLabel(Secret, Label, ApplicationContext, Length)
+   Derive-App-Secret(Secret, Label, Node, Generation, Length) =
+       HKDF-Expand-Label(Secret, Label, ApplicationContext, Length)
 
    Where ApplicationContext is specified as:
 
@@ -2998,10 +2998,10 @@ Internet-Draft                     MLS                         July 2020
    astree_node_[N]_secret
            |
            |
-           +--> DeriveAppSecret(., "tree", left(N), 0, Hash.length)
+           +--> Derive-App-Secret(., "tree", left(N), 0, Hash.length)
            |    = astree_node_[left(N)]_secret
            |
-           +--> DeriveAppSecret(., "tree", right(N), 0, Hash.length)
+           +--> Derive-App-Secret(., "tree", right(N), 0, Hash.length)
                 = astree_node_[right(N)]_secret
 
    Note that fixing concrete values for GroupContext_[n] and
@@ -3027,8 +3027,8 @@ Internet-Draft                     MLS                         July 2020
 
 
    *  a key, nonce, or secret derived from S has been consumed.  (This
-      goes for values derived via DeriveSecret as well as
-      ExpandWithLabel.)
+      goes for values derived via Derive-Secret as well as HKDF-Expand-
+      Label.)
 
    Here, S may be the "init_secret", "commit_secret", "epoch_secret",
    "application_secret" as well as any secret in the AS Tree or one of
@@ -3162,10 +3162,10 @@ Internet-Draft                     MLS                         July 2020
 
 14.  Security Considerations
 
-   The security goals of MLS are described in [I-D.ietf-mls-
-   architecture].  We describe here how the protocol achieves its goals
-   at a high level, though a complete security analysis is outside of
-   the scope of this document.
+   The security goals of MLS are described in
+   [I-D.ietf-mls-architecture].  We describe here how the protocol
+   achieves its goals at a high level, though a complete security
+   analysis is outside of the scope of this document.
 
 14.1.  Confidentiality of the Group Secrets
 
@@ -3261,8 +3261,8 @@ Internet-Draft                     MLS                         July 2020
    policy [RFC8126].  See Section 15.4 for additional information about
    the MLS Designated Experts (DEs).
 
-   [[ RFC EDITOR: Please replace XXXX throughout with the RFC number
-   assigned to this document ]]
+   RFC EDITOR: Please replace XXXX throughout with the RFC number
+   assigned to this document
 
 15.1.  MLS Ciphersuites
 
@@ -3362,28 +3362,27 @@ Barnes, et al.           Expires 25 January 2021               [Page 60]
 Internet-Draft                     MLS                         July 2020
 
 
-   +============+=====================================================+=============+===========+
-   | Value      | Name                                                | Recommended | Reference |
-   +============+=====================================================+=============+===========+
-   |:-----------| :------------------------------------               |:============|:==========|
-   +------------+-----------------------------------------------------+-------------+-----------+
-   | 0x0000     | RESERVED                                            | N/A         | RFC XXXX  |
-   +------------+-----------------------------------------------------+-------------+-----------+
-   | 0x0001     | MLS10_128_DHKEMX25519_AES128GCM_SHA256_Ed25519      | Y           | RFC XXXX  |
-   +------------+-----------------------------------------------------+-------------+-----------+
-   | 0x0002     | MLS10_128_DHKEMP256_AES128GCM_SHA256_P256           | Y           | RFC XXXX  |
-   +------------+-----------------------------------------------------+-------------+-----------+
-   | 0x0003     |MLS10_128_DHKEMX25519_CHACHA20POLY1305_SHA256_Ed25519| Y           | RFC XXXX  |
-   +------------+-----------------------------------------------------+-------------+-----------+
-   | 0x0004     | MLS10_256_DHKEMX448_AES256GCM_SHA512_Ed448          | Y           | RFC XXXX  |
-   +------------+-----------------------------------------------------+-------------+-----------+
-   | 0x0005     | MLS10_256_DHKEMP521_AES256GCM_SHA512_P521           | Y           | RFC XXXX  |
-   +------------+-----------------------------------------------------+-------------+-----------+
-   | 0x0006     | MLS10_256_DHKEMX448_CHACHA20POLY1305_SHA512_Ed448   | Y           | RFC XXXX  |
-   +------------+-----------------------------------------------------+-------------+-----------+
-   | 0xff00 -   | Reserved for Private Use                            | N/A         | RFC XXXX  |
-   | 0xffff     |                                                     |             |           |
-   +------------+-----------------------------------------------------+-------------+-----------+
+   +======+=====================================================+===========+=========+
+   |Value | Name                                                |Recommended|Reference|
+   +======+=====================================================+===========+=========+
+   |0x0000| RESERVED                                            | N/A       |RFC XXXX |
+   +------+-----------------------------------------------------+-----------+---------+
+   |0x0001| MLS10_128_DHKEMX25519_AES128GCM_SHA256_Ed25519      | Y         |RFC XXXX |
+   +------+-----------------------------------------------------+-----------+---------+
+   |0x0002| MLS10_128_DHKEMP256_AES128GCM_SHA256_P256           | Y         |RFC XXXX |
+   +------+-----------------------------------------------------+-----------+---------+
+   |0x0003|MLS10_128_DHKEMX25519_CHACHA20POLY1305_SHA256_Ed25519| Y         |RFC XXXX |
+   +------+-----------------------------------------------------+-----------+---------+
+   |0x0004| MLS10_256_DHKEMX448_AES256GCM_SHA512_Ed448          | Y         |RFC XXXX |
+   +------+-----------------------------------------------------+-----------+---------+
+   |0x0005| MLS10_256_DHKEMP521_AES256GCM_SHA512_P521           | Y         |RFC XXXX |
+   +------+-----------------------------------------------------+-----------+---------+
+   |0x0006| MLS10_256_DHKEMX448_CHACHA20POLY1305_SHA512_Ed448   | Y         |RFC XXXX |
+   +------+-----------------------------------------------------+-----------+---------+
+   |0xff00| Reserved for Private Use                            | N/A       |RFC XXXX |
+   | -    |                                                     |           |         |
+   |0xffff|                                                     |           |         |
+   +------+-----------------------------------------------------+-----------+---------+
 
                                   Table 3
 
@@ -3408,7 +3407,8 @@ Internet-Draft                     MLS                         July 2020
 
                                  Table 4
 
-
+   The hash used for HKDF computations in MLS is the same hash used in
+   the HPKE KDF for the ciphersuite.
 
 
 
@@ -3703,6 +3703,15 @@ Internet-Draft                     MLS                         July 2020
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/info/rfc2119>.
 
+   [RFC5116]  McGrew, D., "An Interface and Algorithms for Authenticated
+              Encryption", RFC 5116, DOI 10.17487/RFC5116, January 2008,
+              <https://www.rfc-editor.org/info/rfc5116>.
+
+   [RFC5869]  Krawczyk, H. and P. Eronen, "HMAC-based Extract-and-Expand
+              Key Derivation Function (HKDF)", RFC 5869,
+              DOI 10.17487/RFC5869, May 2010,
+              <https://www.rfc-editor.org/info/rfc5869>.
+
    [RFC8126]  Cotton, M., Leiba, B., and T. Narten, "Guidelines for
               Writing an IANA Considerations Section in RFCs", BCP 26,
               RFC 8126, DOI 10.17487/RFC8126, June 2017,
@@ -3715,11 +3724,6 @@ Internet-Draft                     MLS                         July 2020
    [RFC8446]  Rescorla, E., "The Transport Layer Security (TLS) Protocol
               Version 1.3", RFC 8446, DOI 10.17487/RFC8446, August 2018,
               <https://www.rfc-editor.org/info/rfc8446>.
-
-   [SHS]      Dang, Q., "Secure Hash Standard",
-              DOI 10.6028/nist.fips.180-4, National Institute of
-              Standards and Technology report, July 2015,
-              <https://doi.org/10.6028/nist.fips.180-4>.
 
 17.2.  Informative References
 
@@ -3745,10 +3749,6 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-
-
-
-
 Barnes, et al.           Expires 25 January 2021               [Page 67]
 
 Internet-Draft                     MLS                         July 2020
@@ -3760,6 +3760,14 @@ Internet-Draft                     MLS                         July 2020
               EURASIP Journal on Information Security Vol. 2016,
               February 2016,
               <https://doi.org/10.1186/s13635-016-0030-7>.
+
+   [I-D.ietf-mls-architecture]
+              Omara, E., Beurdouche, B., Rescorla, E., Inguva, S., Kwon,
+              A., and A. Duric, "The Messaging Layer Security (MLS)
+              Architecture", Work in Progress, Internet-Draft, draft-
+              ietf-mls-architecture-04, 26 January 2020,
+              <http://www.ietf.org/internet-drafts/draft-ietf-mls-
+              architecture-04.txt>.
 
    [I-D.ietf-trans-rfc6962-bis]
               Laurie, B., Langley, A., Kasper, E., Messeri, E., and R.
@@ -3790,6 +3798,18 @@ Appendix A.  Tree Math
    are held in odd-numbered nodes.  For example, an 11-element tree has
    the following structure:
 
+
+
+
+
+
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 68]
+
+Internet-Draft                     MLS                         July 2020
+
+
                                                 X
                         X
             X                       X                       X
@@ -3802,13 +3822,6 @@ Appendix A.  Tree Math
    structures in memory, even for partial trees.  The basic rule is that
    the high-order bits of parent and child nodes have the following
    relation (where "x" is an arbitrary bit string):
-
-
-
-Barnes, et al.           Expires 25 January 2021               [Page 68]
-
-Internet-Draft                     MLS                         July 2020
-
 
    parent=01x => left=00x, right=10x
 
@@ -3846,6 +3859,13 @@ def node_width(n):
     else:
         return 2*(n - 1) + 1
 
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 69]
+
+Internet-Draft                     MLS                         July 2020
+
+
 # The index of the root node of a tree with n leaves.
 def root(n):
     w = node_width(n)
@@ -3857,14 +3877,6 @@ def left(x):
     k = level(x)
     if k == 0:
         raise Exception('leaf node has no children')
-
-
-
-
-Barnes, et al.           Expires 25 January 2021               [Page 69]
-
-Internet-Draft                     MLS                         July 2020
-
 
     return x ^ (0x01 << (k - 1))
 
@@ -3902,6 +3914,14 @@ def parent(x, n):
 # The other child of the node's parent.
 def sibling(x, n):
     p = parent(x, n)
+
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 70]
+
+Internet-Draft                     MLS                         July 2020
+
+
     if x < p:
         return right(p, n)
     else:
@@ -3914,14 +3934,6 @@ def direct_path(x, n):
         return []
 
     d = []
-
-
-
-Barnes, et al.           Expires 25 January 2021               [Page 70]
-
-Internet-Draft                     MLS                         July 2020
-
-
     while x != r:
         x = parent(x, n)
         d.append(x)
@@ -3958,6 +3970,14 @@ def common_ancestor_direct(x, y, _):
     elif (ly <= lx) and (x>>lx == y>>lx):
       return x
 
+
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 71]
+
+Internet-Draft                     MLS                         July 2020
+
+
     # Handle other cases
     xn, yn = x, y
     k = 0
@@ -3967,16 +3987,6 @@ def common_ancestor_direct(x, y, _):
     return (xn << k) + (1 << (k-1)) - 1
 
 Authors' Addresses
-
-
-
-
-
-
-Barnes, et al.           Expires 25 January 2021               [Page 71]
-
-Internet-Draft                     MLS                         July 2020
-
 
    Richard Barnes
    Cisco
@@ -4012,16 +4022,6 @@ Internet-Draft                     MLS                         July 2020
    Wire
 
    Email: raphael@wire.com
-
-
-
-
-
-
-
-
-
-
 
 
 
