@@ -101,8 +101,8 @@ Table of Contents
      7.3.  KeyPackage Identifiers  . . . . . . . . . . . . . . . . .  24
      7.4.  Parent Hash . . . . . . . . . . . . . . . . . . . . . . .  24
      7.5.  Tree Hashes . . . . . . . . . . . . . . . . . . . . . . .  24
-     7.6.  Group State . . . . . . . . . . . . . . . . . . . . . . .  26
-     7.7.  Direct Paths  . . . . . . . . . . . . . . . . . . . . . .  28
+     7.6.  Group State . . . . . . . . . . . . . . . . . . . . . . .  25
+     7.7.  Direct Paths  . . . . . . . . . . . . . . . . . . . . . .  27
      7.8.  Key Schedule  . . . . . . . . . . . . . . . . . . . . . .  28
      7.9.  Pre-Shared Keys . . . . . . . . . . . . . . . . . . . . .  30
      7.10. Encryption Keys . . . . . . . . . . . . . . . . . . . . .  31
@@ -127,39 +127,39 @@ Internet-Draft                     MLS                         July 2020
        10.1.4.  External Proposals . . . . . . . . . . . . . . . . .  42
      10.2.  Commit . . . . . . . . . . . . . . . . . . . . . . . . .  43
        10.2.1.  Welcoming New Members  . . . . . . . . . . . . . . .  47
-   11. Extensibility . . . . . . . . . . . . . . . . . . . . . . . .  50
-   12. Sequencing of State Changes . . . . . . . . . . . . . . . . .  51
-     12.1.  Server-Enforced Ordering . . . . . . . . . . . . . . . .  52
-     12.2.  Client-Enforced Ordering . . . . . . . . . . . . . . . .  53
-   13. Application Messages  . . . . . . . . . . . . . . . . . . . .  53
-     13.1.  Tree of Application Secrets  . . . . . . . . . . . . . .  53
-     13.2.  Deletion Schedule  . . . . . . . . . . . . . . . . . . .  54
-     13.3.  Further Restrictions . . . . . . . . . . . . . . . . . .  56
-     13.4.  Message Encryption and Decryption  . . . . . . . . . . .  56
-     13.5.  Delayed and Reordered Application messages . . . . . . .  57
-   14. Security Considerations . . . . . . . . . . . . . . . . . . .  57
-     14.1.  Confidentiality of the Group Secrets . . . . . . . . . .  57
-     14.2.  Authentication . . . . . . . . . . . . . . . . . . . . .  58
-     14.3.  Forward and post-compromise security . . . . . . . . . .  58
-     14.4.  InitKey Reuse  . . . . . . . . . . . . . . . . . . . . .  58
-   15. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  58
-     15.1.  MLS Ciphersuites . . . . . . . . . . . . . . . . . . . .  59
-     15.2.  MLS Extension Types  . . . . . . . . . . . . . . . . . .  62
-     15.3.  MLS Credential Types . . . . . . . . . . . . . . . . . .  63
-     15.4.  MLS Designated Expert Pool . . . . . . . . . . . . . . .  64
-   16. Contributors  . . . . . . . . . . . . . . . . . . . . . . . .  65
-   17. References  . . . . . . . . . . . . . . . . . . . . . . . . .  66
-     17.1.  Normative References . . . . . . . . . . . . . . . . . .  66
-     17.2.  Informative References . . . . . . . . . . . . . . . . .  67
-   Appendix A.  Tree Math  . . . . . . . . . . . . . . . . . . . . .  68
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  71
+     10.3.  Ratchet Tree Extension . . . . . . . . . . . . . . . . .  50
+   11. Extensibility . . . . . . . . . . . . . . . . . . . . . . . .  51
+   12. Sequencing of State Changes . . . . . . . . . . . . . . . . .  52
+     12.1.  Server-Enforced Ordering . . . . . . . . . . . . . . . .  53
+     12.2.  Client-Enforced Ordering . . . . . . . . . . . . . . . .  54
+   13. Application Messages  . . . . . . . . . . . . . . . . . . . .  54
+     13.1.  Tree of Application Secrets  . . . . . . . . . . . . . .  55
+     13.2.  Deletion Schedule  . . . . . . . . . . . . . . . . . . .  56
+     13.3.  Further Restrictions . . . . . . . . . . . . . . . . . .  57
+     13.4.  Message Encryption and Decryption  . . . . . . . . . . .  57
+     13.5.  Delayed and Reordered Application messages . . . . . . .  58
+   14. Security Considerations . . . . . . . . . . . . . . . . . . .  58
+     14.1.  Confidentiality of the Group Secrets . . . . . . . . . .  59
+     14.2.  Authentication . . . . . . . . . . . . . . . . . . . . .  59
+     14.3.  Forward and post-compromise security . . . . . . . . . .  59
+     14.4.  InitKey Reuse  . . . . . . . . . . . . . . . . . . . . .  60
+   15. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  60
+     15.1.  MLS Ciphersuites . . . . . . . . . . . . . . . . . . . .  60
+     15.2.  MLS Extension Types  . . . . . . . . . . . . . . . . . .  63
+     15.3.  MLS Credential Types . . . . . . . . . . . . . . . . . .  64
+     15.4.  MLS Designated Expert Pool . . . . . . . . . . . . . . .  65
+   16. Contributors  . . . . . . . . . . . . . . . . . . . . . . . .  66
+   17. References  . . . . . . . . . . . . . . . . . . . . . . . . .  67
+     17.1.  Normative References . . . . . . . . . . . . . . . . . .  67
+     17.2.  Informative References . . . . . . . . . . . . . . . . .  68
+   Appendix A.  Tree Math  . . . . . . . . . . . . . . . . . . . . .  69
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  72
 
 1.  Introduction
 
    DISCLAIMER: This is a work-in-progress draft of MLS and has not yet
    seen significant security analysis.  It should not be used as a basis
    for building production systems.
-
 
 
 
@@ -1361,20 +1361,6 @@ Internet-Draft                     MLS                         July 2020
        }
    } optional<T>;
 
-   enum {
-       leaf(0),
-       parent(1),
-       (255)
-   } NodeType;
-
-   struct {
-       NodeType node_type;
-       select (Node.node_type) {
-           case leaf:   optional<KeyPackage> key_package;
-           case parent: optional<ParentNode> node;
-       };
-   } Node;
-
    struct {
        HPKEPublicKey public_key;
        uint32 unmerged_leaves<0..2^32-1>;
@@ -1395,13 +1381,6 @@ Internet-Draft                     MLS                         July 2020
    left and right children, respectively.  When computing the hash of a
    leaf node, the hash of a "LeafNodeHashInput" object is used:
 
-
-
-Barnes, et al.           Expires 25 January 2021               [Page 25]
-
-Internet-Draft                     MLS                         July 2020
-
-
    struct {
        uint32 node_index;
        optional<KeyPackage> key_package;
@@ -1415,6 +1394,13 @@ Internet-Draft                     MLS                         July 2020
 
    Each member of the group maintains a GroupContext object that
    summarizes the state of the group:
+
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 25]
+
+Internet-Draft                     MLS                         July 2020
+
 
    struct {
        opaque group_id<0..255>;
@@ -1449,15 +1435,6 @@ Internet-Draft                     MLS                         July 2020
 
    *  The "group_id" field is constant
 
-
-
-
-
-Barnes, et al.           Expires 25 January 2021               [Page 26]
-
-Internet-Draft                     MLS                         July 2020
-
-
    *  The "epoch" field increments by one for each Commit message that
       is processed
 
@@ -1466,6 +1443,20 @@ Internet-Draft                     MLS                         July 2020
 
    *  The "confirmed_transcript_hash" is updated with the data for an
       MLSPlaintext message encoding a Commit message in two parts:
+
+
+
+
+
+
+
+
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 26]
+
+Internet-Draft                     MLS                         July 2020
+
 
    struct {
        opaque group_id<0..255>;
@@ -1500,6 +1491,15 @@ Internet-Draft                     MLS                         July 2020
    When a new group is created, the "interim_transcript_hash" field is
    set to the zero-length octet string.
 
+7.7.  Direct Paths
+
+   As described in Section 10.2, each MLS Commit message needs to
+   transmit a KeyPackage leaf and node values along its direct path.
+   The path contains a public key and encrypted secret value for all
+   intermediate nodes in the path above the leaf.  The path is ordered
+   from the closest node to the leaf to the root; each node MUST be the
+   parent of its predecessor.
+
 
 
 
@@ -1513,15 +1513,6 @@ Barnes, et al.           Expires 25 January 2021               [Page 27]
 
 Internet-Draft                     MLS                         July 2020
 
-
-7.7.  Direct Paths
-
-   As described in Section 10.2, each MLS Commit message needs to
-   transmit a KeyPackage leaf and node values along its direct path.
-   The path contains a public key and encrypted secret value for all
-   intermediate nodes in the path above the leaf.  The path is ordered
-   from the closest node to the leaf to the root; each node MUST be the
-   parent of its predecessor.
 
    struct {
        opaque kem_output<0..2^16-1>;
@@ -1562,6 +1553,15 @@ Internet-Draft                     MLS                         July 2020
    Group keys are derived using the "Extract" and "Expand" functions
    from the KDF for the group's ciphersuite, as well as the functions
    defined below:
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2637,7 +2637,7 @@ Internet-Draft                     MLS                         July 2020
    struct {
      opaque group_id<0..255>;
      uint64 epoch;
-     optional<Node> tree<1..2^32-1>;
+     opaque tree_hash<0..255>;
      opaque confirmed_transcript_hash<0..255>;
      opaque interim_transcript_hash<0..255>;
      Extension extensions<0..2^16-1>;
@@ -2667,19 +2667,19 @@ Internet-Draft                     MLS                         July 2020
      opaque encrypted_group_info<1..2^32-1>;
    } Welcome;
 
-   In the description of the tree as a list of nodes, the "key_package"
-   field for a node MUST be populated if and only if that node is a leaf
-   in the tree.
+   The client processing a Welcome message will need to have a copy of
+   the group's ratchet tree.  The tree can be provided in the Welcome
+   message, in an extension of type "ratchet_tree".  If it is sent
+   otherwise (e.g., provided by a caching service on the Delivery
+   Service), then the client MUST download the tree before processing
+   the Welcome.
 
    On receiving a Welcome message, a client processes it using the
    following steps:
 
-   *  Identify an entry in the "secrets" array where the
-      "key_package_hash" value corresponds to one of this client's
-      KeyPackages, using the hash indicated by the "cipher_suite" field.
-      If no such field exists, or if the ciphersuite indicated in the
-      KeyPackage does not match the one in the Welcome message, return
-      an error.
+
+
+
 
 
 
@@ -2689,6 +2689,13 @@ Barnes, et al.           Expires 25 January 2021               [Page 48]
 
 Internet-Draft                     MLS                         July 2020
 
+
+   *  Identify an entry in the "secrets" array where the
+      "key_package_hash" value corresponds to one of this client's
+      KeyPackages, using the hash indicated by the "cipher_suite" field.
+      If no such field exists, or if the ciphersuite indicated in the
+      KeyPackage does not match the one in the Welcome message, return
+      an error.
 
    *  Decrypt the "encrypted_group_secrets" using HPKE with the
       algorithms indicated by the ciphersuite and the HPKE private key
@@ -2710,6 +2717,9 @@ welcome_key = KDF.Expand(welcome_secret, "key", key_length)
 
    *  Verify the integrity of the ratchet tree.
 
+      -  Verify that the tree hash of the ratchet tree matches the
+         "tree_hash" field in the GroupInfo.
+
       -  For each non-empty parent node, verify that exactly one of the
          node's children are non-empty and have the hash of this node
          set as their "parent_hash" value (if the child is another
@@ -2725,6 +2735,17 @@ welcome_key = KDF.Expand(welcome_secret, "key", key_length)
       index of this node among the leaves in the tree, namely the index
       of the node in the "tree" array divided by two.
 
+
+
+
+
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 49]
+
+Internet-Draft                     MLS                         July 2020
+
+
    *  Construct a new group state using the information in the GroupInfo
       object.  The new member's position in the tree is "index", as
       defined above.  In particular, the confirmed transcript hash for
@@ -2738,13 +2759,6 @@ welcome_key = KDF.Expand(welcome_secret, "key", key_length)
          Identify the lowest common ancestor of the leaves at "index"
          and at "GroupInfo.signer_index".  Set the private key for this
          node to the private key derived from the "path_secret".
-
-
-
-Barnes, et al.           Expires 25 January 2021               [Page 49]
-
-Internet-Draft                     MLS                         July 2020
-
 
       -  For each parent of the common ancestor, up to the root of the
          tree, derive a new path secret and set the private key for the
@@ -2761,6 +2775,62 @@ Internet-Draft                     MLS                         July 2020
    *  Verify the confirmation MAC in the GroupInfo using the derived
       confirmation key and the "confirmed_transcript_hash" from the
       GroupInfo.
+
+10.3.  Ratchet Tree Extension
+
+   By default, a GroupInfo message only provides the joiner with a
+   commitment to the group's ratchet tree.  In order to process or
+   generate handshake messages, the joiner will need to get a copy of
+   the ratchet tree from some other source.  (For example, the DS might
+   provide a cached copy.)  The inclusion of the tree hash in the
+   GroupInfo message means that the source of the ratchet tree need not
+   be trusted to maintain the integrity of tree.
+
+   In cases where the application does not wish to provide such an
+   external source, the whole public state of the ratchet tree can be
+   provided in an extension of type "ratchet_tree", containing a
+   "ratchet_tree" object of the following form:
+
+
+
+
+
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 50]
+
+Internet-Draft                     MLS                         July 2020
+
+
+   enum {
+       leaf(0),
+       parent(1),
+       (255)
+   } NodeType;
+
+   struct {
+       NodeType node_type;
+       select (Node.node_type) {
+           case leaf:   KeyPackage key_package;
+           case parent: ParentNode node;
+       };
+   } Node;
+
+   optional<Node> ratchet_tree<1..2^32-1>;
+
+   The presence of a "ratchet_tree" extension in a GroupInfo message
+   does not result in any changes to the GroupContext extensions for the
+   group.  The ratchet tree provided is simply stored by the client and
+   used for MLS operations.
+
+   If this extension is not provided in a Welcome message, then the
+   client will need to fetch the ratchet tree over some other channel
+   before it can generate or process Commit messages.  Applications
+   should ensure that this out-of-band channel is provided with security
+   protections equivalent to the protections that are afforded to
+   Proposal and Commit messages.  For example, an application that
+   encrypts Proposal and Commit messages might distribute ratchet trees
+   encrypted using a key exchanged over the MLS channel.
 
 11.  Extensibility
 
@@ -2780,6 +2850,14 @@ Internet-Draft                     MLS                         July 2020
    *  In the GroupContext object, to ensure that all members of the
       group have the same view of the parameters in use
 
+
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 51]
+
+Internet-Draft                     MLS                         July 2020
+
+
    In other words, clients advertise their capabilities in KeyPackage
    extensions, the creator of the group expresses its choices for the
    group in Welcome extensions, and the GroupContext confirms that all
@@ -2793,15 +2871,6 @@ Internet-Draft                     MLS                         July 2020
       advertised in it.  Otherwise, another client might fail to
       interoperate by selecting one of those parameters.
 
-
-
-
-
-Barnes, et al.           Expires 25 January 2021               [Page 50]
-
-Internet-Draft                     MLS                         July 2020
-
-
    *  A client initiating a group MUST ignore all unrecognized
       ciphersuites, extensions, and other parameters.  Otherwise, it may
       fail to interoperate with newer clients.
@@ -2814,11 +2883,13 @@ Internet-Draft                     MLS                         July 2020
       the value of the extension in the GroupContext, according to the
       semantics of the specific extension.
 
-   *  A client joining a group MUST populate the GroupContext extensions
-      with exactly the contents of the extensions field in the Welcome
-      message.  If any extension is unrecognized (i.e., not contained in
-      the corresponding KeyPackage), then the client MUST reject the
-      Welcome message and not join the group.
+   *  If any extension in a GroupInfo message is unrecognized (i.e., not
+      contained in the corresponding KeyPackage), then the client MUST
+      reject the Welcome message and not join the group.
+
+   *  The extensions populated into a GroupContext object are drawn from
+      those in the GroupInfo object, according to the definitions of
+      those extensions.
 
    Note that the latter two requirements mean that all MLS extensions
    are mandatory, in the sense that an extension in use by the group
@@ -2835,6 +2906,14 @@ Internet-Draft                     MLS                         July 2020
    messages are made starting from a different state, the results will
    be incorrect.
 
+
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 52]
+
+Internet-Draft                     MLS                         July 2020
+
+
    This need for sequencing is not a problem as long as each time a
    group member sends a Commit message, it is based on the most current
    state of the group.  In practice, however, there is a risk that two
@@ -2848,15 +2927,6 @@ Internet-Draft                     MLS                         July 2020
    *  Have the delivery service enforce a total order
 
    *  Have a signal in the message that clients can use to break ties
-
-
-
-
-
-Barnes, et al.           Expires 25 January 2021               [Page 51]
-
-Internet-Draft                     MLS                         July 2020
-
 
    As long as Commit messages cannot be merged, there is a risk of
    starvation.  In a sufficiently busy group, a given member may never
@@ -2887,6 +2957,19 @@ Internet-Draft                     MLS                         July 2020
    dispatched in the same order.  The server is trusted to break ties
    when two members send a Commit message at the same time.
 
+
+
+
+
+
+
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 53]
+
+Internet-Draft                     MLS                         July 2020
+
+
    Messages should have a counter field sent in clear-text that can be
    checked by the server and used for tie-breaking.  The counter starts
    at 0 and is incremented for every new incoming message.  If two group
@@ -2900,19 +2983,6 @@ Internet-Draft                     MLS                         July 2020
    envelope.
 
    This applies to all messages, not only state changing messages.
-
-
-
-
-
-
-
-
-
-Barnes, et al.           Expires 25 January 2021               [Page 52]
-
-Internet-Draft                     MLS                         July 2020
-
 
 12.2.  Client-Enforced Ordering
 
@@ -2948,6 +3018,14 @@ Internet-Draft                     MLS                         July 2020
    Encryption with Associated-Data (AEAD) encryption scheme associated
    with the MLS ciphersuite using the common framing mechanism.  Note
    that "Authenticated" in this context does not mean messages are known
+
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 54]
+
+Internet-Draft                     MLS                         July 2020
+
+
    to be sent by a specific client but only from a legitimate member of
    the group.  To authenticate a message from a particular member,
    signatures are required.  Handshake messages MUST use asymmetric
@@ -2962,14 +3040,6 @@ Internet-Draft                     MLS                         July 2020
    associated with the same group member as the corresponding leaf in
    the ratchet tree.  Nodes are also assigned an index according to
    their position in the array representation of the tree (described in
-
-
-
-Barnes, et al.           Expires 25 January 2021               [Page 53]
-
-Internet-Draft                     MLS                         July 2020
-
-
    Appendix A).  If N is a node index in the AS Tree then left(N) and
    right(N) denote the children of N (if they exist).
 
@@ -3004,6 +3074,14 @@ Internet-Draft                     MLS                         July 2020
            +--> DeriveAppSecret(., "tree", right(N), 0, Hash.length)
                 = astree_node_[right(N)]_secret
 
+
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 55]
+
+Internet-Draft                     MLS                         July 2020
+
+
    Note that fixing concrete values for GroupContext_[n] and
    application_secret completely defines all secrets in the AS Tree.
 
@@ -3017,14 +3095,6 @@ Internet-Draft                     MLS                         July 2020
    they are _consumed_. A sensitive value S is said to be _consumed_ if
 
    *  S was used to encrypt or (successfully) decrypt a message, or if
-
-
-
-
-Barnes, et al.           Expires 25 January 2021               [Page 54]
-
-Internet-Draft                     MLS                         July 2020
-
 
    *  a key, nonce, or secret derived from S has been consumed.  (This
       goes for values derived via DeriveSecret as well as
@@ -3058,6 +3128,16 @@ Internet-Draft                     MLS                         July 2020
    Concretely, suppose we have the following AS Tree and ratchet for
    participant D:
 
+
+
+
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 56]
+
+Internet-Draft                     MLS                         July 2020
+
+
           G
         /   \
        /     \
@@ -3072,15 +3152,6 @@ Internet-Draft                     MLS                         July 2020
                |   +- ND1
                |
                D2
-
-
-
-
-
-Barnes, et al.           Expires 25 January 2021               [Page 55]
-
-Internet-Draft                     MLS                         July 2020
-
 
    Then if a client uses key KD1 and nonce ND1 during epoch n then it
    must consume (at least) values G, F, D0, D1, KD1, ND1 as well as the
@@ -3115,6 +3186,14 @@ Internet-Draft                     MLS                         July 2020
    far into the ratchet to iterate in order to reproduce the required
    AEAD keys and nonce for performing decryption.
 
+
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 57]
+
+Internet-Draft                     MLS                         July 2020
+
+
    Application messages SHOULD be padded to provide some resistance
    against traffic analysis techniques over encrypted traffic.  [CLINIC]
    [HCJ16] While MLS might deliver the same payload less frequently
@@ -3130,14 +3209,6 @@ Internet-Draft                     MLS                         July 2020
    padded with zero-valued bytes before AEAD encryption.  Upon AEAD
    decryption, the length field of the plaintext is used to compute the
    number of bytes to be removed from the plaintext to get the correct
-
-
-
-Barnes, et al.           Expires 25 January 2021               [Page 56]
-
-Internet-Draft                     MLS                         July 2020
-
-
    data.  As the padding mechanism is used to improve protection against
    traffic analysis, removal of the padding SHOULD be implemented in a
    "constant-time" manner at the MLS layer and above layers to prevent
@@ -3167,6 +3238,18 @@ Internet-Draft                     MLS                         July 2020
    achieves its goals at a high level, though a complete security
    analysis is outside of the scope of this document.
 
+
+
+
+
+
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 58]
+
+Internet-Draft                     MLS                         July 2020
+
+
 14.1.  Confidentiality of the Group Secrets
 
    Group secrets are derived from (i) previous group secrets, and (ii)
@@ -3181,18 +3264,6 @@ Internet-Draft                     MLS                         July 2020
    Note that the long-term identity keys used by the protocol MUST be
    distributed by an "honest" authentication service for clients to
    authenticate their legitimate peers.
-
-
-
-
-
-
-
-
-Barnes, et al.           Expires 25 January 2021               [Page 57]
-
-Internet-Draft                     MLS                         July 2020
-
 
 14.2.  Authentication
 
@@ -3225,6 +3296,16 @@ Internet-Draft                     MLS                         July 2020
    loss...), the client SHOULD signal the delivery service to expire all
    the previous KeyPackages and publish fresh ones for PCS.
 
+
+
+
+
+
+Barnes, et al.           Expires 25 January 2021               [Page 59]
+
+Internet-Draft                     MLS                         July 2020
+
+
 14.4.  InitKey Reuse
 
    InitKeys are intended to be used only once.  That is, once an InitKey
@@ -3242,13 +3323,6 @@ Internet-Draft                     MLS                         July 2020
 
    This document requests the creation of the following new IANA
    registries:
-
-
-
-Barnes, et al.           Expires 25 January 2021               [Page 58]
-
-Internet-Draft                     MLS                         July 2020
-
 
    *  MLS Ciphersuites (Section 15.1)
 
@@ -3283,25 +3357,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Barnes, et al.           Expires 25 January 2021               [Page 59]
+Barnes, et al.           Expires 25 January 2021               [Page 60]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -3357,7 +3413,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 25 January 2021               [Page 60]
+Barnes, et al.           Expires 25 January 2021               [Page 61]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -3413,7 +3469,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 25 January 2021               [Page 61]
+Barnes, et al.           Expires 25 January 2021               [Page 62]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -3469,7 +3525,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 25 January 2021               [Page 62]
+Barnes, et al.           Expires 25 January 2021               [Page 63]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -3525,7 +3581,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 25 January 2021               [Page 63]
+Barnes, et al.           Expires 25 January 2021               [Page 64]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -3581,7 +3637,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 25 January 2021               [Page 64]
+Barnes, et al.           Expires 25 January 2021               [Page 65]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -3637,7 +3693,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 25 January 2021               [Page 65]
+Barnes, et al.           Expires 25 January 2021               [Page 66]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -3693,7 +3749,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 25 January 2021               [Page 66]
+Barnes, et al.           Expires 25 January 2021               [Page 67]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -3749,7 +3805,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 25 January 2021               [Page 67]
+Barnes, et al.           Expires 25 January 2021               [Page 68]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -3805,7 +3861,7 @@ def log2(x):
 
 
 
-Barnes, et al.           Expires 25 January 2021               [Page 68]
+Barnes, et al.           Expires 25 January 2021               [Page 69]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -3861,7 +3917,7 @@ def right(x, n):
 
 
 
-Barnes, et al.           Expires 25 January 2021               [Page 69]
+Barnes, et al.           Expires 25 January 2021               [Page 70]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -3917,7 +3973,7 @@ def copath(x, n):
 
 
 
-Barnes, et al.           Expires 25 January 2021               [Page 70]
+Barnes, et al.           Expires 25 January 2021               [Page 71]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -3973,7 +4029,7 @@ Authors' Addresses
 
 
 
-Barnes, et al.           Expires 25 January 2021               [Page 71]
+Barnes, et al.           Expires 25 January 2021               [Page 72]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -4029,4 +4085,4 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 25 January 2021               [Page 72]
+Barnes, et al.           Expires 25 January 2021               [Page 73]
