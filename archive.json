@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-07-23T00:33:16.205315+00:00",
+  "timestamp": "2020-07-26T00:35:01.206186+00:00",
   "repo": "mlswg/mls-protocol",
   "labels": [
     {
@@ -3609,15 +3609,15 @@
       "id": "MDU6SXNzdWU2MjE3NjE5NDc=",
       "title": "Clarify what it means to send a Commit with no Proposals",
       "url": "https://github.com/mlswg/mls-protocol/issues/340",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "bifurcation",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Right now, it is possible to send a Commit that covers no proposals.  This has the result that the leaf of the sender and its direct path are refreshed, but no other change to the tree is made.  (The epoch also advances, of course.)  This can be is a useful operation.  For example, an Add wipes out the new joiner's direct path, so having the new joiner send a Commit over no proposals would fill in that direct path and make subsequent operations more efficient.\r\n\r\nWe should clarify in some prose that (a) this is possible and (b) why it might be useful.",
       "createdAt": "2020-05-20T13:26:45Z",
-      "updatedAt": "2020-05-20T13:26:45Z",
-      "closedAt": null,
+      "updatedAt": "2020-07-24T21:11:12Z",
+      "closedAt": "2020-07-24T21:11:11Z",
       "comments": []
     },
     {
@@ -3625,7 +3625,7 @@
       "id": "MDU6SXNzdWU2MjkyOTYzNTA=",
       "title": "Tree in GroupInfo not optional",
       "url": "https://github.com/mlswg/mls-protocol/issues/344",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "raphaelrobert",
       "authorAssociation": "MEMBER",
       "assignees": [],
@@ -3635,8 +3635,8 @@
       ],
       "body": "I remember we discussed this in the past, but I don't think we ever spec'ed this out fully:\r\n\r\nRight now the whole tree is part of `GroupInfo` (which in turn is part of `Welcome`). This can grow quite big in large groups (~17MB with 100k members with the MTI). The practical limitations are:\r\n\r\n - The TLS representation of the tree is hard to parse efficiently (no skipping and no a priori information of how many nodes are in the tree)\r\n - Out-of-band transmission (like server assist) is not possible\r\n - Large messages like that are hard to handle on mobile devices, when they have to be downloaded in the background\r\n\r\nWe should introduce an indirection, like a commit hash of the tree.",
       "createdAt": "2020-06-02T15:26:56Z",
-      "updatedAt": "2020-06-02T15:26:56Z",
-      "closedAt": null,
+      "updatedAt": "2020-07-24T21:14:45Z",
+      "closedAt": "2020-07-24T21:14:45Z",
       "comments": []
     },
     {
@@ -3668,14 +3668,78 @@
       "id": "MDU6SXNzdWU2Mzk5NTM4NDM=",
       "title": "Use HPKE KDF for the MLS key schedule",
       "url": "https://github.com/mlswg/mls-protocol/issues/351",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "bifurcation",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Our HPKE dependency provides a perfectly usable KDF.  We should just use that instead of nailing a dependency to HKDF.  This will mainly be a matter of changing `HKDF-Extract` and `HKDF-Expand` calls to the corresponding calls on the HPKE KDF.",
       "createdAt": "2020-06-16T20:32:22Z",
-      "updatedAt": "2020-06-16T20:32:22Z",
+      "updatedAt": "2020-07-24T19:49:13Z",
+      "closedAt": "2020-07-24T19:49:13Z",
+      "comments": []
+    },
+    {
+      "number": 365,
+      "id": "MDU6SXNzdWU2NjU0MTk4Njc=",
+      "title": "Update security considerations",
+      "url": "https://github.com/mlswg/mls-protocol/issues/365",
+      "state": "OPEN",
+      "author": "bifurcation",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The not-protocol parts of the document, including security considerations and some of the operational considerations, are mostly untouched since the beginning of this work.  As we get the protocol firmed up, we should revisit these parts to make sure they're up to date and give an accurate reflection of the concerns around the protocol.",
+      "createdAt": "2020-07-24T21:10:56Z",
+      "updatedAt": "2020-07-24T21:10:56Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 366,
+      "id": "MDU6SXNzdWU2NjU0NDEzNTk=",
+      "title": "Add extensions to the Commit message",
+      "url": "https://github.com/mlswg/mls-protocol/issues/366",
+      "state": "OPEN",
+      "author": "bifurcation",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Applications might want to signal to group members  processing a commit that they should take certain actions in addition to ratcheting the group forward.  The most obvious example is folding in a PSK for the epoch, but you can also imagine addressing things like transcript consistency or updatable PKE through this channel.\r\n\r\nThis should be straightforward syntactically, but will also require updating the extensibility section to make clear that Commit extensions can also in principle affect the GroupContext extensions.  In other words:\r\n\r\n* Each group member associates a list of extensions with the group, which are confirmed via the GroupContext\r\n* New joiners get configured with these via extensions in the GroupInfo\r\n* Existing members can find out about changes to the group's extensions via extensions in the Commit",
+      "createdAt": "2020-07-24T22:03:25Z",
+      "updatedAt": "2020-07-24T22:03:25Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 367,
+      "id": "MDU6SXNzdWU2NjU0NDg1ODE=",
+      "title": "Negotiate PSKs",
+      "url": "https://github.com/mlswg/mls-protocol/issues/367",
+      "state": "OPEN",
+      "author": "bifurcation",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "There are a few subissues here:\r\n\r\n# 1. Signaling which PSK(s) to add to the key schedule\r\n\r\nWhen a PSK is to be added to the key schedule in an epoch, the sender of the Commit needs to signal this to existing members in a Commit, and to any new members in the GroupInfo.  In both cases, there should be an extension to signal this.  This would work like the [TLS ServerHello PSK extension](https://tools.ietf.org/html/rfc8446#section-4.2.11), which simply indicates which PSK is being used.  In the MLS case, we would probably include the full ID instead of just an index, since there's not a clear list like in TLS.  And just like the server's ability to complete the TLS handshake proves that it has the PSK, the confirmation value in MLS would validate the same.\r\n\r\n```\r\nstruct {\r\n    opaque identity<1..2^16-1>;\r\n} PreSharedKeyExtension;\r\n```\r\n\r\n# 2. Signaling which PSKs are available\r\n\r\nIt might also be useful for clients to advertise in a KeyPackage extension what PSKs they have available.  This would be analogous to the ClientHello PSK extension, which includes a binding value to prove that the client has the PSK.  If we define such an extension, we will need to decide (a) whether we need such a binding and (b) what parts of the KeyPackage should be covered by the binding MAC.\r\n\r\nUnlike TLS, however, the set of available PSKs might change over the lifetime of the group.  Since the KeyPackages in the leaves of the tree can be modified, in principle, clients could signal the availability of new PSKs by updating, and you would get a clear assurance that everyone has the key before you try to use it.  But this seems pretty complex, and for not much benefit if the application can coordinate which PSKs are available.\r\n\r\n# 3. Structuring PSK input / multiple PSKs\r\n\r\nIt may be desirable for the input to the key schedule not to be a PSK directly, but some derived value that adds some context to the PSK.  This is the approach taken in the [TLS external PSK draft](https://tools.ietf.org/html/draft-ietf-tls-external-psk-importer-05) and in #336.  We might also want to support the application of multiple PSKs in a single epoch.\r\n\r\nFor the former need, we would need to define what context is added, how it is signaled in the relevant extensions, and how it is combined with the PSK itself to derive the ultimate PSK.  For the latter need, we need a way to signal multiple PSKs and their order, and an algorithm for combining them all into one value to be added to the key schedule.  (The schemes in both #336 and #337 are relevant here.)\r\n",
+      "createdAt": "2020-07-24T22:24:00Z",
+      "updatedAt": "2020-07-24T22:24:00Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 368,
+      "id": "MDU6SXNzdWU2NjU0NTIxOTA=",
+      "title": "Proof of prior membership in the group / Resumption",
+      "url": "https://github.com/mlswg/mls-protocol/issues/368",
+      "state": "OPEN",
+      "author": "bifurcation",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "There are two cases where the members of a group might want to authenticate that the other members of the group were present at another point in history:\r\n\r\n1. A user who has lost state re-joining the group\r\n2. Re-initializing the group with different parameters\r\n3. Initializing a subgroup from a master group\r\n\r\nIn the former case, the group would want to authenticate that the user re-joining is the same user who was present at some past point in the history of the group.  In the latter two cases, the members of the new, re-initialized group would be authenticating that everyone in the new group was also in the old group.\r\n\r\nThese use cases are similar to resumption in TLS, where a PSK is derived from the key schedule and used as for authentication in a different session.  A similar approach seems sensible here, roughly:\r\n\r\n1. At each epoch of the group derive a PSK and PSK ID to be used \r\n2. Use the general PSK signaling mechanism (#367) to signal that a prior epoch's PSK should be used\r\n\r\nThis approach is also a good indication that the PSK mechanism in #367 should allow for PSKs to have specified types.  In TLS, there has been some confusion about how applications can distinguish external PSKs from resumption PSKs.  If we have an explicit type here, we won't end up with that confusion.",
+      "createdAt": "2020-07-24T22:34:54Z",
+      "updatedAt": "2020-07-24T22:34:54Z",
       "closedAt": null,
       "comments": []
     }
@@ -16443,7 +16507,7 @@
       "id": "MDExOlB1bGxSZXF1ZXN0MzIzMTA0MjEz",
       "title": "Fix application message truncation attack",
       "url": "https://github.com/mlswg/mls-protocol/pull/219",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "beurdouche",
       "authorAssociation": "MEMBER",
       "assignees": [],
@@ -16454,14 +16518,14 @@
       ],
       "body": "2020/03/04 - Will be resolved by the next interim",
       "createdAt": "2019-10-01T06:17:00Z",
-      "updatedAt": "2020-05-08T17:16:40Z",
+      "updatedAt": "2020-07-24T21:16:47Z",
       "baseRepository": "mlswg/mls-protocol",
       "baseRefName": "master",
       "baseRefOid": "46e586329b16d9703ec321a83f79c70d6ed72c17",
       "headRepository": "mlswg/mls-protocol",
       "headRefName": "beurdouche_fix_truncation_attack",
       "headRefOid": "84a6d7b93fc914157066f41854489bb22f5adfc9",
-      "closedAt": null,
+      "closedAt": "2020-07-24T21:16:47Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
@@ -16500,6 +16564,13 @@
           "body": "I think that including the counter is a meaningful mechanism to ensure the DS behaves correctly. If possible at all, this should not be solved at the application layer. Naturally applications can ignore lost/suppressed messages if they so wish.\r\nTranscript consistency was one the properties discussed early on and this goes in the right direction at a very low cost.",
           "createdAt": "2019-10-04T18:54:06Z",
           "updatedAt": "2019-10-04T18:54:06Z"
+        },
+        {
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This PR has gotten quite stale and out of sync with the draft.  Closing for now.  @beurdouche holds the token to propose an alternate resolution to #160.",
+          "createdAt": "2020-07-24T21:16:47Z",
+          "updatedAt": "2020-07-24T21:16:47Z"
         }
       ],
       "reviews": []
@@ -23376,24 +23447,26 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NDMzOTA5NTYx",
       "title": "Make the tree in the Welcome optional",
       "url": "https://github.com/mlswg/mls-protocol/pull/348",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "bifurcation",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Fixes #344 ",
       "createdAt": "2020-06-12T22:31:09Z",
-      "updatedAt": "2020-07-20T18:42:15Z",
+      "updatedAt": "2020-07-24T21:14:45Z",
       "baseRepository": "mlswg/mls-protocol",
       "baseRefName": "master",
-      "baseRefOid": "90a85c4144d5904ce31f36d5cdc07e49c219d721",
+      "baseRefOid": "60572e71e0e46c1f202352266e1762595f40beb9",
       "headRepository": "mlswg/mls-protocol",
       "headRefName": "deforest",
-      "headRefOid": "4ef739a4644c7c26b94f59005724ae03ee6cf6db",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "07c1e98e201dfda11f3b3946d3c3c13c1b6c90ec",
+      "closedAt": "2020-07-24T21:14:45Z",
+      "mergedAt": "2020-07-24T21:14:45Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "e1c56540b40d0ce59b0905f8dc195026805d1e27"
+      },
       "comments": [
         {
           "author": "bifurcation",
@@ -23401,6 +23474,13 @@
           "body": "A couple of shortcomings to note on this PR:\r\n\r\n* The joiner can't compute their private keys because they're not told where they are in the tree or how big the tree is.  The former should be added to `GroupSecrets` and the latter to `GroupInfo`.\r\n\r\n* This approach assumes that the joiner gets the tree OOB before processing the Welcome, otherwise they can't verify the signature on the Welcome.  (Since Welcome presumes they get the credential for the signer from the tree.)\r\n\r\nWe could avoid the latter problem by including a credential for the signer and a \"membership proof\" comprising the hashes needed to tie that leaf to the tree hash in the Welcome.  That could allow participants to remain \"passive\" (without a full tree, just their private keys) for longer, especially if such a proof could be provided on Commit as well.  This might be a good candidate for an extension, though.",
           "createdAt": "2020-07-07T15:05:38Z",
           "updatedAt": "2020-07-07T15:05:38Z"
+        },
+        {
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Discussion at the 2020-07-14 interim indicated that we should go ahead with this strategy, and just note the requirement that you have to get the tree before you process the Welcome.",
+          "createdAt": "2020-07-24T21:13:26Z",
+          "updatedAt": "2020-07-24T21:13:26Z"
         }
       ],
       "reviews": []
@@ -23571,25 +23651,35 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NDM1NDYwOTU0",
       "title": "Explain the meaning of a Commit with no proposals",
       "url": "https://github.com/mlswg/mls-protocol/pull/353",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "bifurcation",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Fixes #340 ",
       "createdAt": "2020-06-16T20:53:33Z",
-      "updatedAt": "2020-07-20T18:40:43Z",
+      "updatedAt": "2020-07-24T21:11:12Z",
       "baseRepository": "mlswg/mls-protocol",
       "baseRefName": "master",
-      "baseRefOid": "ee969f006752b34ff94da67908b184f95a5c7870",
+      "baseRefOid": "60572e71e0e46c1f202352266e1762595f40beb9",
       "headRepository": "mlswg/mls-protocol",
       "headRefName": "commit-no-proposals",
-      "headRefOid": "b9bd601a706820abe9a5465d2580a8528ab97d34",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
-      "comments": [],
+      "headRefOid": "ea8ed606b857a4b64b79365742d0df9deb4ca9de",
+      "closedAt": "2020-07-24T21:11:12Z",
+      "mergedAt": "2020-07-24T21:11:11Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "1130b97a05489f428e3d07a1a05c098489d64c85"
+      },
+      "comments": [
+        {
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think we need to clearly define \"FS / PCS with regard to\", but once we do that, it seems like a fine phrase.  That seems like a good topic for a review / update of the Security Considerations once we have the protocol mostly in shape, for which I have filed #365.",
+          "createdAt": "2020-07-24T21:11:06Z",
+          "updatedAt": "2020-07-24T21:11:06Z"
+        }
+      ],
       "reviews": [
         {
           "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDMxOTQ4NDcx",
@@ -23607,7 +23697,7 @@
               "originalPosition": 6,
               "body": "I don't believe such a commit would change the leaf. Makes more sense to me to not allow empty commits",
               "createdAt": "2020-06-16T22:59:29Z",
-              "updatedAt": "2020-07-07T19:18:25Z"
+              "updatedAt": "2020-07-24T20:19:29Z"
             }
           ]
         },
@@ -23627,7 +23717,7 @@
               "originalPosition": 6,
               "body": "It would reset the leaf, via `Commit.path.leaf_key_package`.\r\n\r\nISTM there is a very concrete use case for this feature, namely keeping the tree full.  If you want to maintain a full tree, then you would want to have each new joiner should send an empty commit immediately on joining, have the neighbor of a removed node send an empty commit after a remove, etc.",
               "createdAt": "2020-06-16T23:33:46Z",
-              "updatedAt": "2020-07-07T19:18:25Z"
+              "updatedAt": "2020-07-24T20:19:29Z"
             }
           ]
         },
@@ -23647,7 +23737,7 @@
               "originalPosition": 10,
               "body": "So an empty commit is essentially what used to be an Update, i.e. fresh key material for the committers leaf, which is then KDFed up the tree. Functionally, I am ok with this, but it seems a little counter-intuitive to me. Wouldn't it be clearer if we disallowed empty commits and a party that would like to keep the tree full simply committed an Update proposal targeting their own leaf? That would yield the same result, wouldn't it?\r\n\r\nAlso: Advancing an epoch doesn't always give PCS guarantees. If an Add proposal is committed without an Update and `path` is empty, the epoch changes, but we don't get PCS (this is why I was critical of allowing Adds without Updates. It breaks the assumption that epoch change implies PCS).",
               "createdAt": "2020-06-18T14:59:57Z",
-              "updatedAt": "2020-07-07T19:18:25Z"
+              "updatedAt": "2020-07-24T20:19:29Z"
             }
           ]
         },
@@ -23667,7 +23757,60 @@
               "originalPosition": 10,
               "body": "Advancing the epoch gives you PCS with respect to the committer and and any nodes that were updated/removed in the epoch.  That doesn't change here.",
               "createdAt": "2020-07-20T18:40:42Z",
-              "updatedAt": "2020-07-20T18:40:43Z"
+              "updatedAt": "2020-07-24T20:19:29Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDUzODUzMDQ5",
+          "commit": {
+            "abbreviatedOid": "b9bd601"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-23T06:02:04Z",
+          "updatedAt": "2020-07-23T06:02:05Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "I'm pretty sure it doesn't if there is no `path` value. If I understand correctly, an `Add` only commit doesn't update the committers secrets (and thus doesn't get you PCS), but _does_ advance the epoch. I was only pointing out that advancing the epoch doesn't imply PCS if we allow empty `path` fields.",
+              "createdAt": "2020-07-23T06:02:04Z",
+              "updatedAt": "2020-07-24T20:19:29Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDU1MTY1NjYx",
+          "commit": {
+            "abbreviatedOid": "ea8ed60"
+          },
+          "author": "beurdouche",
+          "authorAssociation": "MEMBER",
+          "state": "APPROVED",
+          "body": "That works fine. I am a bit bothered by the phrasing regarding properties \u00ab\u00a0with regard to\u00a0...\u00bb. If you can find an alternate phrasing that would be \ud83d\udc4d",
+          "createdAt": "2020-07-24T20:26:40Z",
+          "updatedAt": "2020-07-24T20:26:40Z",
+          "comments": []
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDU1MTg2NDA4",
+          "commit": {
+            "abbreviatedOid": "ea8ed60"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-24T21:08:01Z",
+          "updatedAt": "2020-07-24T21:08:02Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "You are correct that a Commit with no `path` doesn't cause any PCS.  But we're talking about empty Commits here, which are required to have a `path`.  I've edited to be more precise.",
+              "createdAt": "2020-07-24T21:08:01Z",
+              "updatedAt": "2020-07-24T21:08:02Z"
             }
           ]
         }
@@ -24165,9 +24308,9 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
-      "body": "This PR rearranges the key schedule so that the following values are all fed into the init secret to form epoch secret:\r\n\r\n1. The commit secret\r\n2. The PSK (if any)\r\n3. The group context\r\n\r\nThis assures that new joiners know the PSK for the epoch, since they now need to know it to compute the epoch secret.  It also moves the group context from the `Derive-Secret` calls under the epoch secret to the derivation of the epoch secret itself, ensuring that everything derived in the epoch has the same context folded in.\r\n\r\nFixes #326 ",
+      "body": "This PR rearranges the key schedule so that the following values are all fed into the init secret to form epoch secret:\r\n\r\n1. The commit secret\r\n2. The PSK (if any)\r\n3. The group context\r\n\r\nThis assures that new joiners know the PSK for the epoch, since they now need to know it to compute the epoch secret.  It also moves the group context from the `Derive-Secret` calls under the epoch secret to the derivation of the epoch secret itself, ensuring that everything derived in the epoch has the same context folded in.\r\n\r\nFixes #325 \r\nFixes #326 ",
       "createdAt": "2020-07-20T18:29:58Z",
-      "updatedAt": "2020-07-20T18:29:58Z",
+      "updatedAt": "2020-07-24T17:47:51Z",
       "baseRepository": "mlswg/mls-protocol",
       "baseRefName": "master",
       "baseRefOid": "90a85c4144d5904ce31f36d5cdc07e49c219d721",
@@ -24186,20 +24329,130 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NDU0ODIzNzM3",
       "title": "Fix compile errors again.",
       "url": "https://github.com/mlswg/mls-protocol/pull/363",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "Bren2010",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2020-07-22T01:16:10Z",
-      "updatedAt": "2020-07-22T15:07:01Z",
+      "updatedAt": "2020-07-24T18:36:07Z",
       "baseRepository": "mlswg/mls-protocol",
       "baseRefName": "master",
       "baseRefOid": "d68b832e69abcee6150eb69d5d82500f161175db",
       "headRepository": "Bren2010/mls-protocol",
       "headRefName": "brendan/2020.7.3",
       "headRefOid": "45ca0afd974c554d4b668c80a1e00b6aabe5f1de",
+      "closedAt": "2020-07-24T18:36:07Z",
+      "mergedAt": "2020-07-24T18:36:07Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "930a1b388d81956761655592d1e26ab701455939"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDU1MTA0NDY0",
+          "commit": {
+            "abbreviatedOid": "45ca0af"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-07-24T18:35:59Z",
+          "updatedAt": "2020-07-24T18:35:59Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 364,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDU2NDI4NDQ0",
+      "title": "Use the KDF from HPKE",
+      "url": "https://github.com/mlswg/mls-protocol/pull/364",
+      "state": "MERGED",
+      "author": "bifurcation",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes #351 ",
+      "createdAt": "2020-07-24T18:28:40Z",
+      "updatedAt": "2020-07-24T19:49:13Z",
+      "baseRepository": "mlswg/mls-protocol",
+      "baseRefName": "master",
+      "baseRefOid": "930a1b388d81956761655592d1e26ab701455939",
+      "headRepository": "mlswg/mls-protocol",
+      "headRefName": "hpke-kdf",
+      "headRefOid": "10d19660772a6d91da3fa64a3c7ef2ae9b875e4a",
+      "closedAt": "2020-07-24T19:49:13Z",
+      "mergedAt": "2020-07-24T19:49:13Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "60572e71e0e46c1f202352266e1762595f40beb9"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDU1MTAzMDk3",
+          "commit": {
+            "abbreviatedOid": "02b57f8"
+          },
+          "author": "beurdouche",
+          "authorAssociation": "MEMBER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-07-24T18:33:43Z",
+          "updatedAt": "2020-07-24T18:33:43Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 369,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDU2NjYzNDEz",
+      "title": "Add Commit extensions and clarify the extensibility story",
+      "url": "https://github.com/mlswg/mls-protocol/pull/369",
+      "state": "OPEN",
+      "author": "bifurcation",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes #366 ",
+      "createdAt": "2020-07-25T20:06:41Z",
+      "updatedAt": "2020-07-25T20:16:17Z",
+      "baseRepository": "mlswg/mls-protocol",
+      "baseRefName": "master",
+      "baseRefOid": "e1c56540b40d0ce59b0905f8dc195026805d1e27",
+      "headRepository": "mlswg/mls-protocol",
+      "headRefName": "commit-ext",
+      "headRefOid": "f101de6b6887cb9685c1641d01804385b6e2190b",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 370,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDU2NjY0MTgz",
+      "title": "Minor extension fixes",
+      "url": "https://github.com/mlswg/mls-protocol/pull/370",
+      "state": "OPEN",
+      "author": "bifurcation",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This PR makes a few minor fixes to extensions:\r\n\r\n* Coalesces `supported_versions` and `supported_ciphersuites` into a single extension\r\n* Adds a list of supported extensions in parallel with the versions and ciphersuites\r\n* Adds a missing value to the IANA table for the `ratchet_tree` extension",
+      "createdAt": "2020-07-25T20:14:35Z",
+      "updatedAt": "2020-07-25T20:14:45Z",
+      "baseRepository": "mlswg/mls-protocol",
+      "baseRefName": "master",
+      "baseRefOid": "e1c56540b40d0ce59b0905f8dc195026805d1e27",
+      "headRepository": "mlswg/mls-protocol",
+      "headRefName": "client-capabilities",
+      "headRefOid": "ff79548f1854ed64d4f3ce2c305c067f149af0c6",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
