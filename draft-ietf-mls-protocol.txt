@@ -416,8 +416,9 @@ Internet-Draft                     MLS                         July 2020
       hence has access to the group's secrets.
 
    Key Package:  A signed object describing a client's identity and
-      capabilities, and including an HPKE public key that can be used to
-      encrypt to that client.
+      capabilities, and including a hybrid public-key encryption (HPKE
+      [I-D.irtf-cfrg-hpke] ) public key that can be used to encrypt to
+      that client.
 
    Initialization Key (InitKey):  A key package that is prepublished by
       a client, which other clients can use to introduce the client to a
@@ -439,7 +440,6 @@ Internet-Draft                     MLS                         July 2020
 
    *  A long-term identity key provider which allows clients to
       authenticate protocol messages in a group.
-
 
 
 
@@ -926,26 +926,26 @@ Internet-Draft                     MLS                         July 2020
 
 5.4.  Ratchet Tree Evolution
 
-   When performing a Commit, the leaf KeyPackage of the committer and
-   its direct path to the root are updated with new secret values.  The
-   HPKE leaf public key within the KeyPackage MUST be a freshly
-   generated value to provide post-compromise security.
+   When performing a Commit, the generator of the Commit updates its
+   leaf KeyPackage and its direct path to the root with new secret
+   values.  The HPKE leaf public key within the KeyPackage MUST be
+   derived from a freshly generated HPKE secret key to provide post-
+   compromise security.
 
-   The generator of the Commit starts by using the HPKE secret key
-   "leaf_hpke_secret" associated with the new leaf KeyPackage (see
-   Section 7) to compute "path_secret[0]" and generate a sequence of
-   "path secrets", one for each ancestor of its leaf.  That is,
-   path_secret[0] is used for the node directly above the leaf,
+   The generator of the Commit starts by sampling a fresh random value
+   called "leaf_secret", and uses the leaf_secret to generate their leaf
+   HPKE key pair (see Section 7) and to seed a sequence of "path
+   secrets", one for each ancestor of its leaf.  In this setting,
+   path_secret[0] refers to the node directly above the leaf,
    path_secret[1] for its parent, and so on.  At each step, the path
    secret is used to derive a new secret value for the corresponding
    node, from which the node's key pair is derived.
 
-   path_secret[0] = ExpandWithLabel(leaf_hpke_secret,
+   path_secret[0] = ExpandWithLabel(leaf_secret,
                                       "path", "", KEM.Nsk)
    path_secret[n] = ExpandWithLabel(path_secret[n-1],
                                       "path", "", KEM.Nsk)
    node_priv[n], node_pub[n] = KEM.DeriveKeyPair(path_secret[n])
-
 
 
 
@@ -965,16 +965,17 @@ Internet-Draft                     MLS                         July 2020
    A   B   C   D
 
    If member B subsequently generates a Commit based on a secret
-   "leaf_hpke_secret", then it would generate the following sequence of
-   path secrets:
+   "leaf_secret", then it would generate the following sequence of path
+   secrets:
 
-       path_secret[1] --> node_priv[1], node_pub[1]
-            ^
-            |
-       path_secret[0] --> node_priv[0], node_pub[0]
-            ^
-            |
-      leaf_hpke_secret
+      path_secret[1] --> node_priv[1], node_pub[1]
+           ^
+           |
+      path_secret[0] --> node_priv[0], node_pub[0]
+           ^
+           |
+      leaf_secret    --> leaf_priv, leaf_pub
+                      ~> leaf_key_package
 
    After the Commit, the tree will have the following structure, where
    "np[i]" represents the node_priv values generated as described above:
@@ -984,6 +985,9 @@ Internet-Draft                     MLS                         July 2020
         np[0]      _
         /  \      / \
        A    B    C   D
+
+   After performing these operations, the generator of the Commit MUST
+   delete the leaf_secret.
 
 5.5.  Synchronizing Views of the Tree
 
@@ -999,16 +1003,14 @@ Internet-Draft                     MLS                         July 2020
    the group the following information for each node in the direct path
    of the leaf, including the root:
 
-   *  The public key for the node
-
-
-
 
 
 Barnes, et al.           Expires 28 January 2021               [Page 18]
 
 Internet-Draft                     MLS                         July 2020
 
+
+   *  The public key for the node
 
    *  Zero or more encrypted copies of the path secret corresponding to
       the node
@@ -1056,8 +1058,6 @@ Internet-Draft                     MLS                         July 2020
           compute the corresponding node key pair and replace the values
           stored at the node with the computed values.
 
-   For example, in order to communicate the example update described in
-   the previous section, the sender would transmit the following values:
 
 
 
@@ -1065,6 +1065,9 @@ Barnes, et al.           Expires 28 January 2021               [Page 19]
 
 Internet-Draft                     MLS                         July 2020
 
+
+   For example, in order to communicate the example update described in
+   the previous section, the sender would transmit the following values:
 
              +============+==================================+
              | Public Key | Ciphertext(s)                    |
@@ -1109,11 +1112,8 @@ Internet-Draft                     MLS                         July 2020
 
    opaque HPKEPublicKey<1..2^16-1>;
 
-   The signature algorithm specified in the ciphersuite is the mandatory
-   algorithm to be used for signatures in MLSPlaintext and the tree
-   signatures.  It MUST be the same as the signature algorithm specified
-   in the credential field of the KeyPackage objects in the leaves of
-   the tree (including the InitKeys used to add new members).
+
+
 
 
 
@@ -1121,6 +1121,12 @@ Barnes, et al.           Expires 28 January 2021               [Page 20]
 
 Internet-Draft                     MLS                         July 2020
 
+
+   The signature algorithm specified in the ciphersuite is the mandatory
+   algorithm to be used for signatures in MLSPlaintext and the tree
+   signatures.  It MUST be the same as the signature algorithm specified
+   in the credential field of the KeyPackage objects in the leaves of
+   the tree (including the InitKeys used to add new members).
 
    The ciphersuites are defined in section Section 15.1.
 
@@ -1165,18 +1171,18 @@ Internet-Draft                     MLS                         July 2020
    credential in a ratchet tree, the KeyPackage ciphersuite for a
    credential in a KeyPackage object.
 
-   For ciphersuites using Ed25519 or Ed448 signature schemes, the public
-   key is in the format specified [RFC8032].  For ciphersuites using
-   ECDSA with the NIST curves P-256 or P-521, the public key is the
-   output of the uncompressed Elliptic-Curve-Point-to-Octet-String
-   conversion according to [SECG].
-
 
 
 Barnes, et al.           Expires 28 January 2021               [Page 21]
 
 Internet-Draft                     MLS                         July 2020
 
+
+   For ciphersuites using Ed25519 or Ed448 signature schemes, the public
+   key is in the format specified [RFC8032].  For ciphersuites using
+   ECDSA with the NIST curves P-256 or P-521, the public key is the
+   output of the uncompressed Elliptic-Curve-Point-to-Octet-String
+   conversion according to [SECG].
 
    Note that each new credential that has not already been validated by
    the application MUST be validated against the Authentication Service.
@@ -1211,12 +1217,6 @@ Internet-Draft                     MLS                         July 2020
    invalid signature field MUST be considered malformed.  The input to
    the signature computation comprises all of the fields except for the
    signature field.
-
-
-
-
-
-
 
 
 
