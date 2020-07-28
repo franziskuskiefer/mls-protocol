@@ -1635,7 +1635,13 @@ Internet-Draft                     MLS                         July 2020
                            |    = welcome_secret
                            |
                            V
+                     Derive-Secret(., "member")
+                           |
+                           V
          PSK (or 0) -> KDF.Extract = member_secret
+                           |
+                           V
+                     Derive-Secret(., "epoch")
                            |
                            V
    GroupContext_[n] -> KDF.Extract = epoch_secret
@@ -1667,13 +1673,7 @@ Internet-Draft                     MLS                         July 2020
    group secrets can inject those in the MLS key schedule to seed the
    MLS group secrets computations by this external entropy.
 
-   At any epoch, including the initial state, an application can decide
-   to synchronize the injection of a PSK into the MLS key schedule.
 
-   This mechanism can be used to improve security in the cases where
-   having a full run of updates across members is too expensive or in
-   the case where the external group key establishment mechanism
-   provides stronger security against classical or quantum adversaries.
 
 
 
@@ -1681,6 +1681,14 @@ Barnes, et al.           Expires 29 January 2021               [Page 30]
 
 Internet-Draft                     MLS                         July 2020
 
+
+   At any epoch, including the initial state, an application can decide
+   to synchronize the injection of a PSK into the MLS key schedule.
+
+   This mechanism can be used to improve security in the cases where
+   having a full run of updates across members is too expensive or in
+   the case where the external group key establishment mechanism
+   provides stronger security against classical or quantum adversaries.
 
    The security level associated with the PSK injected in the key
    schedule SHOULD match at least the security level of the ciphersuite
@@ -1723,20 +1731,19 @@ Internet-Draft                     MLS                         July 2020
    handshake_secret_[sender]_[0] =
        ExpandWithLabel(handshake_secret, "hs", [sender], nonce_length)
 
-   The base secret for each sender is used to initiate a symmetric hash
-   ratchet which generates a sequence of keys and nonces.  The sender
-   uses the j-th key/nonce pair in the sequence to encrypt (using the
-   AEAD) the j-th message they send during that epoch.  In particular,
-   each key/nonce pair MUST NOT be used to encrypt more than one
-   message.
-
-
 
 
 Barnes, et al.           Expires 29 January 2021               [Page 31]
 
 Internet-Draft                     MLS                         July 2020
 
+
+   The base secret for each sender is used to initiate a symmetric hash
+   ratchet which generates a sequence of keys and nonces.  The sender
+   uses the j-th key/nonce pair in the sequence to encrypt (using the
+   AEAD) the j-th message they send during that epoch.  In particular,
+   each key/nonce pair MUST NOT be used to encrypt more than one
+   message.
 
    Keys, nonces and secrets of ratchets are derived using
    DeriveAppSecret.  The context in a given call consists of the index
@@ -1778,13 +1785,6 @@ Internet-Draft                     MLS                         July 2020
    two exported outputs from being generated with the same values and
    used for different functionalities.
 
-   The exported values are bound to the Group epoch from which the
-   "exporter_secret" is derived, hence reflects a particular state of
-   the Group.
-
-   It is RECOMMENDED for the application generating exported values to
-   refresh those values after a group operation is processed.
-
 
 
 
@@ -1793,6 +1793,13 @@ Barnes, et al.           Expires 29 January 2021               [Page 32]
 
 Internet-Draft                     MLS                         July 2020
 
+
+   The exported values are bound to the Group epoch from which the
+   "exporter_secret" is derived, hence reflects a particular state of
+   the Group.
+
+   It is RECOMMENDED for the application generating exported values to
+   refresh those values after a group operation is processed.
 
 8.  Message Framing
 
@@ -1835,13 +1842,6 @@ Internet-Draft                     MLS                         July 2020
        opaque group_id<0..255>;
        uint64 epoch;
        Sender sender;
-       opaque authenticated_data<0..2^32-1>;
-
-       ContentType content_type;
-       select (MLSPlaintext.content_type) {
-           case application:
-             opaque application_data<0..2^32-1>;
-
 
 
 
@@ -1849,6 +1849,13 @@ Barnes, et al.           Expires 29 January 2021               [Page 33]
 
 Internet-Draft                     MLS                         July 2020
 
+
+       opaque authenticated_data<0..2^32-1>;
+
+       ContentType content_type;
+       select (MLSPlaintext.content_type) {
+           case application:
+             opaque application_data<0..2^32-1>;
 
            case proposal:
              Proposal proposal;
@@ -1891,13 +1898,6 @@ Internet-Draft                     MLS                         July 2020
    *  Generate and sign an MLSPlaintextTBS object from the MLSPlaintext
       object
 
-   *  Encrypt an MLSCiphertextContent for the ciphertext field using the
-      key identified, the signature, and MLSPlaintext object
-
-   Decryption is done by decrypting the metadata, then the message, and
-   then verifying the content signature.
-
-
 
 
 
@@ -1905,6 +1905,12 @@ Barnes, et al.           Expires 29 January 2021               [Page 34]
 
 Internet-Draft                     MLS                         July 2020
 
+
+   *  Encrypt an MLSCiphertextContent for the ciphertext field using the
+      key identified, the signature, and MLSPlaintext object
+
+   Decryption is done by decrypting the metadata, then the message, and
+   then verifying the content signature.
 
    The following sections describe the encryption and signing processes
    in detail.
@@ -1945,12 +1951,6 @@ Internet-Draft                     MLS                         July 2020
    recipient MUST verify that the sender field represents an occupied
    leaf in the ratchet tree.  In particular, the sender index value MUST
    be less than the number of leaves in the tree.
-
-
-
-
-
-
 
 
 
