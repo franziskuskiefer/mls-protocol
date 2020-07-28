@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-07-26T00:35:01.206186+00:00",
+  "timestamp": "2020-07-28T00:34:03.048857+00:00",
   "repo": "mlswg/mls-protocol",
   "labels": [
     {
@@ -1845,7 +1845,7 @@
     {
       "number": 168,
       "id": "MDU6SXNzdWU0NDU3MjcyNTY=",
-      "title": "Include obligations regarding clients refusing to update more clearly",
+      "title": "Clarify obligation of clients to Update",
       "url": "https://github.com/mlswg/mls-protocol/issues/168",
       "state": "OPEN",
       "author": "beurdouche",
@@ -1859,7 +1859,7 @@
       ],
       "body": "It has been noted that we don't discuss enough he influence of clients refusing to update in this document. The architecture document briefly explain why we minimally should evict clients that refuse to update to preserve FS or PCS. I think we actually enforce a MUST and provide a minimal recommendation. \r\n```\r\n### Membership and offline members\r\nBecause Forward Secrecy (FS) and Post-Compromise Security (PCS)\r\nrely on the deletion and replacement of keying material,\r\nany client which is persistently offline\r\nmay still be holding old keying material and thus be a threat\r\nto both FS and PCS if it is later compromised.\r\nMLS does not inherently defend against this problem, but\r\nMLS-using systems can enforce some mechanism for doing\r\nso. Typically this will consist of evicting clients which\r\nare idle for too long, thus containing the threat of\r\ncompromise. The precise details of such mechanisms are\r\na matter of local policy and beyond the scope of this document.\r\n```",
       "createdAt": "2019-05-18T15:37:32Z",
-      "updatedAt": "2019-12-12T14:59:44Z",
+      "updatedAt": "2020-07-27T19:45:32Z",
       "closedAt": null,
       "comments": []
     },
@@ -2722,7 +2722,7 @@
       "id": "MDU6SXNzdWU1MzcwMjU5OTM=",
       "title": "Relax default policy of adding from left to right",
       "url": "https://github.com/mlswg/mls-protocol/issues/266",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "beurdouche",
       "authorAssociation": "MEMBER",
       "assignees": [],
@@ -2732,8 +2732,8 @@
       ],
       "body": "The current default strategy (add from left to right) doesn't allow for flexibility in forming optimized subgroups.\r\nIt also isn't super good for privacy: a newcomer should not be able to infer who is the creator of the group at epoch 0 from its position in the tree except when she is in the initial participants...",
       "createdAt": "2019-12-12T14:52:00Z",
-      "updatedAt": "2020-06-19T13:03:28Z",
-      "closedAt": null,
+      "updatedAt": "2020-07-27T19:09:37Z",
+      "closedAt": "2020-07-27T19:09:37Z",
       "comments": [
         {
           "author": "bifurcation",
@@ -2767,7 +2767,7 @@
       "id": "MDU6SXNzdWU1Mzg5MTg5NDU=",
       "title": "Missing context in the PSK/Importer injection",
       "url": "https://github.com/mlswg/mls-protocol/issues/268",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "beurdouche",
       "authorAssociation": "MEMBER",
       "assignees": [
@@ -2779,9 +2779,17 @@
       ],
       "body": "I forgot to push my last commit when merging #251 there should be a non-empty context for within the `Derive-Secret` just after the PSK.\r\n\r\nFix this when doing step 2 to keep close to the TLS importer...\r\n\r\n",
       "createdAt": "2019-12-17T08:42:05Z",
-      "updatedAt": "2020-06-19T13:03:28Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2020-07-27T19:12:57Z",
+      "closedAt": "2020-07-27T19:12:56Z",
+      "comments": [
+        {
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Think this is obsolete given recent revisions to Derive-Secret",
+          "createdAt": "2020-07-27T19:12:56Z",
+          "updatedAt": "2020-07-27T19:12:56Z"
+        }
+      ]
     },
     {
       "number": 269,
@@ -3067,7 +3075,7 @@
       "id": "MDU6SXNzdWU1NDg2MTMyNzk=",
       "title": "Detection of tree forks by recipients via a commitment",
       "url": "https://github.com/mlswg/mls-protocol/issues/291",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "beurdouche",
       "authorAssociation": "MEMBER",
       "assignees": [
@@ -3079,8 +3087,8 @@
       ],
       "body": "",
       "createdAt": "2020-01-12T19:12:01Z",
-      "updatedAt": "2020-06-19T13:03:28Z",
-      "closedAt": null,
+      "updatedAt": "2020-07-27T19:17:00Z",
+      "closedAt": "2020-07-27T19:17:00Z",
       "comments": [
         {
           "author": "kelrit",
@@ -3145,7 +3153,7 @@
       "id": "MDU6SXNzdWU1NjAwOTU1Mzk=",
       "title": "Restart",
       "url": "https://github.com/mlswg/mls-protocol/issues/297",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "bifurcation",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -3156,9 +3164,17 @@
       ],
       "body": "Certain things about a group are fixed, for example, its ciphersuite and version of MLS, and with #296, its extensions.  It could be desirable to have the ability to change these parameters, e.g., to use a new ciphersuite when all members support it.\r\n\r\nDefining a way to change these values \"in place\" seems tricky, though.  Instead, we could define a \"restart\" mechanism that initializes a new group with the same membership and different parameters.  At one level this is trivially possible, just by creating a new group over the same members.  But it could be useful to explicitly hand-over from one to the other, so that clients understand that they are the same.  You could also tie them together cryptographically, e.g., by exporting a secret from the old group's key schedule, and importing it as a PSK into the new group.",
       "createdAt": "2020-02-05T02:05:25Z",
-      "updatedAt": "2020-05-17T17:36:27Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2020-07-27T19:09:21Z",
+      "closedAt": "2020-07-27T19:09:21Z",
+      "comments": [
+        {
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Replaced by #368 ",
+          "createdAt": "2020-07-27T19:09:18Z",
+          "updatedAt": "2020-07-27T19:09:18Z"
+        }
+      ]
     },
     {
       "number": 298,
@@ -3740,6 +3756,38 @@
       "body": "There are two cases where the members of a group might want to authenticate that the other members of the group were present at another point in history:\r\n\r\n1. A user who has lost state re-joining the group\r\n2. Re-initializing the group with different parameters\r\n3. Initializing a subgroup from a master group\r\n\r\nIn the former case, the group would want to authenticate that the user re-joining is the same user who was present at some past point in the history of the group.  In the latter two cases, the members of the new, re-initialized group would be authenticating that everyone in the new group was also in the old group.\r\n\r\nThese use cases are similar to resumption in TLS, where a PSK is derived from the key schedule and used as for authentication in a different session.  A similar approach seems sensible here, roughly:\r\n\r\n1. At each epoch of the group derive a PSK and PSK ID to be used \r\n2. Use the general PSK signaling mechanism (#367) to signal that a prior epoch's PSK should be used\r\n\r\nThis approach is also a good indication that the PSK mechanism in #367 should allow for PSKs to have specified types.  In TLS, there has been some confusion about how applications can distinguish external PSKs from resumption PSKs.  If we have an explicit type here, we won't end up with that confusion.",
       "createdAt": "2020-07-24T22:34:54Z",
       "updatedAt": "2020-07-24T22:34:54Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 373,
+      "id": "MDU6SXNzdWU2NjU5NTgyMzQ=",
+      "title": "Address DoS by malicious insiders",
+      "url": "https://github.com/mlswg/mls-protocol/issues/373",
+      "state": "OPEN",
+      "author": "tomtau",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "https://github.com/mlswg/mls-protocol/issues/21\r\n\r\nIn the current protocol draft:\r\n```\r\n<!-- OPEN ISSUE: It is not possible for the recipient of a handshake\r\nmessage to verify that ratchet tree information in the message is\r\naccurate, because each node can only compute the secret and private\r\nkey for nodes in its direct path.  This creates the possibility\r\nthat a malicious participant could cause a denial of service by sending a\r\nhandshake message with invalid values for public keys in the ratchet\r\ntree. -->\r\n```\r\n\r\nUnless I overlooked it, the current draft seems to be also missing a \"simple\" DoS case where a handshake message could omit / malform some `DirectPathNode` (e.g. by having an empty ciphertext or invalid kem_output) -- this should be easily detectable (either by members themselves or if handshake messages are transmitted as MLSPlaintext, the delivery service could reject that).\r\n\r\nFor that originally discussed case, I guess the sketched out solution with a \"Nack\" message containing a DLEQ proof could work. Besides the drawbacks described there, one will also need to extend HPKE definitions to allow for this \"directly decrypt from the revealed shared secret\" use case. ",
+      "createdAt": "2020-07-27T04:04:21Z",
+      "updatedAt": "2020-07-27T19:24:56Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 374,
+      "id": "MDU6SXNzdWU2NjY2MjY5OTM=",
+      "title": "Derive an \"authentication secret\"",
+      "url": "https://github.com/mlswg/mls-protocol/issues/374",
+      "state": "OPEN",
+      "author": "bifurcation",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "As noted in #336, it can be useful for members of the group to have a value they can compare to verify that they have the same view of the state of the group, similar to \"short authentication strings\" in [ZRTP](https://tools.ietf.org/html/rfc6189#section-7) or [TLS](https://tools.ietf.org/id/draft-miers-tls-sas-00.html) or \"safety numbers\" in [Signal](https://support.signal.org/hc/en-us/articles/360007060632-What-is-a-safety-number-and-why-do-I-see-that-it-changed-) and related protocols.\r\n\r\nIn MLS, values derived from the epoch secret via Derive-Secret can be used as confirmations of the relevant state, including the roster, the contents of the tree, and the transcript.  So at a cryptographic level, this should only require deriving an additional secret from the key schedule (as in #336).  We should expand on the text in #336 for how this secret is used and what authentication guarantees it provides.",
+      "createdAt": "2020-07-27T22:36:40Z",
+      "updatedAt": "2020-07-27T22:36:40Z",
       "closedAt": null,
       "comments": []
     }
@@ -24439,26 +24487,186 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NDU2NjY0MTgz",
       "title": "Minor extension fixes",
       "url": "https://github.com/mlswg/mls-protocol/pull/370",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "bifurcation",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "This PR makes a few minor fixes to extensions:\r\n\r\n* Coalesces `supported_versions` and `supported_ciphersuites` into a single extension\r\n* Adds a list of supported extensions in parallel with the versions and ciphersuites\r\n* Adds a missing value to the IANA table for the `ratchet_tree` extension",
       "createdAt": "2020-07-25T20:14:35Z",
-      "updatedAt": "2020-07-25T20:14:45Z",
+      "updatedAt": "2020-07-27T13:29:41Z",
       "baseRepository": "mlswg/mls-protocol",
       "baseRefName": "master",
       "baseRefOid": "e1c56540b40d0ce59b0905f8dc195026805d1e27",
       "headRepository": "mlswg/mls-protocol",
       "headRefName": "client-capabilities",
       "headRefOid": "ff79548f1854ed64d4f3ce2c305c067f149af0c6",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2020-07-27T13:29:40Z",
+      "mergedAt": "2020-07-27T13:29:40Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "9b52e6a735cc926d3a3b5488b5c3e5e6de2f1dab"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDU1Mzg4NDQw",
+          "commit": {
+            "abbreviatedOid": "ff79548"
+          },
+          "author": "Bren2010",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-07-26T19:14:22Z",
+          "updatedAt": "2020-07-26T19:14:22Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 371,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDU2ODA0Mzc3",
+      "title": "Define HPKE on first use",
+      "url": "https://github.com/mlswg/mls-protocol/pull/371",
+      "state": "MERGED",
+      "author": "chelseakomlo",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This PR defines and links to the HPKE draft when first introducing this term in the draft.",
+      "createdAt": "2020-07-26T20:55:14Z",
+      "updatedAt": "2020-07-27T13:30:44Z",
+      "baseRepository": "mlswg/mls-protocol",
+      "baseRefName": "master",
+      "baseRefOid": "e1c56540b40d0ce59b0905f8dc195026805d1e27",
+      "headRepository": "chelseakomlo/mls-protocol",
+      "headRefName": "define-hpke-on-first-use",
+      "headRefOid": "2f84cd477dc9dd9197150296b42f72b79fef90c8",
+      "closedAt": "2020-07-27T13:30:44Z",
+      "mergedAt": "2020-07-27T13:30:44Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "da6d4ebf3abdd459ff57b9ec954600475067c29a"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDU1NzgyMDQ1",
+          "commit": {
+            "abbreviatedOid": "2f84cd4"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-07-27T13:30:38Z",
+          "updatedAt": "2020-07-27T13:30:38Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 372,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDU2ODU0MDQ3",
+      "title": "Commit Generation Clarifications",
+      "url": "https://github.com/mlswg/mls-protocol/pull/372",
+      "state": "MERGED",
+      "author": "chelseakomlo",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This PR tries to clarify these paragraphs by the following: \r\n\r\n- Differentiating between HPKE public/private keys when describing how these keys are rotated for a commit\r\n- Clarifying who does the actions associated with a commit\r\n- Adding consistency fixes between the two paragraphs\r\n\r\nLet me know if these fixes are not quite right, as this PR tries to clarify where I had questions when reading. ",
+      "createdAt": "2020-07-27T02:07:58Z",
+      "updatedAt": "2020-07-27T21:07:28Z",
+      "baseRepository": "mlswg/mls-protocol",
+      "baseRefName": "master",
+      "baseRefOid": "e1c56540b40d0ce59b0905f8dc195026805d1e27",
+      "headRepository": "chelseakomlo/mls-protocol",
+      "headRefName": "hpke-pub-key-update",
+      "headRefOid": "d136e979ebb89c5f371a1b6aa2d58a98f5766919",
+      "closedAt": "2020-07-27T21:07:28Z",
+      "mergedAt": "2020-07-27T21:07:27Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "b8b1951b0f315e57377f5ca493c4325d04ab8106"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDU1Nzg2NTIw",
+          "commit": {
+            "abbreviatedOid": "bd391f4"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-27T13:35:33Z",
+          "updatedAt": "2020-07-27T13:37:26Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "This isn't quite right.  `leaf_hpke_secret` is a symmetric secret value, from which an HPKE secret key is derived, as illustrated below:\r\n\r\n```\r\n    path_secret[0] --> node_priv[0], node_pub[0]\r\n         ^\r\n         |\r\n   leaf_hpke_secret\r\n```\r\n\r\nMaybe it would be helpful to annotate that diagram to reinforce that the `[0]` is the leaf?\r\n\r\n```\r\n    path_secret[0] --> node_priv[0], node_pub[0]\r\n         ^             = leaf_priv, leaf_pub\r\n         |             ~> leaf_key_package\r\n         |\r\n   leaf_hpke_secret\r\n```",
+              "createdAt": "2020-07-27T13:35:33Z",
+              "updatedAt": "2020-07-27T21:01:56Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDU2MTA2OTA3",
+          "commit": {
+            "abbreviatedOid": "bd391f4"
+          },
+          "author": "chelseakomlo",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-27T20:22:47Z",
+          "updatedAt": "2020-07-27T20:22:47Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "This annotation would be helpful. ",
+              "createdAt": "2020-07-27T20:22:47Z",
+              "updatedAt": "2020-07-27T21:01:56Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDU2MTE5NTg1",
+          "commit": {
+            "abbreviatedOid": "bd391f4"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-27T20:42:15Z",
+          "updatedAt": "2020-07-27T20:42:15Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "Actually, as you pointed out to me offline, this is inconsistent with the diagram below.  I think what it should be instead is:\r\n\r\n```\r\n       path_secret[1] --> node_priv[1], node_pub[1]\r\n            ^\r\n            |\r\n       path_secret[0] --> node_priv[0], node_pub[0]\r\n            ^\r\n            |\r\n       leaf_secret    --> leaf_priv, leaf_pub\r\n                          ~> leaf_key_package\r\n```",
+              "createdAt": "2020-07-27T20:42:15Z",
+              "updatedAt": "2020-07-27T21:01:56Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDU2MTM1ODQ4",
+          "commit": {
+            "abbreviatedOid": "d136e97"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-07-27T21:07:20Z",
+          "updatedAt": "2020-07-27T21:07:20Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
