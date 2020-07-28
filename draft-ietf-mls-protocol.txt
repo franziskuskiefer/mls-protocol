@@ -132,28 +132,28 @@ Internet-Draft                     MLS                         July 2020
    12. Sequencing of State Changes . . . . . . . . . . . . . . . . .  53
      12.1.  Server-Enforced Ordering . . . . . . . . . . . . . . . .  54
      12.2.  Client-Enforced Ordering . . . . . . . . . . . . . . . .  54
-   13. Application Messages  . . . . . . . . . . . . . . . . . . . .  54
+   13. Application Messages  . . . . . . . . . . . . . . . . . . . .  55
      13.1.  Tree of Application Secrets  . . . . . . . . . . . . . .  55
      13.2.  Deletion Schedule  . . . . . . . . . . . . . . . . . . .  56
-     13.3.  Further Restrictions . . . . . . . . . . . . . . . . . .  57
-     13.4.  Message Encryption and Decryption  . . . . . . . . . . .  57
-     13.5.  Delayed and Reordered Application messages . . . . . . .  58
+     13.3.  Further Restrictions . . . . . . . . . . . . . . . . . .  58
+     13.4.  Message Encryption and Decryption  . . . . . . . . . . .  58
+     13.5.  Delayed and Reordered Application messages . . . . . . .  59
    14. Security Considerations . . . . . . . . . . . . . . . . . . .  59
      14.1.  Confidentiality of the Group Secrets . . . . . . . . . .  59
-     14.2.  Authentication . . . . . . . . . . . . . . . . . . . . .  59
-     14.3.  Forward and post-compromise security . . . . . . . . . .  59
+     14.2.  Authentication . . . . . . . . . . . . . . . . . . . . .  60
+     14.3.  Forward and post-compromise security . . . . . . . . . .  60
      14.4.  InitKey Reuse  . . . . . . . . . . . . . . . . . . . . .  60
    15. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  60
-     15.1.  MLS Ciphersuites . . . . . . . . . . . . . . . . . . . .  60
-     15.2.  MLS Extension Types  . . . . . . . . . . . . . . . . . .  63
-     15.3.  MLS Credential Types . . . . . . . . . . . . . . . . . .  64
-     15.4.  MLS Designated Expert Pool . . . . . . . . . . . . . . .  65
-   16. Contributors  . . . . . . . . . . . . . . . . . . . . . . . .  66
-   17. References  . . . . . . . . . . . . . . . . . . . . . . . . .  67
-     17.1.  Normative References . . . . . . . . . . . . . . . . . .  67
-     17.2.  Informative References . . . . . . . . . . . . . . . . .  68
-   Appendix A.  Tree Math  . . . . . . . . . . . . . . . . . . . . .  69
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  72
+     15.1.  MLS Ciphersuites . . . . . . . . . . . . . . . . . . . .  61
+     15.2.  MLS Extension Types  . . . . . . . . . . . . . . . . . .  64
+     15.3.  MLS Credential Types . . . . . . . . . . . . . . . . . .  65
+     15.4.  MLS Designated Expert Pool . . . . . . . . . . . . . . .  66
+   16. Contributors  . . . . . . . . . . . . . . . . . . . . . . . .  67
+   17. References  . . . . . . . . . . . . . . . . . . . . . . . . .  68
+     17.1.  Normative References . . . . . . . . . . . . . . . . . .  68
+     17.2.  Informative References . . . . . . . . . . . . . . . . .  69
+   Appendix A.  Tree Math  . . . . . . . . . . . . . . . . . . . . .  70
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  73
 
 1.  Introduction
 
@@ -2378,6 +2378,7 @@ Internet-Draft                     MLS                         July 2020
        ProposalID adds<0..2^32-1>;
 
        optional<DirectPath> path;
+       Extension extensions<0..2^16-1>;
    } Commit;
 
    A group member that has observed one or more proposals within an
@@ -2401,7 +2402,6 @@ Internet-Draft                     MLS                         July 2020
    The Commit MUST NOT combine proposals sent within different epochs.
    In the event that a valid proposal is omitted from the next Commit,
    the sender of the proposal SHOULD retransmit it in the new epoch.
-
 
 
 
@@ -2858,16 +2858,24 @@ Barnes, et al.           Expires 29 January 2021               [Page 51]
 Internet-Draft                     MLS                         July 2020
 
 
-   *  In the Welcome message, to tell new members of a group what
-      parameters are being used by the group
+   *  In the GroupInfo object carried in a Welcome message, to tell new
+      members of a group what parameters are being used by the group
 
    *  In the GroupContext object, to ensure that all members of the
       group have the same view of the parameters in use
+
+   *  In Commit messages, to describe changes to the group's parameters
 
    In other words, clients advertise their capabilities in KeyPackage
    extensions, the creator of the group expresses its choices for the
    group in Welcome extensions, and the GroupContext confirms that all
    members of the group have the same view of the group's extensions.
+
+   In addition to the function of managing the metadata associated to
+   the group as described above, extensions in all four of these places
+   may be used to attach additional information to a message, convey
+   additional instructions, etc., subject to the compatibility
+   constraints below.
 
    This extension mechanism is designed to allow for secure and forward-
    compatible negotiation of extensions.  For this to work,
@@ -2878,8 +2886,9 @@ Internet-Draft                     MLS                         July 2020
       interoperate by selecting one of those parameters.
 
    *  A client initiating a group MUST ignore all unrecognized
-      ciphersuites, extensions, and other parameters.  Otherwise, it may
-      fail to interoperate with newer clients.
+      ciphersuites, extensions, and other parameters in the KeyPackages
+      for the other members.  Otherwise, it may fail to interoperate
+      with newer clients.
 
    *  A client adding a new member to a group MUST verify that the
       KeyPackage for the new member contains extensions that are
@@ -2893,19 +2902,10 @@ Internet-Draft                     MLS                         July 2020
       contained in the corresponding KeyPackage), then the client MUST
       reject the Welcome message and not join the group.
 
-   *  The extensions populated into a GroupContext object are drawn from
-      those in the GroupInfo object, according to the definitions of
-      those extensions.
-
-   Note that the latter two requirements mean that all MLS extensions
-   are mandatory, in the sense that an extension in use by the group
-   MUST be supported by all members of the group.
-
-   This document does not define any way for the parameters of the group
-   to change once it has been created; such a behavior could be
-   implemented as an extension.
-
-
+   *  If any extension in a Commit message is unrecognized, then the
+      client MUST reject the Commit.  The sender of a Commit message
+      MUST verify that the extension is supported by all members of the
+      group, as indicated in the KeyPackages in the leaves of the tree.
 
 
 
@@ -2913,6 +2913,23 @@ Barnes, et al.           Expires 29 January 2021               [Page 52]
 
 Internet-Draft                     MLS                         July 2020
 
+
+   *  The extensions populated into a GroupContext object by a joining
+      member are constructed from those in the GroupInfo object,
+      according to the definitions of those extensions.  Extensions in a
+      Commit object may define modifications to the list of GroupContext
+      extensions, which recipients of the Commit apply on receiving it.
+
+   Note that the latter three requirements mean that all MLS extensions
+   are mandatory, in the sense that an extension in use by the group
+   MUST be supported by all members of the group.
+
+   Extensions can change any aspect of the protocol, except for the
+   structure of the KeyPackage object, since KeyPackage objects are
+   created irrespective of any group.  New versions of the protocol MAY
+   change the format of the KeyPackage as long as the version remains
+   the first octet of the object (so that older clients can recognize
+   the new version).
 
 12.  Sequencing of State Changes
 
@@ -2945,6 +2962,14 @@ Internet-Draft                     MLS                         July 2020
    intermediate nodes, that Commit messages could be applied one after
    the other without the Delivery Service having to reject any Commit
    message, which would make MLS more resilient regarding the
+
+
+
+Barnes, et al.           Expires 29 January 2021               [Page 53]
+
+Internet-Draft                     MLS                         July 2020
+
+
    concurrency of Commit messages.  The Messaging system can decide to
    choose the order for applying the state changes.  Note that there are
    certain cases (if no total ordering is applied by the Delivery
@@ -2956,19 +2981,6 @@ Internet-Draft                     MLS                         July 2020
    received.  Generation of Commit messages MUST NOT modify a client's
    state, since the endpoint doesn't know at that time whether the
    changes implied by the Commit message will succeed or not.
-
-
-
-
-
-
-
-
-
-Barnes, et al.           Expires 29 January 2021               [Page 53]
-
-Internet-Draft                     MLS                         July 2020
-
 
 12.1.  Server-Enforced Ordering
 
@@ -3004,6 +3016,16 @@ Internet-Draft                     MLS                         July 2020
    complex and harder to implement.  It also could cause starvation for
    some clients if they keep failing to get their proposal accepted.
 
+
+
+
+
+
+Barnes, et al.           Expires 29 January 2021               [Page 54]
+
+Internet-Draft                     MLS                         July 2020
+
+
 13.  Application Messages
 
    The primary purpose of the Handshake protocol is to provide an
@@ -3015,16 +3037,6 @@ Internet-Draft                     MLS                         July 2020
    equipped with a fresh Application Key Schedule which consist of a
    tree of Application Secrets as well as one symmetric ratchet per
    group member.
-
-
-
-
-
-
-Barnes, et al.           Expires 29 January 2021               [Page 54]
-
-Internet-Draft                     MLS                         July 2020
-
 
    Each client maintains their own local copy of the Application Key
    Schedule for each epoch during which they are a group member.  They
@@ -3061,6 +3073,15 @@ Internet-Draft                     MLS                         July 2020
    The secret of any other node in the tree is derived from its parent's
    secret using a call to DeriveAppSecret.
 
+
+
+
+
+Barnes, et al.           Expires 29 January 2021               [Page 55]
+
+Internet-Draft                     MLS                         July 2020
+
+
    DeriveAppSecret(Secret, Label, Node, Generation, Length) =
        ExpandWithLabel(Secret, Label, ApplicationContext, Length)
 
@@ -3073,14 +3094,6 @@ Internet-Draft                     MLS                         July 2020
 
    If N is a node index in the AS Tree then the secrets of the children
    of N are defined to be:
-
-
-
-
-Barnes, et al.           Expires 29 January 2021               [Page 55]
-
-Internet-Draft                     MLS                         July 2020
-
 
    astree_node_[N]_secret
            |
@@ -3113,6 +3126,18 @@ Internet-Draft                     MLS                         July 2020
    "application_secret" as well as any secret in the AS Tree or one of
    the ratchets.
 
+
+
+
+
+
+
+
+Barnes, et al.           Expires 29 January 2021               [Page 56]
+
+Internet-Draft                     MLS                         July 2020
+
+
    As soon as a group member consumes a value they MUST immediately
    delete (all representations of) that value.  This is crucial to
    ensuring forward secrecy for past messages.  Members MAY keep
@@ -3129,14 +3154,6 @@ Internet-Draft                     MLS                         July 2020
 
    *  all node secrets in the AS Tree on the path from the root to the
       leaf with index i,
-
-
-
-
-Barnes, et al.           Expires 29 January 2021               [Page 56]
-
-Internet-Draft                     MLS                         July 2020
-
 
    *  the first j secrets in the i-th ratchet and
 
@@ -3167,6 +3184,16 @@ Internet-Draft                     MLS                         July 2020
    KD0 and ND0 to allow for out-of-order delivery, and SHOULD retain D2
    to allow for processing future messages.
 
+
+
+
+
+
+Barnes, et al.           Expires 29 January 2021               [Page 57]
+
+Internet-Draft                     MLS                         July 2020
+
+
 13.3.  Further Restrictions
 
    During each epoch senders MUST NOT encrypt more data than permitted
@@ -3184,15 +3211,6 @@ Internet-Draft                     MLS                         July 2020
    The group members MUST use the AEAD algorithm associated with the
    negotiated MLS ciphersuite to AEAD encrypt and decrypt their
    Application messages according to the Message Framing section.
-
-
-
-
-
-Barnes, et al.           Expires 29 January 2021               [Page 57]
-
-Internet-Draft                     MLS                         July 2020
-
 
    The group identifier and epoch allow a recipient to know which group
    secrets should be used and from which Epoch secret to start computing
@@ -3212,6 +3230,25 @@ Internet-Draft                     MLS                         July 2020
    An attacker expecting Alice to answer Bob with a day of the week
    might find out the plaintext by correlation between the question and
    the length.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Barnes, et al.           Expires 29 January 2021               [Page 58]
+
+Internet-Draft                     MLS                         July 2020
+
 
    Similarly to TLS 1.3, if padding is used, the MLS messages MUST be
    padded with zero-valued bytes before AEAD encryption.  Upon AEAD
@@ -3239,17 +3276,6 @@ Internet-Draft                     MLS                         July 2020
    delayed or out of order messages, possibly still in transit while a
    decryption is being done.
 
-
-
-
-
-
-
-Barnes, et al.           Expires 29 January 2021               [Page 58]
-
-Internet-Draft                     MLS                         July 2020
-
-
 14.  Security Considerations
 
    The security goals of MLS are described in
@@ -3271,6 +3297,14 @@ Internet-Draft                     MLS                         July 2020
    Note that the long-term identity keys used by the protocol MUST be
    distributed by an "honest" authentication service for clients to
    authenticate their legitimate peers.
+
+
+
+
+Barnes, et al.           Expires 29 January 2021               [Page 59]
+
+Internet-Draft                     MLS                         July 2020
+
 
 14.2.  Authentication
 
@@ -3299,13 +3333,6 @@ Internet-Draft                     MLS                         July 2020
    updated root key after an Commit operation, it cannot compute any
    derived secrets.
 
-
-
-Barnes, et al.           Expires 29 January 2021               [Page 59]
-
-Internet-Draft                     MLS                         July 2020
-
-
    In the case where the client could have been compromised (device
    loss...), the client SHOULD signal the delivery service to expire all
    the previous KeyPackages and publish fresh ones for PCS.
@@ -3327,6 +3354,13 @@ Internet-Draft                     MLS                         July 2020
 
    This document requests the creation of the following new IANA
    registries:
+
+
+
+Barnes, et al.           Expires 29 January 2021               [Page 60]
+
+Internet-Draft                     MLS                         July 2020
+
 
    *  MLS Ciphersuites (Section 15.1)
 
@@ -3357,7 +3391,29 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 29 January 2021               [Page 60]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Barnes, et al.           Expires 29 January 2021               [Page 61]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -3413,7 +3469,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 29 January 2021               [Page 61]
+Barnes, et al.           Expires 29 January 2021               [Page 62]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -3469,7 +3525,7 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-Barnes, et al.           Expires 29 January 2021               [Page 62]
+Barnes, et al.           Expires 29 January 2021               [Page 63]
 
 Internet-Draft                     MLS                         July 2020
 
@@ -3515,20 +3571,27 @@ Internet-Draft                     MLS                         July 2020
 
       -  GI: GroupInfo objects
 
+      -  C: Commit messages
+
+
+
+
+
+
+
+
+
+Barnes, et al.           Expires 29 January 2021               [Page 64]
+
+Internet-Draft                     MLS                         July 2020
+
+
    *  Recommended: Whether support for this extension is recommended by
       the IETF MLS WG.  Valid values are "Y" and "N".  The "Recommended"
       column is assigned a value of "N" unless explicitly requested, and
       adding a value with a "Recommended" value of "Y" requires
       Standards Action [RFC8126].  IESG Approval is REQUIRED for a Y->N
       transition.
-
-
-
-
-Barnes, et al.           Expires 29 January 2021               [Page 63]
-
-Internet-Draft                     MLS                         July 2020
-
 
    *  Reference: The document where this extension is defined
 
@@ -3571,6 +3634,14 @@ Internet-Draft                     MLS                         July 2020
    *  Recommended: Whether support for this extension is recommended by
       the IETF MLS WG.  Valid values are "Y" and "N".  The "Recommended"
       column is assigned a value of "N" unless explicitly requested, and
+
+
+
+Barnes, et al.           Expires 29 January 2021               [Page 65]
+
+Internet-Draft                     MLS                         July 2020
+
+
       adding a value with a "Recommended" value of "Y" requires
       Standards Action [RFC8126].  IESG Approval is REQUIRED for a Y->N
       transition.
@@ -3578,13 +3649,6 @@ Internet-Draft                     MLS                         July 2020
    *  Reference: The document where this extension is defined
 
    Initial contents:
-
-
-
-Barnes, et al.           Expires 29 January 2021               [Page 64]
-
-Internet-Draft                     MLS                         July 2020
-
 
        +=================+==============+=============+===========+
        | Value           | Name         | Recommended | Reference |
@@ -3622,6 +3686,18 @@ Internet-Draft                     MLS                         July 2020
    21 days can be brought to the IESG's attention for resolution using
    the iesg@ietf.org (mailto:iesg@ietf.org) mailing list.
 
+
+
+
+
+
+
+
+Barnes, et al.           Expires 29 January 2021               [Page 66]
+
+Internet-Draft                     MLS                         July 2020
+
+
    Criteria that SHOULD be applied by the MLS DEs includes determining
    whether the proposed registration duplicates existing functionality,
    whether it is likely to be of general applicability or useful only
@@ -3631,16 +3707,6 @@ Internet-Draft                     MLS                         July 2020
 
    IANA MUST only accept registry updates from the MLS DEs and SHOULD
    direct all requests for registration to the MLS DEs' mailing list.
-
-
-
-
-
-
-Barnes, et al.           Expires 29 January 2021               [Page 65]
-
-Internet-Draft                     MLS                         July 2020
-
 
    It is suggested that multiple MLS DEs be appointed who are able to
    represent the perspectives of different applications using this
@@ -3681,6 +3747,13 @@ Internet-Draft                     MLS                         July 2020
 
       singuva@twitter.com
 
+
+
+Barnes, et al.           Expires 29 January 2021               [Page 67]
+
+Internet-Draft                     MLS                         July 2020
+
+
    *  Albert Kwon
 
       MIT
@@ -3690,13 +3763,6 @@ Internet-Draft                     MLS                         July 2020
    *  Brendan McMillion
 
       Cloudflare
-
-
-
-Barnes, et al.           Expires 29 January 2021               [Page 66]
-
-Internet-Draft                     MLS                         July 2020
-
 
       brendan@cloudflare.com
 
@@ -3733,6 +3799,17 @@ Internet-Draft                     MLS                         July 2020
               DOI 10.17487/RFC2104, February 1997,
               <https://www.rfc-editor.org/info/rfc2104>.
 
+
+
+
+
+
+
+Barnes, et al.           Expires 29 January 2021               [Page 68]
+
+Internet-Draft                     MLS                         July 2020
+
+
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
@@ -3746,13 +3823,6 @@ Internet-Draft                     MLS                         July 2020
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/info/rfc8174>.
-
-
-
-Barnes, et al.           Expires 29 January 2021               [Page 67]
-
-Internet-Draft                     MLS                         July 2020
-
 
    [RFC8446]  Rescorla, E., "The Transport Layer Security (TLS) Protocol
               Version 1.3", RFC 8446, DOI 10.17487/RFC8446, August 2018,
@@ -3788,6 +3858,14 @@ Internet-Draft                     MLS                         July 2020
    [I-D.ietf-mls-architecture]
               Omara, E., Beurdouche, B., Rescorla, E., Inguva, S., Kwon,
               A., and A. Duric, "The Messaging Layer Security (MLS)
+
+
+
+Barnes, et al.           Expires 29 January 2021               [Page 69]
+
+Internet-Draft                     MLS                         July 2020
+
+
               Architecture", Work in Progress, Internet-Draft, draft-
               ietf-mls-architecture-05, 26 July 2020,
               <http://www.ietf.org/internet-drafts/draft-ietf-mls-
@@ -3799,16 +3877,6 @@ Internet-Draft                     MLS                         July 2020
               Progress, Internet-Draft, draft-ietf-trans-rfc6962-bis-34,
               4 November 2019, <http://www.ietf.org/internet-drafts/
               draft-ietf-trans-rfc6962-bis-34.txt>.
-
-
-
-
-
-
-Barnes, et al.           Expires 29 January 2021               [Page 68]
-
-Internet-Draft                     MLS                         July 2020
-
 
    [RFC8032]  Josefsson, S. and I. Liusvaara, "Edwards-Curve Digital
               Signature Algorithm (EdDSA)", RFC 8032,
@@ -3847,6 +3915,13 @@ Appendix A.  Tree Math
 
    parent=01x => left=00x, right=10x
 
+
+
+Barnes, et al.           Expires 29 January 2021               [Page 70]
+
+Internet-Draft                     MLS                         July 2020
+
+
    The following python code demonstrates the tree computations
    necessary for MLS.  Test vectors can be derived from the diagram
    above.
@@ -3858,14 +3933,6 @@ def log2(x):
         return 0
 
     k = 0
-
-
-
-Barnes, et al.           Expires 29 January 2021               [Page 69]
-
-Internet-Draft                     MLS                         July 2020
-
-
     while (x >> k) > 0:
         k += 1
     return k-1
@@ -3903,6 +3970,14 @@ def left(x):
 
     return x ^ (0x01 << (k - 1))
 
+
+
+
+Barnes, et al.           Expires 29 January 2021               [Page 71]
+
+Internet-Draft                     MLS                         July 2020
+
+
 # The right child of an intermediate node. Depends on the number of
 # leaves because the straightforward calculation can take you beyond the
 # edge of the tree.
@@ -3914,14 +3989,6 @@ def right(x, n):
     r = x ^ (0x03 << (k - 1))
     while r >= node_width(n):
         r = left(r)
-
-
-
-Barnes, et al.           Expires 29 January 2021               [Page 70]
-
-Internet-Draft                     MLS                         July 2020
-
-
     return r
 
 # The immediate parent of a node. May be beyond the right edge of the
@@ -3959,6 +4026,14 @@ def direct_path(x, n):
     d = []
     while x != r:
         x = parent(x, n)
+
+
+
+Barnes, et al.           Expires 29 January 2021               [Page 72]
+
+Internet-Draft                     MLS                         July 2020
+
+
         d.append(x)
     return d
 
@@ -3970,14 +4045,6 @@ def copath(x, n):
     d = direct_path(x, n)
     d.insert(0, x)
     d.pop()
-
-
-
-Barnes, et al.           Expires 29 January 2021               [Page 71]
-
-Internet-Draft                     MLS                         July 2020
-
-
     return [sibling(y, n) for y in d]
 
 # The common ancestor of two nodes is the lowest node that is in the
@@ -4017,6 +4084,12 @@ Authors' Addresses
    Email: rlb@ipv.sx
 
 
+
+Barnes, et al.           Expires 29 January 2021               [Page 73]
+
+Internet-Draft                     MLS                         July 2020
+
+
    Benjamin Beurdouche
    Inria
 
@@ -4025,14 +4098,6 @@ Authors' Addresses
 
    Jon Millican
    Facebook
-
-
-
-
-Barnes, et al.           Expires 29 January 2021               [Page 72]
-
-Internet-Draft                     MLS                         July 2020
-
 
    Email: jmillican@fb.com
 
@@ -4076,13 +4141,4 @@ Internet-Draft                     MLS                         July 2020
 
 
 
-
-
-
-
-
-
-
-
-
-Barnes, et al.           Expires 29 January 2021               [Page 73]
+Barnes, et al.           Expires 29 January 2021               [Page 74]

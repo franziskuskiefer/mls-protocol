@@ -3222,6 +3222,7 @@ struct {
     ProposalID adds&lt;0..2^32-1&gt;;
 
     optional&lt;DirectPath&gt; path;
+    Extension extensions&lt;0..2^16-1&gt;;
 } Commit;
 </pre><a href="#section-10.2-3" class="pilcrow">¶</a>
 </div>
@@ -3636,49 +3637,66 @@ places:<a href="#section-11-1" class="pilcrow">¶</a></p>
 <li class="normal" id="section-11-2.1">In KeyPackages, to describe client capabilities and aspects of their
 participation in the group (once in the ratchet tree)<a href="#section-11-2.1" class="pilcrow">¶</a>
 </li>
-        <li class="normal" id="section-11-2.2">In the Welcome message, to tell new members of a group what parameters are
-being used by the group<a href="#section-11-2.2" class="pilcrow">¶</a>
+        <li class="normal" id="section-11-2.2">In the GroupInfo object carried in a Welcome message, to tell new members of a
+group what parameters are being used by the group<a href="#section-11-2.2" class="pilcrow">¶</a>
 </li>
         <li class="normal" id="section-11-2.3">In the GroupContext object, to ensure that all members of the group have the
 same view of the parameters in use<a href="#section-11-2.3" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="section-11-2.4">In Commit messages, to describe changes to the group's parameters<a href="#section-11-2.4" class="pilcrow">¶</a>
 </li>
       </ul>
 <p id="section-11-3">In other words, clients advertise their capabilities in KeyPackage
 extensions, the creator of the group expresses its choices for the group in
 Welcome extensions, and the GroupContext confirms that all members of the group
 have the same view of the group's extensions.<a href="#section-11-3" class="pilcrow">¶</a></p>
-<p id="section-11-4">This extension mechanism is designed to allow for secure and forward-compatible
+<p id="section-11-4">In addition to the function of managing the metadata associated to the group as
+described above, extensions in all four of these places may be used to attach
+additional information to a message, convey additional instructions, etc.,
+subject to the compatibility constraints below.<a href="#section-11-4" class="pilcrow">¶</a></p>
+<p id="section-11-5">This extension mechanism is designed to allow for secure and forward-compatible
 negotiation of extensions.  For this to work, implementations MUST correctly
-handle extensible fields:<a href="#section-11-4" class="pilcrow">¶</a></p>
+handle extensible fields:<a href="#section-11-5" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-11-5.1">A client that posts a KeyPackage MUST support all parameters advertised in
+<li class="normal" id="section-11-6.1">A client that posts a KeyPackage MUST support all parameters advertised in
 it.  Otherwise, another client might fail to interoperate by selecting one of
-those parameters.<a href="#section-11-5.1" class="pilcrow">¶</a>
+those parameters.<a href="#section-11-6.1" class="pilcrow">¶</a>
 </li>
-        <li class="normal" id="section-11-5.2">A client initiating a group MUST ignore all unrecognized ciphersuites,
-extensions, and other parameters.  Otherwise, it may fail to interoperate with
-newer clients.<a href="#section-11-5.2" class="pilcrow">¶</a>
+        <li class="normal" id="section-11-6.2">A client initiating a group MUST ignore all unrecognized ciphersuites,
+extensions, and other parameters in the KeyPackages for the other members.
+Otherwise, it may fail to interoperate with newer clients.<a href="#section-11-6.2" class="pilcrow">¶</a>
 </li>
-        <li class="normal" id="section-11-5.3">A client adding a new member to a group MUST verify that the KeyPackage
+        <li class="normal" id="section-11-6.3">A client adding a new member to a group MUST verify that the KeyPackage
 for the new member contains extensions that are consistent with the group's
 extensions.  For each extension in the GroupContext, the KeyPackage MUST
 have an extension of the same type, and the contents of the extension MUST be
 consistent with the value of the extension in the GroupContext, according to
-the semantics of the specific extension.<a href="#section-11-5.3" class="pilcrow">¶</a>
+the semantics of the specific extension.<a href="#section-11-6.3" class="pilcrow">¶</a>
 </li>
-        <li class="normal" id="section-11-5.4">If any extension in a GroupInfo message is unrecognized (i.e., not contained
+        <li class="normal" id="section-11-6.4">If any extension in a GroupInfo message is unrecognized (i.e., not contained
 in the corresponding KeyPackage), then the client MUST reject the Welcome
-message and not join the group.<a href="#section-11-5.4" class="pilcrow">¶</a>
+message and not join the group.<a href="#section-11-6.4" class="pilcrow">¶</a>
 </li>
-        <li class="normal" id="section-11-5.5">The extensions populated into a GroupContext object are drawn from those in
-the GroupInfo object, according to the definitions of those extensions.<a href="#section-11-5.5" class="pilcrow">¶</a>
+        <li class="normal" id="section-11-6.5">If any extension in a Commit message is unrecognized, then the client MUST
+reject the Commit.  The sender of a Commit message MUST verify that the
+extension is supported by all members of the group, as indicated in the
+KeyPackages in the leaves of the tree.<a href="#section-11-6.5" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="section-11-6.6">The extensions populated into a GroupContext object by a joining member are
+constructed from those in the GroupInfo object, according to the definitions
+of those extensions.  Extensions in a Commit object may define modifications
+to the list of GroupContext extensions, which recipients of the Commit apply
+on receiving it.<a href="#section-11-6.6" class="pilcrow">¶</a>
 </li>
       </ul>
-<p id="section-11-6">Note that the latter two requirements mean that all MLS extensions are
+<p id="section-11-7">Note that the latter three requirements mean that all MLS extensions are
 mandatory, in the sense that an extension in use by the group MUST be supported
-by all members of the group.<a href="#section-11-6" class="pilcrow">¶</a></p>
-<p id="section-11-7">This document does not define any way for the parameters of the group to change
-once it has been created; such a behavior could be implemented as an extension.<a href="#section-11-7" class="pilcrow">¶</a></p>
+by all members of the group.<a href="#section-11-7" class="pilcrow">¶</a></p>
+<p id="section-11-8">Extensions can change any aspect of the protocol, except for the structure of
+the KeyPackage object, since KeyPackage objects are created irrespective of any
+group.  New versions of the protocol MAY change the format of the KeyPackage as
+long as the version remains the first octet of the object (so that older clients
+can recognize the new version).<a href="#section-11-8" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sequencing">
@@ -4314,6 +4332,8 @@ list:<a href="#section-15.2-3.3.1" class="pilcrow">¶</a></p>
 <li class="normal" id="section-15.2-3.3.2.1">KP: KeyPackage messages<a href="#section-15.2-3.3.2.1" class="pilcrow">¶</a>
 </li>
               <li class="normal" id="section-15.2-3.3.2.2">GI: GroupInfo objects<a href="#section-15.2-3.3.2.2" class="pilcrow">¶</a>
+</li>
+              <li class="normal" id="section-15.2-3.3.2.3">C: Commit messages<a href="#section-15.2-3.3.2.3" class="pilcrow">¶</a>
 </li>
             </ul>
 </li>
