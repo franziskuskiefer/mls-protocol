@@ -2533,20 +2533,8 @@ proceeds as shown in the following diagram:<a href="#section-7.8-7" class="pilcr
                         V
 GroupContext_[n] -&gt; KDF.Extract = epoch_secret
                         |
-                        +--&gt; Derive-Secret(., "sender data")
-                        |    = sender_data_secret
-                        |
-                        +--&gt; Derive-Secret(., "handshake")
-                        |    = handshake_secret
-                        |
-                        +--&gt; Derive-Secret(., "app")
-                        |    = application_secret
-                        |
-                        +--&gt; Derive-Secret(., "exporter")
-                        |    = exporter_secret
-                        |
-                        +--&gt; Derive-Secret(., "confirm")
-                        |    = confirmation_key
+                        +--&gt; Derive-Secret(., &lt;label&gt;)
+                        |    = &lt;secret&gt;
                         |
                         V
                   Derive-Secret(., "init")
@@ -2555,6 +2543,48 @@ GroupContext_[n] -&gt; KDF.Extract = epoch_secret
                   init_secret_[n]
 </pre><a href="#section-7.8-8" class="pilcrow">¶</a>
 </div>
+<p id="section-7.8-9">A number of secrets are derived from the epoch secret for different purposes:<a href="#section-7.8-9" class="pilcrow">¶</a></p>
+<table class="center" id="table-2">
+          <caption><a href="#table-2" class="selfRef">Table 2</a></caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">Secret</th>
+              <th class="text-left" rowspan="1" colspan="1">Label</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">
+                <code>sender_data_secret</code>
+</td>
+              <td class="text-left" rowspan="1" colspan="1">"sender data"</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">
+                <code>handshake_secret</code>
+</td>
+              <td class="text-left" rowspan="1" colspan="1">"handshake"</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">
+                <code>application_secret</code>
+</td>
+              <td class="text-left" rowspan="1" colspan="1">"app"</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">
+                <code>exporter_secret</code>
+</td>
+              <td class="text-left" rowspan="1" colspan="1">"exporter"</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">
+                <code>confirmation_key</code>
+</td>
+              <td class="text-left" rowspan="1" colspan="1">"confirm"</td>
+            </tr>
+          </tbody>
+        </table>
 </section>
 </div>
 <div id="pre-shared-keys">
@@ -4072,8 +4102,8 @@ CipherSuite MLS_LVL_KEM_AEAD_HASH_SIG = VALUE;
 uint16 CipherSuite;
 </pre><a href="#section-15.1-5" class="pilcrow">¶</a>
 </div>
-<table class="center" id="table-2">
-          <caption><a href="#table-2" class="selfRef">Table 2</a></caption>
+<table class="center" id="table-3">
+          <caption><a href="#table-3" class="selfRef">Table 3</a></caption>
 <thead>
             <tr>
               <th class="text-left" rowspan="1" colspan="1">Component</th>
@@ -4123,8 +4153,8 @@ is REQUIRED for a Y-&gt;N transition.<a href="#section-15.1-8.3" class="pilcrow"
 </li>
         </ul>
 <p id="section-15.1-9">Initial contents:<a href="#section-15.1-9" class="pilcrow">¶</a></p>
-<table class="center" id="table-3">
-          <caption><a href="#table-3" class="selfRef">Table 3</a></caption>
+<table class="center" id="table-4">
+          <caption><a href="#table-4" class="selfRef">Table 4</a></caption>
 <thead>
             <tr>
               <th class="text-left" rowspan="1" colspan="1">Value</th>
@@ -4186,8 +4216,8 @@ is REQUIRED for a Y-&gt;N transition.<a href="#section-15.1-8.3" class="pilcrow"
         </table>
 <p id="section-15.1-11">These ciphersuites map to HPKE primitives and TLS signature schemes as follows
 <span>[<a href="#I-D.irtf-cfrg-hpke" class="xref">I-D.irtf-cfrg-hpke</a>]</span> <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span>:<a href="#section-15.1-11" class="pilcrow">¶</a></p>
-<table class="center" id="table-4">
-          <caption><a href="#table-4" class="selfRef">Table 4</a></caption>
+<table class="center" id="table-5">
+          <caption><a href="#table-5" class="selfRef">Table 5</a></caption>
 <thead>
             <tr>
               <th class="text-left" rowspan="1" colspan="1">Value</th>
@@ -4297,8 +4327,8 @@ is REQUIRED for a Y-&gt;N transition.<a href="#section-15.2-3.4" class="pilcrow"
 </li>
         </ul>
 <p id="section-15.2-4">Initial contents:<a href="#section-15.2-4" class="pilcrow">¶</a></p>
-<table class="center" id="table-5">
-          <caption><a href="#table-5" class="selfRef">Table 5</a></caption>
+<table class="center" id="table-6">
+          <caption><a href="#table-6" class="selfRef">Table 6</a></caption>
 <thead>
             <tr>
               <th class="text-left" rowspan="1" colspan="1">Value</th>
@@ -4386,8 +4416,8 @@ is REQUIRED for a Y-&gt;N transition.<a href="#section-15.3-3.3" class="pilcrow"
 </li>
         </ul>
 <p id="section-15.3-4">Initial contents:<a href="#section-15.3-4" class="pilcrow">¶</a></p>
-<table class="center" id="table-6">
-          <caption><a href="#table-6" class="selfRef">Table 6</a></caption>
+<table class="center" id="table-7">
+          <caption><a href="#table-7" class="selfRef">Table 7</a></caption>
 <thead>
             <tr>
               <th class="text-left" rowspan="1" colspan="1">Value</th>

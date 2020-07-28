@@ -104,7 +104,7 @@ Table of Contents
      7.6.  Group State . . . . . . . . . . . . . . . . . . . . . . .  26
      7.7.  Direct Paths  . . . . . . . . . . . . . . . . . . . . . .  27
      7.8.  Key Schedule  . . . . . . . . . . . . . . . . . . . . . .  28
-     7.9.  Pre-Shared Keys . . . . . . . . . . . . . . . . . . . . .  30
+     7.9.  Pre-Shared Keys . . . . . . . . . . . . . . . . . . . . .  31
      7.10. Encryption Keys . . . . . . . . . . . . . . . . . . . . .  31
 
 
@@ -1646,20 +1646,8 @@ Internet-Draft                     MLS                         July 2020
                            V
    GroupContext_[n] -> KDF.Extract = epoch_secret
                            |
-                           +--> Derive-Secret(., "sender data")
-                           |    = sender_data_secret
-                           |
-                           +--> Derive-Secret(., "handshake")
-                           |    = handshake_secret
-                           |
-                           +--> Derive-Secret(., "app")
-                           |    = application_secret
-                           |
-                           +--> Derive-Secret(., "exporter")
-                           |    = exporter_secret
-                           |
-                           +--> Derive-Secret(., "confirm")
-                           |    = confirmation_key
+                           +--> Derive-Secret(., <label>)
+                           |    = <secret>
                            |
                            V
                      Derive-Secret(., "init")
@@ -1667,12 +1655,24 @@ Internet-Draft                     MLS                         July 2020
                            V
                      init_secret_[n]
 
-7.9.  Pre-Shared Keys
+   A number of secrets are derived from the epoch secret for different
+   purposes:
 
-   Groups which already have an out-of-band mechanism to generate shared
-   group secrets can inject those in the MLS key schedule to seed the
-   MLS group secrets computations by this external entropy.
+                  +====================+===============+
+                  | Secret             | Label         |
+                  +====================+===============+
+                  | sender_data_secret | "sender data" |
+                  +--------------------+---------------+
+                  | handshake_secret   | "handshake"   |
+                  +--------------------+---------------+
+                  | application_secret | "app"         |
+                  +--------------------+---------------+
+                  | exporter_secret    | "exporter"    |
+                  +--------------------+---------------+
+                  | confirmation_key   | "confirm"     |
+                  +--------------------+---------------+
 
+                                 Table 2
 
 
 
@@ -1681,6 +1681,12 @@ Barnes, et al.           Expires 29 January 2021               [Page 30]
 
 Internet-Draft                     MLS                         July 2020
 
+
+7.9.  Pre-Shared Keys
+
+   Groups which already have an out-of-band mechanism to generate shared
+   group secrets can inject those in the MLS key schedule to seed the
+   MLS group secrets computations by this external entropy.
 
    At any epoch, including the initial state, an application can decide
    to synchronize the injection of a PSK into the MLS key schedule.
@@ -1721,6 +1727,17 @@ Internet-Draft                     MLS                         July 2020
    via a "sender ratchet".  Each sender has their own sender ratchet,
    and each step along the ratchet is called a "generation".
 
+
+
+
+
+
+
+Barnes, et al.           Expires 29 January 2021               [Page 31]
+
+Internet-Draft                     MLS                         July 2020
+
+
    A sender ratchet starts from a per-sender base secret.  For
    application keys, the base secret is derived as described in
    Section 13.1.  For handshake keys, base secrets are derived directly
@@ -1730,13 +1747,6 @@ Internet-Draft                     MLS                         July 2020
 
    handshake_secret_[sender]_[0] =
        ExpandWithLabel(handshake_secret, "hs", [sender], nonce_length)
-
-
-
-Barnes, et al.           Expires 29 January 2021               [Page 31]
-
-Internet-Draft                     MLS                         July 2020
-
 
    The base secret for each sender is used to initiate a symmetric hash
    ratchet which generates a sequence of keys and nonces.  The sender
@@ -1775,6 +1785,15 @@ Internet-Draft                     MLS                         July 2020
    used by an application as the basis to derive new secrets called
    "exported_value" outside the MLS layer.
 
+
+
+
+
+Barnes, et al.           Expires 29 January 2021               [Page 32]
+
+Internet-Draft                     MLS                         July 2020
+
+
    MLS-Exporter(Label, Context, key_length) =
           ExpandWithLabel(DeriveSecret(exporter_secret, Label),
                             "exporter", Hash(Context), key_length)
@@ -1784,15 +1803,6 @@ Internet-Draft                     MLS                         July 2020
    input of the ExpandWithLabel for each use case.  This is to prevent
    two exported outputs from being generated with the same values and
    used for different functionalities.
-
-
-
-
-
-Barnes, et al.           Expires 29 January 2021               [Page 32]
-
-Internet-Draft                     MLS                         July 2020
-
 
    The exported values are bound to the Group epoch from which the
    "exporter_secret" is derived, hence reflects a particular state of
@@ -1833,6 +1843,13 @@ Internet-Draft                     MLS                         July 2020
        (255)
    } SenderType;
 
+
+
+Barnes, et al.           Expires 29 January 2021               [Page 33]
+
+Internet-Draft                     MLS                         July 2020
+
+
    struct {
        SenderType sender_type;
        uint32 sender;
@@ -1842,14 +1859,6 @@ Internet-Draft                     MLS                         July 2020
        opaque group_id<0..255>;
        uint64 epoch;
        Sender sender;
-
-
-
-Barnes, et al.           Expires 29 January 2021               [Page 33]
-
-Internet-Draft                     MLS                         July 2020
-
-
        opaque authenticated_data<0..2^32-1>;
 
        ContentType content_type;
@@ -1890,6 +1899,13 @@ Internet-Draft                     MLS                         July 2020
 
    *  Randomly generate the sender_data_nonce field
 
+
+
+Barnes, et al.           Expires 29 January 2021               [Page 34]
+
+Internet-Draft                     MLS                         July 2020
+
+
    *  Identify the key and key generation depending on the content type
 
    *  Encrypt an MLSSenderData object for the encrypted_sender_data
@@ -1897,14 +1913,6 @@ Internet-Draft                     MLS                         July 2020
 
    *  Generate and sign an MLSPlaintextTBS object from the MLSPlaintext
       object
-
-
-
-
-Barnes, et al.           Expires 29 January 2021               [Page 34]
-
-Internet-Draft                     MLS                         July 2020
-
 
    *  Encrypt an MLSCiphertextContent for the ciphertext field using the
       key identified, the signature, and MLSPlaintext object
@@ -1947,20 +1955,17 @@ Internet-Draft                     MLS                         July 2020
        opaque authenticated_data<0..2^32-1>;
    } MLSSenderDataAAD;
 
-   When parsing a SenderData struct as part of message decryption, the
-   recipient MUST verify that the sender field represents an occupied
-   leaf in the ratchet tree.  In particular, the sender index value MUST
-   be less than the number of leaves in the tree.
-
-
-
-
 
 
 Barnes, et al.           Expires 29 January 2021               [Page 35]
 
 Internet-Draft                     MLS                         July 2020
 
+
+   When parsing a SenderData struct as part of message decryption, the
+   recipient MUST verify that the sender field represents an occupied
+   leaf in the ratchet tree.  In particular, the sender index value MUST
+   be less than the number of leaves in the tree.
 
 8.2.  Content Signing and Encryption
 
@@ -2002,11 +2007,6 @@ Internet-Draft                     MLS                         July 2020
    by the ciphersuite in use.  The plaintext input contains content and
    signature of the MLSPlaintext, plus optional padding.  These values
    are encoded in the following form:
-
-
-
-
-
 
 
 
@@ -3383,7 +3383,7 @@ Internet-Draft                     MLS                         July 2020
           |           | message authentication                 |
           +-----------+----------------------------------------+
 
-                                 Table 2
+                                 Table 3
 
    The columns in the registry are as follows:
 
@@ -3440,7 +3440,7 @@ Internet-Draft                     MLS                         July 2020
    |0xffff|                                                     |           |         |
    +------+-----------------------------------------------------+-----------+---------+
 
-                                  Table 3
+                                  Table 4
 
    These ciphersuites map to HPKE primitives and TLS signature schemes
    as follows [I-D.irtf-cfrg-hpke] [RFC8446]:
@@ -3461,7 +3461,7 @@ Internet-Draft                     MLS                         July 2020
       | 0x0006 | 0x0021 | 0x0003 | 0x0003 | ed448                  |
       +--------+--------+--------+--------+------------------------+
 
-                                 Table 4
+                                 Table 5
 
    It is advisable to keep the number of ciphersuites low to increase
    the chances clients can interoperate in a federated environment,
@@ -3553,7 +3553,7 @@ Internet-Draft                     MLS                         July 2020
     | 0xffff   | Private Use  |            |             |           |
     +----------+--------------+------------+-------------+-----------+
 
-                                 Table 5
+                                 Table 6
 
 15.3.  MLS Credential Types
 
@@ -3599,7 +3599,7 @@ Internet-Draft                     MLS                         July 2020
        |                 | Private Use  |             |           |
        +-----------------+--------------+-------------+-----------+
 
-                                 Table 6
+                                 Table 7
 
 15.4.  MLS Designated Expert Pool
 
