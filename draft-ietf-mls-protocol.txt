@@ -96,14 +96,14 @@ Table of Contents
      6.1.  Ciphersuites  . . . . . . . . . . . . . . . . . . . . . .  20
      6.2.  Credentials . . . . . . . . . . . . . . . . . . . . . . .  21
    7.  Key Packages  . . . . . . . . . . . . . . . . . . . . . . . .  22
-     7.1.  Client Capabilities . . . . . . . . . . . . . . . . . . .  23
+     7.1.  Client Capabilities . . . . . . . . . . . . . . . . . . .  24
      7.2.  Lifetime  . . . . . . . . . . . . . . . . . . . . . . . .  24
      7.3.  KeyPackage Identifiers  . . . . . . . . . . . . . . . . .  24
-     7.4.  Parent Hash . . . . . . . . . . . . . . . . . . . . . . .  24
+     7.4.  Parent Hash . . . . . . . . . . . . . . . . . . . . . . .  25
      7.5.  Tree Hashes . . . . . . . . . . . . . . . . . . . . . . .  25
      7.6.  Group State . . . . . . . . . . . . . . . . . . . . . . .  26
-     7.7.  Direct Paths  . . . . . . . . . . . . . . . . . . . . . .  27
-     7.8.  Key Schedule  . . . . . . . . . . . . . . . . . . . . . .  28
+     7.7.  Direct Paths  . . . . . . . . . . . . . . . . . . . . . .  28
+     7.8.  Key Schedule  . . . . . . . . . . . . . . . . . . . . . .  29
      7.9.  Pre-Shared Keys . . . . . . . . . . . . . . . . . . . . .  31
      7.10. Encryption Keys . . . . . . . . . . . . . . . . . . . . .  31
 
@@ -991,17 +991,17 @@ Internet-Draft                     MLS                         July 2020
 
 5.5.  Synchronizing Views of the Tree
 
-   The members of the group need to keep their views of the tree in sync
-   and up to date.  When a client commits a change to the tree (e.g., to
-   add or remove a member), it transmits a handshake message containing
-   a set of public values for intermediate nodes in the direct path of a
-   leaf.  The other members of the group can use these public values to
-   update their view of the tree, aligning their copy of the tree to the
-   sender's.
+   After generating a Commit as described in the prior section, the
+   generator of the Commit must broadcast this update to other members
+   of the group, who apply it to keep their local views of the tree in
+   sync with the sender's.  When a client commits a change to the tree
+   (e.g., to add or remove a member), it transmits a handshake message
+   containing a set of public values for intermediate nodes in the
+   direct path of a leaf.  The other members of the group can use these
+   public values to update their view of the tree, aligning their copy
+   of the tree to the sender's.
 
-   To perform an update for a path (a Commit), the sender broadcasts to
-   the group the following information for each node in the direct path
-   of the leaf, including the root:
+
 
 
 
@@ -1009,6 +1009,10 @@ Barnes, et al.           Expires 1 February 2021               [Page 18]
 
 Internet-Draft                     MLS                         July 2020
 
+
+   To perform an update for a path (a Commit), the sender broadcasts to
+   the group the following information for each node in the direct path
+   of the leaf, including the root:
 
    *  The public key for the node
 
@@ -1054,10 +1058,6 @@ Internet-Draft                     MLS                         July 2020
              hash incorporates all the nodes above it.  The root node
              always has a zero-length hash for this value.
 
-       *  For nodes where an updated path secret was computed in step 1,
-          compute the corresponding node key pair and replace the values
-          stored at the node with the computed values.
-
 
 
 
@@ -1065,6 +1065,10 @@ Barnes, et al.           Expires 1 February 2021               [Page 19]
 
 Internet-Draft                     MLS                         July 2020
 
+
+       *  For nodes where an updated path secret was computed in step 1,
+          compute the corresponding node key pair and replace the values
+          stored at the node with the computed values.
 
    For example, in order to communicate the example update described in
    the previous section, the sender would transmit the following values:
@@ -1079,9 +1083,17 @@ Internet-Draft                     MLS                         July 2020
 
                                   Table 1
 
-   In this table, the value pk(X) represents the public key derived from
-   the node secret X.  The value E(K, S) represents the public-key
-   encryption of the path secret S to the public key K.
+   In this table, the value pk(ns[X]) represents the public key derived
+   from the node secret X, whereas pk(X) represents the public leaf key
+   for user X.  The value E(K, S) represents the public-key encryption
+   of the path secret S to the public key K.
+
+   After processing the update, each recipient MUST delete outdated key
+   material, specifically:
+
+   *  The path secrets used to derive each updated node key pair.
+
+   *  Each outdated node key pair that was replaced by the update.
 
 6.  Cryptographic Objects
 
@@ -1100,6 +1112,16 @@ Internet-Draft                     MLS                         July 2020
 
    *  A signature algorithm
 
+
+
+
+
+
+Barnes, et al.           Expires 1 February 2021               [Page 20]
+
+Internet-Draft                     MLS                         July 2020
+
+
    The HPKE parameters are used to instantiate HPKE [I-D.irtf-cfrg-hpke]
    for the purpose of public-key encryption.  The "DeriveKeyPair"
    function associated to the KEM for the ciphersuite maps octet strings
@@ -1111,16 +1133,6 @@ Internet-Draft                     MLS                         July 2020
    for more information).
 
    opaque HPKEPublicKey<1..2^16-1>;
-
-
-
-
-
-
-Barnes, et al.           Expires 1 February 2021               [Page 20]
-
-Internet-Draft                     MLS                         July 2020
-
 
    The signature algorithm specified in the ciphersuite is the mandatory
    algorithm to be used for signatures in MLSPlaintext and the tree
@@ -1145,6 +1157,26 @@ Internet-Draft                     MLS                         July 2020
 
    Credentials MAY also include information that allows a relying party
    to verify the identity / signing key binding.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Barnes, et al.           Expires 1 February 2021               [Page 21]
+
+Internet-Draft                     MLS                         July 2020
+
 
    // See IANA registry for registered values
    uint16 CredentialType;
@@ -1171,13 +1203,6 @@ Internet-Draft                     MLS                         July 2020
    credential in a ratchet tree, the KeyPackage ciphersuite for a
    credential in a KeyPackage object.
 
-
-
-Barnes, et al.           Expires 1 February 2021               [Page 21]
-
-Internet-Draft                     MLS                         July 2020
-
-
    For ciphersuites using Ed25519 or Ed448 signature schemes, the public
    key is in the format specified [RFC8032].  For ciphersuites using
    ECDSA with the NIST curves P-256 or P-521, the public key is the
@@ -1202,6 +1227,13 @@ Internet-Draft                     MLS                         July 2020
    identity; the new identity MUST be validated by the authentication
    service.
 
+
+
+Barnes, et al.           Expires 1 February 2021               [Page 22]
+
+Internet-Draft                     MLS                         July 2020
+
+
    When used as InitKeys, KeyPackages are intended to be used only once
    and SHOULD NOT be reused except in case of last resort.  (See
    Section 14.4).  Clients MAY generate and publish multiple InitKeys to
@@ -1217,22 +1249,6 @@ Internet-Draft                     MLS                         July 2020
    invalid signature field MUST be considered malformed.  The input to
    the signature computation comprises all of the fields except for the
    signature field.
-
-
-
-
-
-
-
-
-
-
-
-
-Barnes, et al.           Expires 1 February 2021               [Page 22]
-
-Internet-Draft                     MLS                         July 2020
-
 
    enum {
        mls10(0),
@@ -1266,6 +1282,14 @@ Internet-Draft                     MLS                         July 2020
    As the "KeyPackage" is a structure which is stored in the Ratchet
    Tree and updated depending on the evolution of this tree, each
    modification of its content MUST be reflected by a change of its
+
+
+
+Barnes, et al.           Expires 1 February 2021               [Page 23]
+
+Internet-Draft                     MLS                         July 2020
+
+
    signature.  This allow other members to control the validity of the
    KeyPackage at any time and in particular in the case of a newcomer
    joining the group.
@@ -1280,15 +1304,6 @@ Internet-Draft                     MLS                         July 2020
        CipherSuite ciphersuites<0..255>;
        ExtensionType extensions<0..255>;
    } Capabilities;
-
-
-
-
-
-Barnes, et al.           Expires 1 February 2021               [Page 23]
-
-Internet-Draft                     MLS                         July 2020
-
 
    This extension MUST be always present in a KeyPackage.  Extensions
    that appear in the "extensions" field of a KeyPackage MUST be
@@ -1320,6 +1335,17 @@ Internet-Draft                     MLS                         July 2020
 
    opaque key_id<0..2^16-1>;
 
+
+
+
+
+
+
+Barnes, et al.           Expires 1 February 2021               [Page 24]
+
+Internet-Draft                     MLS                         July 2020
+
+
 7.4.  Parent Hash
 
    The "parent_hash" extension serves to bind a KeyPackage to all the
@@ -1333,18 +1359,6 @@ Internet-Draft                     MLS                         July 2020
    of a Commit message.  If the extension is present, clients MUST
    verify that "parent_hash" matches the hash of the leaf's parent node
    when represented as a ParentNode struct.
-
-
-
-
-
-
-
-
-Barnes, et al.           Expires 1 February 2021               [Page 24]
-
-Internet-Draft                     MLS                         July 2020
-
 
 7.5.  Tree Hashes
 
@@ -1377,6 +1391,17 @@ Internet-Draft                     MLS                         July 2020
    When computing the hash of a parent node, the "ParentNodeHashInput"
    structure is used:
 
+
+
+
+
+
+
+Barnes, et al.           Expires 1 February 2021               [Page 25]
+
+Internet-Draft                     MLS                         July 2020
+
+
    struct {
        uint32 node_index;
        optional<ParentNode> parent_node;
@@ -1392,15 +1417,6 @@ Internet-Draft                     MLS                         July 2020
        uint32 node_index;
        optional<KeyPackage> key_package;
    } LeafNodeHashInput;
-
-
-
-
-
-Barnes, et al.           Expires 1 February 2021               [Page 25]
-
-Internet-Draft                     MLS                         July 2020
-
 
    Note that the "node_index" field contains the index of the leaf among
    the nodes in the tree, not its index among the leaves; "node_index =
@@ -1433,6 +1449,15 @@ Internet-Draft                     MLS                         July 2020
    *  The "confirmed_transcript_hash" field contains a running hash over
       the messages that led to this state.
 
+
+
+
+
+Barnes, et al.           Expires 1 February 2021               [Page 26]
+
+Internet-Draft                     MLS                         July 2020
+
+
    When a new member is added to the group, an existing member of the
    group provides the new member with a Welcome message.  The Welcome
    message provides the information the new member needs to initialize
@@ -1449,14 +1474,6 @@ Internet-Draft                     MLS                         July 2020
 
    *  The "tree_hash" is updated to represent the current tree and
       credentials
-
-
-
-
-Barnes, et al.           Expires 1 February 2021               [Page 26]
-
-Internet-Draft                     MLS                         July 2020
-
 
    *  The "confirmed_transcript_hash" is updated with the data for an
       MLSPlaintext message encoding a Commit message in two parts:
@@ -1482,6 +1499,21 @@ Internet-Draft                     MLS                         July 2020
        Hash(confirmed_transcript_hash_[n] ||
            MLSPlaintextCommitAuthData_[n]);
 
+
+
+
+
+
+
+
+
+
+
+Barnes, et al.           Expires 1 February 2021               [Page 27]
+
+Internet-Draft                     MLS                         July 2020
+
+
    Thus the "confirmed_transcript_hash" field in a GroupContext object
    represents a transcript over the whole history of MLSPlaintext Commit
    messages, up to the confirmation field in the current MLSPlaintext
@@ -1502,17 +1534,6 @@ Internet-Draft                     MLS                         July 2020
    intermediate nodes in the path above the leaf.  The path is ordered
    from the closest node to the leaf to the root; each node MUST be the
    parent of its predecessor.
-
-
-
-
-
-
-
-Barnes, et al.           Expires 1 February 2021               [Page 27]
-
-Internet-Draft                     MLS                         July 2020
-
 
    struct {
        opaque kem_output<0..2^16-1>;
@@ -1539,6 +1560,16 @@ Internet-Draft                     MLS                         July 2020
    kem_output, context = SetupBaseS(node_public_key, "")
    ciphertext = context.Seal(group_context, path_secret)
 
+
+
+
+
+
+Barnes, et al.           Expires 1 February 2021               [Page 28]
+
+Internet-Draft                     MLS                         July 2020
+
+
    where "node_public_key" is the public key of the node that the path
    secret is being encrypted for, group_context is the current
    GroupContext object for the group, and the functions "SetupBaseS" and
@@ -1553,22 +1584,6 @@ Internet-Draft                     MLS                         July 2020
    Group keys are derived using the "Extract" and "Expand" functions
    from the KDF for the group's ciphersuite, as well as the functions
    defined below:
-
-
-
-
-
-
-
-
-
-
-
-
-Barnes, et al.           Expires 1 February 2021               [Page 28]
-
-Internet-Draft                     MLS                         July 2020
-
 
    ExpandWithLabel(Secret, Label, Context, Length) =
        KDF.Expand(Secret, KDFLabel, Length)
@@ -1603,21 +1618,6 @@ Internet-Draft                     MLS                         July 2020
 
    Given these inputs, the derivation of secrets for an epoch proceeds
    as shown in the following diagram:
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

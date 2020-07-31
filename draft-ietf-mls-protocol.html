@@ -1926,8 +1926,10 @@ delete the leaf_secret.<a href="#section-5.4-10" class="pilcrow">¶</a></p>
         <h3 id="name-synchronizing-views-of-the-">
 <a href="#section-5.5" class="section-number selfRef">5.5. </a><a href="#name-synchronizing-views-of-the-" class="section-name selfRef">Synchronizing Views of the Tree</a>
         </h3>
-<p id="section-5.5-1">The members of the group need to keep their views of the tree in
-sync and up to date.  When a client commits a change to the tree
+<p id="section-5.5-1">After generating a Commit as described in the prior section, the generator of
+the Commit must broadcast this update to other members of the group, who
+apply it to keep their local views of the tree in
+sync with the sender's.  When a client commits a change to the tree
 (e.g., to add or remove a member), it transmits a handshake message
 containing a set of public
 values for intermediate nodes in the direct path of a leaf. The
@@ -2017,10 +2019,19 @@ values:<a href="#section-5.5-7" class="pilcrow">¶</a></p>
             </tr>
           </tbody>
         </table>
-<p id="section-5.5-9">In this table, the value pk(X) represents the public key
-derived from the node secret X.  The value E(K, S) represents
+<p id="section-5.5-9">In this table, the value pk(ns[X]) represents the public key
+derived from the node secret X, whereas pk(X) represents the public leaf key
+for user X.  The value E(K, S) represents
 the public-key encryption of the path secret S to the
 public key K.<a href="#section-5.5-9" class="pilcrow">¶</a></p>
+<p id="section-5.5-10">After processing the update, each recipient MUST delete outdated key material,
+specifically:<a href="#section-5.5-10" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5.5-11.1">The path secrets used to derive each updated node key pair.<a href="#section-5.5-11.1" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-5.5-11.2">Each outdated node key pair that was replaced by the update.<a href="#section-5.5-11.2" class="pilcrow">¶</a>
+</li>
+        </ul>
 </section>
 </div>
 </section>
