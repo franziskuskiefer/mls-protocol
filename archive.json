@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-07-30T00:34:27.662712+00:00",
+  "timestamp": "2020-08-02T00:36:46.989571+00:00",
   "repo": "mlswg/mls-protocol",
   "labels": [
     {
@@ -3721,9 +3721,9 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
-      "body": "Applications might want to signal to group members  processing a commit that they should take certain actions in addition to ratcheting the group forward.  The most obvious example is folding in a PSK for the epoch, but you can also imagine addressing things like transcript consistency or updatable PKE through this channel.\r\n\r\nThis should be straightforward syntactically, but will also require updating the extensibility section to make clear that Commit extensions can also in principle affect the GroupContext extensions.  In other words:\r\n\r\n* Each group member associates a list of extensions with the group, which are confirmed via the GroupContext\r\n* New joiners get configured with these via extensions in the GroupInfo\r\n* Existing members can find out about changes to the group's extensions via extensions in the Commit",
+      "body": "[This issue is part of a feature breakdown based on #336]\r\n\r\nApplications might want to signal to group members  processing a commit that they should take certain actions in addition to ratcheting the group forward.  The most obvious example is folding in a PSK for the epoch, but you can also imagine addressing things like transcript consistency or updatable PKE through this channel.\r\n\r\nThis should be straightforward syntactically, but will also require updating the extensibility section to make clear that Commit extensions can also in principle affect the GroupContext extensions.  In other words:\r\n\r\n* Each group member associates a list of extensions with the group, which are confirmed via the GroupContext\r\n* New joiners get configured with these via extensions in the GroupInfo\r\n* Existing members can find out about changes to the group's extensions via extensions in the Commit",
       "createdAt": "2020-07-24T22:03:25Z",
-      "updatedAt": "2020-07-24T22:03:25Z",
+      "updatedAt": "2020-07-31T22:38:33Z",
       "closedAt": null,
       "comments": []
     },
@@ -3737,9 +3737,9 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
-      "body": "There are a few subissues here:\r\n\r\n# 1. Signaling which PSK(s) to add to the key schedule\r\n\r\nWhen a PSK is to be added to the key schedule in an epoch, the sender of the Commit needs to signal this to existing members in a Commit, and to any new members in the GroupInfo.  In both cases, there should be an extension to signal this.  This would work like the [TLS ServerHello PSK extension](https://tools.ietf.org/html/rfc8446#section-4.2.11), which simply indicates which PSK is being used.  In the MLS case, we would probably include the full ID instead of just an index, since there's not a clear list like in TLS.  And just like the server's ability to complete the TLS handshake proves that it has the PSK, the confirmation value in MLS would validate the same.\r\n\r\n```\r\nstruct {\r\n    opaque identity<1..2^16-1>;\r\n} PreSharedKeyExtension;\r\n```\r\n\r\n# 2. Signaling which PSKs are available\r\n\r\nIt might also be useful for clients to advertise in a KeyPackage extension what PSKs they have available.  This would be analogous to the ClientHello PSK extension, which includes a binding value to prove that the client has the PSK.  If we define such an extension, we will need to decide (a) whether we need such a binding and (b) what parts of the KeyPackage should be covered by the binding MAC.\r\n\r\nUnlike TLS, however, the set of available PSKs might change over the lifetime of the group.  Since the KeyPackages in the leaves of the tree can be modified, in principle, clients could signal the availability of new PSKs by updating, and you would get a clear assurance that everyone has the key before you try to use it.  But this seems pretty complex, and for not much benefit if the application can coordinate which PSKs are available.\r\n\r\n# 3. Structuring PSK input / multiple PSKs\r\n\r\nIt may be desirable for the input to the key schedule not to be a PSK directly, but some derived value that adds some context to the PSK.  This is the approach taken in the [TLS external PSK draft](https://tools.ietf.org/html/draft-ietf-tls-external-psk-importer-05) and in #336.  We might also want to support the application of multiple PSKs in a single epoch.\r\n\r\nFor the former need, we would need to define what context is added, how it is signaled in the relevant extensions, and how it is combined with the PSK itself to derive the ultimate PSK.  For the latter need, we need a way to signal multiple PSKs and their order, and an algorithm for combining them all into one value to be added to the key schedule.  (The schemes in both #336 and #337 are relevant here.)\r\n",
+      "body": "[This issue is part of a feature breakdown based on #336]\r\n\r\nThere are a few subissues here:\r\n\r\n# 1. Signaling which PSK(s) to add to the key schedule\r\n\r\nWhen a PSK is to be added to the key schedule in an epoch, the sender of the Commit needs to signal this to existing members in a Commit, and to any new members in the GroupInfo.  In both cases, there should be an extension to signal this.  This would work like the [TLS ServerHello PSK extension](https://tools.ietf.org/html/rfc8446#section-4.2.11), which simply indicates which PSK is being used.  In the MLS case, we would probably include the full ID instead of just an index, since there's not a clear list like in TLS.  And just like the server's ability to complete the TLS handshake proves that it has the PSK, the confirmation value in MLS would validate the same.\r\n\r\n```\r\nstruct {\r\n    opaque identity<1..2^16-1>;\r\n} PreSharedKeyExtension;\r\n```\r\n\r\n# 2. Signaling which PSKs are available\r\n\r\nIt might also be useful for clients to advertise in a KeyPackage extension what PSKs they have available.  This would be analogous to the ClientHello PSK extension, which includes a binding value to prove that the client has the PSK.  If we define such an extension, we will need to decide (a) whether we need such a binding and (b) what parts of the KeyPackage should be covered by the binding MAC.\r\n\r\nUnlike TLS, however, the set of available PSKs might change over the lifetime of the group.  Since the KeyPackages in the leaves of the tree can be modified, in principle, clients could signal the availability of new PSKs by updating, and you would get a clear assurance that everyone has the key before you try to use it.  But this seems pretty complex, and for not much benefit if the application can coordinate which PSKs are available.\r\n\r\n# 3. Structuring PSK input / multiple PSKs\r\n\r\nIt may be desirable for the input to the key schedule not to be a PSK directly, but some derived value that adds some context to the PSK.  This is the approach taken in the [TLS external PSK draft](https://tools.ietf.org/html/draft-ietf-tls-external-psk-importer-05) and in #336.  We might also want to support the application of multiple PSKs in a single epoch.\r\n\r\nFor the former need, we would need to define what context is added, how it is signaled in the relevant extensions, and how it is combined with the PSK itself to derive the ultimate PSK.  For the latter need, we need a way to signal multiple PSKs and their order, and an algorithm for combining them all into one value to be added to the key schedule.  (The schemes in both #336 and #337 are relevant here.)\r\n",
       "createdAt": "2020-07-24T22:24:00Z",
-      "updatedAt": "2020-07-29T07:35:37Z",
+      "updatedAt": "2020-07-31T22:39:20Z",
       "closedAt": null,
       "comments": [
         {
@@ -3761,9 +3761,9 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
-      "body": "There are two cases where the members of a group might want to authenticate that the other members of the group were present at another point in history:\r\n\r\n1. A user who has lost state re-joining the group\r\n2. Re-initializing the group with different parameters\r\n3. Initializing a subgroup from a master group\r\n\r\nIn the former case, the group would want to authenticate that the user re-joining is the same user who was present at some past point in the history of the group.  In the latter two cases, the members of the new, re-initialized group would be authenticating that everyone in the new group was also in the old group.\r\n\r\nThese use cases are similar to resumption in TLS, where a PSK is derived from the key schedule and used as for authentication in a different session.  A similar approach seems sensible here, roughly:\r\n\r\n1. At each epoch of the group derive a PSK and PSK ID to be used \r\n2. Use the general PSK signaling mechanism (#367) to signal that a prior epoch's PSK should be used\r\n\r\nThis approach is also a good indication that the PSK mechanism in #367 should allow for PSKs to have specified types.  In TLS, there has been some confusion about how applications can distinguish external PSKs from resumption PSKs.  If we have an explicit type here, we won't end up with that confusion.",
+      "body": "[This issue is part of a feature breakdown based on #336]\r\n\r\nThere are two cases where the members of a group might want to authenticate that the other members of the group were present at another point in history:\r\n\r\n1. A user who has lost state re-joining the group\r\n2. Re-initializing the group with different parameters\r\n3. Initializing a subgroup from a master group\r\n\r\nIn the former case, the group would want to authenticate that the user re-joining is the same user who was present at some past point in the history of the group.  In the latter two cases, the members of the new, re-initialized group would be authenticating that everyone in the new group was also in the old group.\r\n\r\nThese use cases are similar to resumption in TLS, where a PSK is derived from the key schedule and used as for authentication in a different session.  A similar approach seems sensible here, roughly:\r\n\r\n1. At each epoch of the group derive a PSK and PSK ID to be used \r\n2. Use the general PSK signaling mechanism (#367) to signal that a prior epoch's PSK should be used\r\n\r\nThis approach is also a good indication that the PSK mechanism in #367 should allow for PSKs to have specified types.  In TLS, there has been some confusion about how applications can distinguish external PSKs from resumption PSKs.  If we have an explicit type here, we won't end up with that confusion.",
       "createdAt": "2020-07-24T22:34:54Z",
-      "updatedAt": "2020-07-29T14:02:07Z",
+      "updatedAt": "2020-07-31T22:39:32Z",
       "closedAt": null,
       "comments": [
         {
@@ -3823,9 +3823,9 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
-      "body": "As noted in #336, it can be useful for members of the group to have a value they can compare to verify that they have the same view of the state of the group, similar to \"short authentication strings\" in [ZRTP](https://tools.ietf.org/html/rfc6189#section-7) or [TLS](https://tools.ietf.org/id/draft-miers-tls-sas-00.html) or \"safety numbers\" in [Signal](https://support.signal.org/hc/en-us/articles/360007060632-What-is-a-safety-number-and-why-do-I-see-that-it-changed-) and related protocols.\r\n\r\nIn MLS, values derived from the epoch secret via Derive-Secret can be used as confirmations of the relevant state, including the roster, the contents of the tree, and the transcript.  So at a cryptographic level, this should only require deriving an additional secret from the key schedule (as in #336).  We should expand on the text in #336 for how this secret is used and what authentication guarantees it provides.",
+      "body": "[This issue is part of a feature breakdown based on #336]\r\n\r\nAs noted in #336, it can be useful for members of the group to have a value they can compare to verify that they have the same view of the state of the group, similar to \"short authentication strings\" in [ZRTP](https://tools.ietf.org/html/rfc6189#section-7) or [TLS](https://tools.ietf.org/id/draft-miers-tls-sas-00.html) or \"safety numbers\" in [Signal](https://support.signal.org/hc/en-us/articles/360007060632-What-is-a-safety-number-and-why-do-I-see-that-it-changed-) and related protocols.\r\n\r\nIn MLS, values derived from the epoch secret via Derive-Secret can be used as confirmations of the relevant state, including the roster, the contents of the tree, and the transcript.  So at a cryptographic level, this should only require deriving an additional secret from the key schedule (as in #336).  We should expand on the text in #336 for how this secret is used and what authentication guarantees it provides.",
       "createdAt": "2020-07-27T22:36:40Z",
-      "updatedAt": "2020-07-27T22:36:40Z",
+      "updatedAt": "2020-07-31T22:39:42Z",
       "closedAt": null,
       "comments": []
     }
@@ -24851,7 +24851,7 @@
       "labels": [],
       "body": "Fixes #367 ",
       "createdAt": "2020-07-28T19:09:47Z",
-      "updatedAt": "2020-07-28T19:09:47Z",
+      "updatedAt": "2020-07-31T07:24:09Z",
       "baseRepository": "mlswg/mls-protocol",
       "baseRefName": "master",
       "baseRefOid": "593cc3b1af05111436d934a73442518d92303444",
@@ -24863,7 +24863,28 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDU4OTY3MzY0",
+          "commit": {
+            "abbreviatedOid": "ddbca94"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-31T07:24:09Z",
+          "updatedAt": "2020-07-31T07:24:09Z",
+          "comments": [
+            {
+              "originalPosition": 160,
+              "body": "As I noted on the mailinglist, the issue with the PSKId being (part of) an extension and those extensions in turn being part of the `GroupInfo` object, means that the PSK can't be required for decrypting that `GroupInfo` object in the first place. In #336 , we suggested that the PSKId be part of the `GroupSecrets` object along with the other secrets. This would also ensure compatibility with the pending nPRF key schedule proposal.",
+              "createdAt": "2020-07-31T07:24:09Z",
+              "updatedAt": "2020-07-31T07:24:09Z"
+            }
+          ]
+        }
+      ]
     },
     {
       "number": 377,
@@ -24914,6 +24935,330 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 378,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDU4ODMzNzc4",
+      "title": "Readability edits for section 'Synchronizing Views of the Tree'",
+      "url": "https://github.com/mlswg/mls-protocol/pull/378",
+      "state": "MERGED",
+      "author": "chelseakomlo",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This PR does the following: \r\n\r\n- Adds a lead-in sentence describing how this section builds on the prior. \r\n- Differentiates between public keys for nodes and public keys for leaves (users)\r\n- Clarifies when secret key material needs to be deleted. \r\n\r\nI also wanted to make a couple other changes, but wanted feedback first. \r\n\r\n1. This section describes the private value corresponding to a node's public key as 'ns[0]' (or node secret), whereas the prior section referred to it as 'np[0]' (or node_priv). It would be better to have these terms be consistent.\r\n2.  On line 773, it says that the client \"...transmits a handshake message containing a set of **public** values\" and on line 776 it says that \"other members of the group can use these **public** values to update\". However, this values seems to be contradictory with the value listed on line 785. \r\n3. The current terminology is unclear regarding 1) a Commit to the tree, 2) an update to the tree, and and 3) a handshake message. I think these are very similar but using the same language consistently would be better (such as defining a Commit as what updates the tree, and then describing how the handshake message is different from a Commit message, which is described earlier in the spec). ",
+      "createdAt": "2020-07-30T02:53:00Z",
+      "updatedAt": "2020-07-31T20:55:23Z",
+      "baseRepository": "mlswg/mls-protocol",
+      "baseRefName": "master",
+      "baseRefOid": "e09ea022f428273d0b7ca2b5c01cce11e5e00aca",
+      "headRepository": "chelseakomlo/mls-protocol",
+      "headRefName": "read-sync",
+      "headRefOid": "c2b0bd607d596ab10dd1dc9831a5ce1fbbfd36c0",
+      "closedAt": "2020-07-31T20:55:23Z",
+      "mergedAt": "2020-07-31T20:55:23Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "c3db39266505e9d202158d642d65918d35870e77"
+      },
+      "comments": [
+        {
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks for looking through this, @chelseakomlo.  There's a lot of historical baggage here, so it's good to get it cleaned up.  I'll review the diff in a moment, but to respond to your points:\r\n\r\n1. Just to confirm terminology here, there are three values in play, (1) a symmetric secret, (2) a KEM private key derived from the secret, and (3) the corresponding public key.  It _should_ be the case that you only need to store the latter two in the tree (priv+pub), since the secrets are used transiently: For deriving the tree key pairs, for deriving the commit secret, and for initializing new members added in an epoch.  [My implementation](https://github.com/cisco/mlspp/blob/master/include/treekem.h#L42) stores the node secrets to simplify these operations, but it feels like it should be possible to arrange things so that this isn't necessary.  So I think the right answer here is to just refer to node private keys.\r\n\r\n2. Line 785 is correct, the Commit contains a public key and encrypted copies of the path secret for each node.  So the text should refer to public **and encrypted private** values as necessary.\r\n\r\n3. The right taxonomy here is: \"Handshake message\" encompasses `Proposal` and `Commit`.  Processing the Commit is the thing that causes an update to the tree; more specifically, applying a DirectPath.  So we should only talk about handshake messages when we want to cover both Proposals and Commits, and most instances of \"update\" should probably refer to either Commit or DirectPath.",
+          "createdAt": "2020-07-31T17:33:36Z",
+          "updatedAt": "2020-07-31T17:33:36Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDU5MzQ2MTI0",
+          "commit": {
+            "abbreviatedOid": "043cb5c"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-31T17:37:01Z",
+          "updatedAt": "2020-07-31T18:00:05Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "`s/will need to//`",
+              "createdAt": "2020-07-31T17:37:26Z",
+              "updatedAt": "2020-07-31T20:54:10Z"
+            },
+            {
+              "originalPosition": 7,
+              "body": "Might rephrase as \"apply it to their local views of the tree to keep them in sync with the sender's.\"",
+              "createdAt": "2020-07-31T17:37:58Z",
+              "updatedAt": "2020-07-31T20:54:10Z"
+            },
+            {
+              "originalPosition": 5,
+              "body": "This stuff might be better phrased in terms of a `DirectPath` (which maybe we should rename to `UpdatePath`?), since a Commit no longer has to have an update of this character.",
+              "createdAt": "2020-07-31T17:57:17Z",
+              "updatedAt": "2020-07-31T20:54:10Z"
+            },
+            {
+              "originalPosition": 23,
+              "body": "Unclear whether \"outdated\" here means \"from before the Commit\" or \"transmitted in the Commit, but now obsolete because the keys have been generated from them\".  Like I said above, I think we can focus on the latter (so that you'll never even have the former stored), we just need to make sure that the wording of the requirement doesn't interfere with the secondary uses of the path secrets.",
+              "createdAt": "2020-07-31T17:59:58Z",
+              "updatedAt": "2020-07-31T20:54:10Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDU5NDA0NjYw",
+          "commit": {
+            "abbreviatedOid": "043cb5c"
+          },
+          "author": "chelseakomlo",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-31T19:18:29Z",
+          "updatedAt": "2020-07-31T19:18:30Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "`UpdatePath` sounds like a better name. I'll do this renaming in a separate PR, but will rephrase this section to refer to a `DirectPath` as opposed to a `Commit` in the meantime.  ",
+              "createdAt": "2020-07-31T19:18:29Z",
+              "updatedAt": "2020-07-31T20:54:10Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDU5NDA4MTg4",
+          "commit": {
+            "abbreviatedOid": "043cb5c"
+          },
+          "author": "chelseakomlo",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-31T19:24:56Z",
+          "updatedAt": "2020-07-31T19:24:56Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "Actually, you know, I think it would be better to do this change in a separate commit as well, as it will involve re-writing the \"Ratchet Tree Evolution\" section to refer to `DirectPath` as well, no? ",
+              "createdAt": "2020-07-31T19:24:56Z",
+              "updatedAt": "2020-07-31T20:54:10Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDU5NDE1MDMw",
+          "commit": {
+            "abbreviatedOid": "4344030"
+          },
+          "author": "chelseakomlo",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-31T19:30:53Z",
+          "updatedAt": "2020-07-31T19:30:54Z",
+          "comments": [
+            {
+              "originalPosition": 23,
+              "body": "Do you mind suggesting phrasing here? This doesn't match my mental model of \"when replacing key material in the tree after receiving a `DirectPath`, the outdated key material (that was replaced by key material in the `DirectPath` message) should be deleted, but there could be something I'm profoundly missing. ",
+              "createdAt": "2020-07-31T19:30:53Z",
+              "updatedAt": "2020-07-31T20:54:10Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDU5NDE5NjY2",
+          "commit": {
+            "abbreviatedOid": "4344030"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-07-31T19:39:23Z",
+          "updatedAt": "2020-07-31T19:43:35Z",
+          "comments": [
+            {
+              "originalPosition": 23,
+              "body": "The question is: if your nodes have `(secret, sk, pk)`, and you move from `(secret0, sk0, pk0) -> (secret1, sk1, pk1)`, do you need to delete secret0, secret1, or both?  (If you delete `secret1`, then you never have a `secret0` to delete)",
+              "createdAt": "2020-07-31T19:39:23Z",
+              "updatedAt": "2020-07-31T20:54:10Z"
+            },
+            {
+              "originalPosition": 5,
+              "body": "Given this and the discussion below, do you want to close this and come back after the other refactors are done?",
+              "createdAt": "2020-07-31T19:41:24Z",
+              "updatedAt": "2020-07-31T20:54:10Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDU5NDcyNzI2",
+          "commit": {
+            "abbreviatedOid": "c2b0bd6"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-07-31T20:55:17Z",
+          "updatedAt": "2020-07-31T20:55:17Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 379,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDU5OTc4MTcx",
+      "title": "Fix typo at minimal number of extensions",
+      "url": "https://github.com/mlswg/mls-protocol/pull/379",
+      "state": "OPEN",
+      "author": "yihuang",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-07-31T09:47:54Z",
+      "updatedAt": "2020-08-01T02:21:57Z",
+      "baseRepository": "mlswg/mls-protocol",
+      "baseRefName": "master",
+      "baseRefOid": "c3db39266505e9d202158d642d65918d35870e77",
+      "headRepository": "yihuang/mls-protocol",
+      "headRefName": "patch-1",
+      "headRefOid": "bbbd812b9c6638a5840c02f2fe7f14aa94f08e98",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "raphaelrobert",
+          "authorAssociation": "MEMBER",
+          "body": "This is not the number of extensions, it's the size of the payload.",
+          "createdAt": "2020-07-31T11:03:00Z",
+          "updatedAt": "2020-07-31T11:03:00Z"
+        },
+        {
+          "author": "yihuang",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> This is not the number of extensions, it's the size of the payload.\r\n\r\nok",
+          "createdAt": "2020-07-31T11:10:41Z",
+          "updatedAt": "2020-07-31T11:10:41Z"
+        },
+        {
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Actually, there's still a change here, since we bumped from 3 required extensions down to 2 (`lifetime` and `capabilities`).  So the minimum should be `8`.  @yihuang you want to make that tweak?",
+          "createdAt": "2020-07-31T17:20:29Z",
+          "updatedAt": "2020-07-31T17:20:29Z"
+        },
+        {
+          "author": "yihuang",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> Actually, there's still a change here, since we bumped from 3 required extensions down to 2 (`lifetime` and `capabilities`). So the minimum should be `8`. @yihuang you want to make that tweak?\r\n\r\nWhy it's 8? I think lifetime extension have two u64 which is 16 bytes already?",
+          "createdAt": "2020-08-01T02:05:19Z",
+          "updatedAt": "2020-08-01T02:05:19Z"
+        },
+        {
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "body": "2x (2-byte type + 2-byte length)\n\nThat\u2019s why it was 12 when we had 3 required extensions :)\n\nOn Fri, Jul 31, 2020 at 22:05 yihuang <notifications@github.com> wrote:\n\n> Actually, there's still a change here, since we bumped from 3 required\n> extensions down to 2 (lifetime and capabilities). So the minimum should\n> be 8. @yihuang <https://github.com/yihuang> you want to make that tweak?\n>\n> Why it's 8? I think lifetime extension have two u64 which is 16 bytes\n> already?\n>\n> \u2014\n> You are receiving this because you modified the open/close state.\n>\n>\n> Reply to this email directly, view it on GitHub\n> <https://github.com/mlswg/mls-protocol/pull/379#issuecomment-667451819>,\n> or unsubscribe\n> <https://github.com/notifications/unsubscribe-auth/AAASOTJWNSHHII2ZVCXSFQ3R6NZ63ANCNFSM4PP443EA>\n> .\n>\n",
+          "createdAt": "2020-08-01T02:10:06Z",
+          "updatedAt": "2020-08-01T02:10:06Z"
+        },
+        {
+          "author": "yihuang",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> 2x (2-byte type + 2-byte length) That\u2019s why it was 12 when we had 3 required extensions :)\r\n> [\u2026](#)\r\n> On Fri, Jul 31, 2020 at 22:05 yihuang ***@***.***> wrote: Actually, there's still a change here, since we bumped from 3 required extensions down to 2 (lifetime and capabilities). So the minimum should be 8. @yihuang <https://github.com/yihuang> you want to make that tweak? Why it's 8? I think lifetime extension have two u64 which is 16 bytes already? \u2014 You are receiving this because you modified the open/close state. Reply to this email directly, view it on GitHub <[#379 (comment)](https://github.com/mlswg/mls-protocol/pull/379#issuecomment-667451819)>, or unsubscribe <https://github.com/notifications/unsubscribe-auth/AAASOTJWNSHHII2ZVCXSFQ3R6NZ63ANCNFSM4PP443EA> .\r\n\r\nok, changed.",
+          "createdAt": "2020-08-01T02:21:57Z",
+          "updatedAt": "2020-08-01T02:21:57Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 380,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDYwMDY4NTA2",
+      "title": "Fix inconsistency in deriving welcome_secret",
+      "url": "https://github.com/mlswg/mls-protocol/pull/380",
+      "state": "MERGED",
+      "author": "yihuang",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Keep it consistent with #key-schedule",
+      "createdAt": "2020-07-31T11:45:08Z",
+      "updatedAt": "2020-07-31T17:21:29Z",
+      "baseRepository": "mlswg/mls-protocol",
+      "baseRefName": "master",
+      "baseRefOid": "e09ea022f428273d0b7ca2b5c01cce11e5e00aca",
+      "headRepository": "yihuang/mls-protocol",
+      "headRefName": "patch-2",
+      "headRefOid": "d5f4bc91861f37c2f947c9a4674e546367a08c8f",
+      "closedAt": "2020-07-31T17:21:29Z",
+      "mergedAt": "2020-07-31T17:21:29Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "37d42127bf0a1951841a6e156dc96ca8e264169f"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDU5MzAwNTY2",
+          "commit": {
+            "abbreviatedOid": "d5f4bc9"
+          },
+          "author": "Bren2010",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-07-31T16:22:07Z",
+          "updatedAt": "2020-07-31T16:22:07Z",
+          "comments": []
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDU5MzM2Njgx",
+          "commit": {
+            "abbreviatedOid": "d5f4bc9"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-07-31T17:21:23Z",
+          "updatedAt": "2020-07-31T17:21:23Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 381,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDYwNjE0Mzg0",
+      "title": "Consistency fix for description of key material sent in an update message",
+      "url": "https://github.com/mlswg/mls-protocol/pull/381",
+      "state": "OPEN",
+      "author": "chelseakomlo",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This PR adds a fix mentioned in #378 but was not included in the PR that was eventually merged. Specifically, both **public and encrypted private** values are sent in a message containing key material to ratchet the tree forward. ",
+      "createdAt": "2020-07-31T23:36:44Z",
+      "updatedAt": "2020-07-31T23:36:44Z",
+      "baseRepository": "mlswg/mls-protocol",
+      "baseRefName": "master",
+      "baseRefOid": "c3db39266505e9d202158d642d65918d35870e77",
+      "headRepository": "chelseakomlo/mls-protocol",
+      "headRefName": "sync-consist",
+      "headRefOid": "73b023cd7d0997610ed9d39587b7465b28c836a8",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
