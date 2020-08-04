@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-08-02T00:36:46.989571+00:00",
+  "timestamp": "2020-08-04T00:36:23.600262+00:00",
   "repo": "mlswg/mls-protocol",
   "labels": [
     {
@@ -3723,9 +3723,38 @@
       "labels": [],
       "body": "[This issue is part of a feature breakdown based on #336]\r\n\r\nApplications might want to signal to group members  processing a commit that they should take certain actions in addition to ratcheting the group forward.  The most obvious example is folding in a PSK for the epoch, but you can also imagine addressing things like transcript consistency or updatable PKE through this channel.\r\n\r\nThis should be straightforward syntactically, but will also require updating the extensibility section to make clear that Commit extensions can also in principle affect the GroupContext extensions.  In other words:\r\n\r\n* Each group member associates a list of extensions with the group, which are confirmed via the GroupContext\r\n* New joiners get configured with these via extensions in the GroupInfo\r\n* Existing members can find out about changes to the group's extensions via extensions in the Commit",
       "createdAt": "2020-07-24T22:03:25Z",
-      "updatedAt": "2020-07-31T22:38:33Z",
+      "updatedAt": "2020-08-03T21:44:57Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "kkohbrok",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I think making commit messages extensible is a great idea. However, I'd like to understand better what we want to use the extensions first. \r\n\r\n> Applications might want to signal to group members processing a commit that they should take certain actions in addition to ratcheting the group forward.\r\n\r\nI thought that was what Proposals are for. I think for mechanisms that are part of the base protocol spec, there is no reason not to extend the list of proposals.\r\n\r\nRegarding the nature of extensions: Do I understand correctly, that an extension is a property of the group first and foremost? And extensions in the commit are meant to alert other group members to changes in those properties? Or are extensions in the commit messages a mechanism to allow for the inclusion of additional data in the commits? Or both? I feel like the meaning of the word \"extension\" is a little stretched here.\r\n\r\nSince we're discussing this also in the context of PSK injections: Do you think PSK injections should be something that can be switched on and off for any given group? If so, why? I would consider it part of the base protocol and do not see what benefits we get from disallowing it in a group.",
+          "createdAt": "2020-08-03T08:54:42Z",
+          "updatedAt": "2020-08-03T08:54:42Z"
+        },
+        {
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "body": "It's a fair point, that we have basically two extension points here -- proposal types and extensions.  I think the theory I had in mind was something like:\r\n\r\n1. Proposals describe modifications you make to the tree before you use it for TreeKEM (to get the path) (if you do)\r\n2. The DirectPath describes the outcome of TreeKEM.Encap\r\n3. Extensions tell you anything else you need to do\r\n\r\nIf that philosophy makes sense, I can update the PR to make that clearer.\r\n\r\nNote that proposal extensibility is currently broken because we don't actually have a way for the Commit to include any Proposals with new proposal types.  I've filed #383 for that.",
+          "createdAt": "2020-08-03T21:30:05Z",
+          "updatedAt": "2020-08-03T21:30:05Z"
+        },
+        {
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "body": "On the nature of extensions: My thinking here is that an \"extension\" is purely syntactic; its semantics are defined entirely by its ExtensionType.  One thing that extensions do (in the context of GroupContext) is express what attributes/parameters the group has agreed to.  But they can also do other things.",
+          "createdAt": "2020-08-03T21:33:43Z",
+          "updatedAt": "2020-08-03T21:33:43Z"
+        },
+        {
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "body": "On PSK injections: My thinking here is that PSKs are a per-epoch decision, in that you can inject a different set of PSKs at each epoch.  Since the Commit is the thing that starts a new epoch, it signals what PSKs to use for that epoch.  A few illustrative cases:\r\n\r\n- A \"meeting password\" might get injected on every commit\r\n- ... or you might only inject it in commits where you have an Add, to verify that the new guy has it\r\n- In a scenario where you have some OOB PSK distribution (say to add more PQ safety), you would inject a PSK every epoch, but a different one in each epoch\r\n- When re-starting a group or branching a subgroup, you would incorporate the resumption secret from the previous group, but then might not need a PSK ever again.",
+          "createdAt": "2020-08-03T21:44:57Z",
+          "updatedAt": "2020-08-03T21:44:57Z"
+        }
+      ]
     },
     {
       "number": 367,
@@ -3828,6 +3857,30 @@
       "updatedAt": "2020-07-31T22:39:42Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 383,
+      "id": "MDU6SXNzdWU2NzIzNTE3MzA=",
+      "title": "Enable Commit to cover new proposal types",
+      "url": "https://github.com/mlswg/mls-protocol/issues/383",
+      "state": "OPEN",
+      "author": "bifurcation",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "In principle, the set of ProposalType values is extensible.  But with the current Commit syntax, there is no way for a Commit to reference a Proposal with a type other than Add/Update/Remove.  We could enable this by adding a field to the commit that would carry such references:\r\n\r\n```\r\nstruct {\r\n    ProposalID updates<0..2^32-1>;\r\n    ProposalID removes<0..2^32-1>;\r\n    ProposalID adds<0..2^32-1>;\r\n    ProposalID others<0..2^32-1>;    // <------\r\n\r\n    optional<DirectPath> path;\r\n} Commit;\r\n```\r\n\r\nHowever, if other proposal types had sequencing requirements, they would not get the benefit of explicit, separate grouping and ordering as is done for the current proposal types.\r\n\r\nIf we don't extend the Commit in this way, we should add some explanatory text to clarify that new proposal types require an extension that changes the format of the Commit message.",
+      "createdAt": "2020-08-03T21:24:38Z",
+      "updatedAt": "2020-08-03T21:28:30Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Personally, I lean toward the \"do nothing\" option here.  If we take the view that proposals should describe modifications to the tree (other actions being signaled in [Commit extensions](https://github.com/mlswg/mls-protocol/issues/366)), then Add, Update, and Remove are pretty much the available atomic operations.  You could envision some minor variations (an Add with a specified location, say) or compositions (Resync = Remove+Add), but nothing is coming to my mind that would be important enough to merit the extra complexity.",
+          "createdAt": "2020-08-03T21:28:30Z",
+          "updatedAt": "2020-08-03T21:28:30Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -24844,25 +24897,33 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NDU3OTk2NjM0",
       "title": "Negotiate PSKs",
       "url": "https://github.com/mlswg/mls-protocol/pull/376",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "bifurcation",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Fixes #367 ",
       "createdAt": "2020-07-28T19:09:47Z",
-      "updatedAt": "2020-07-31T07:24:09Z",
+      "updatedAt": "2020-08-03T22:22:09Z",
       "baseRepository": "mlswg/mls-protocol",
       "baseRefName": "master",
       "baseRefOid": "593cc3b1af05111436d934a73442518d92303444",
       "headRepository": "mlswg/mls-protocol",
       "headRefName": "negotiate-psk",
       "headRefOid": "ddbca946933352357ea323111aa311d9d5c38b13",
-      "closedAt": null,
+      "closedAt": "2020-08-03T22:22:09Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closing this one for now.  After discussion with @kkohbrok, he's going to refactor the relevant bits out of #336 once we have the required tools from fixing #366.",
+          "createdAt": "2020-08-03T22:22:08Z",
+          "updatedAt": "2020-08-03T22:22:08Z"
+        }
+      ],
       "reviews": [
         {
           "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDU4OTY3MzY0",
@@ -25115,24 +25176,26 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NDU5OTc4MTcx",
       "title": "Fix typo at minimal number of extensions",
       "url": "https://github.com/mlswg/mls-protocol/pull/379",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "yihuang",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2020-07-31T09:47:54Z",
-      "updatedAt": "2020-08-01T02:21:57Z",
+      "updatedAt": "2020-08-03T22:22:59Z",
       "baseRepository": "mlswg/mls-protocol",
       "baseRefName": "master",
       "baseRefOid": "c3db39266505e9d202158d642d65918d35870e77",
       "headRepository": "yihuang/mls-protocol",
       "headRefName": "patch-1",
       "headRefOid": "bbbd812b9c6638a5840c02f2fe7f14aa94f08e98",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2020-08-03T22:22:59Z",
+      "mergedAt": "2020-08-03T22:22:59Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "fa567ad1fba2a24f09d4cdd7d5a9a2138aeffa56"
+      },
       "comments": [
         {
           "author": "raphaelrobert",
@@ -25239,24 +25302,68 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NDYwNjE0Mzg0",
       "title": "Consistency fix for description of key material sent in an update message",
       "url": "https://github.com/mlswg/mls-protocol/pull/381",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "chelseakomlo",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "This PR adds a fix mentioned in #378 but was not included in the PR that was eventually merged. Specifically, both **public and encrypted private** values are sent in a message containing key material to ratchet the tree forward. ",
       "createdAt": "2020-07-31T23:36:44Z",
-      "updatedAt": "2020-07-31T23:36:44Z",
+      "updatedAt": "2020-08-03T22:23:29Z",
       "baseRepository": "mlswg/mls-protocol",
       "baseRefName": "master",
       "baseRefOid": "c3db39266505e9d202158d642d65918d35870e77",
       "headRepository": "chelseakomlo/mls-protocol",
       "headRefName": "sync-consist",
       "headRefOid": "73b023cd7d0997610ed9d39587b7465b28c836a8",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2020-08-03T22:23:29Z",
+      "mergedAt": "2020-08-03T22:23:29Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "39455d2ea5e8fb42e8f0f0624bddd8c56675da0e"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDYwMzc4MzU2",
+          "commit": {
+            "abbreviatedOid": "73b023c"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-08-03T22:23:24Z",
+          "updatedAt": "2020-08-03T22:23:24Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 382,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDYyMTgwOTI5",
+      "title": "Add Konrad and Britta to contribtors",
+      "url": "https://github.com/mlswg/mls-protocol/pull/382",
+      "state": "MERGED",
+      "author": "bifurcation",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-08-03T13:34:11Z",
+      "updatedAt": "2020-08-03T13:35:03Z",
+      "baseRepository": "mlswg/mls-protocol",
+      "baseRefName": "master",
+      "baseRefOid": "c3db39266505e9d202158d642d65918d35870e77",
+      "headRepository": "mlswg/mls-protocol",
+      "headRefName": "kb",
+      "headRefOid": "6bcc578508cbf214dc5b46047f4167bbd8d91c64",
+      "closedAt": "2020-08-03T13:35:03Z",
+      "mergedAt": "2020-08-03T13:35:03Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "a775172284bc6ca7a5196e7c7be7b1bcf01ca183"
+      },
       "comments": [],
       "reviews": []
     }
