@@ -2617,7 +2617,7 @@ SHOULD match at least the security level of the ciphersuite in use in
 the group.<a href="#section-7.9-4" class="pilcrow">¶</a></p>
 <p id="section-7.9-5">Note that, as a PSK may have a different lifetime than an update, it
 does not necessarily provide the same Forward Secrecy (FS) or Post-Compromise
-Security (PCS) guarantees than a Commit message.<a href="#section-7.9-5" class="pilcrow">¶</a></p>
+Security (PCS) guarantees as a Commit message.<a href="#section-7.9-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="encryption-keys">
@@ -3192,11 +3192,10 @@ a newly-hired staff member to a group representing a real-world team.  Proposals
 originating outside the group are identified by a <code>preconfigured</code> or
 <code>new_member</code> SenderType in MLSPlaintext.<a href="#section-10.1.4-1" class="pilcrow">¶</a></p>
 <p id="section-10.1.4-2">The <code>new_member</code> SenderType is used for clients proposing that they themselves
-be added.  For this ID type the sender value MUST be zero.  Proposals with types
-other than Add MUST NOT be sent with this sender type.  In such cases, the
-MLSPlaintext MUST be signed with the private key corresponding to the
-KeyPackage in the Add message.  Recipients MUST verify that the MLSPlaintext
-carrying the Proposal message is validly signed with this key.<a href="#section-10.1.4-2" class="pilcrow">¶</a></p>
+be added.  For this ID type the sender value MUST be zero and the Proposal type
+MUST be Add. The MLSPlaintext MUST be signed with the private key corresponding
+to the KeyPackage in the Add message.  Recipients MUST verify that the
+MLSPlaintext carrying the Proposal message is validly signed with this key.<a href="#section-10.1.4-2" class="pilcrow">¶</a></p>
 <p id="section-10.1.4-3">The <code>preconfigured</code> SenderType is reserved for signers that are pre-provisioned
 to the clients within a group.  If proposals with these sender IDs are to be
 accepted within a group, the members of the group MUST be provisioned by the
@@ -3261,10 +3260,10 @@ of the Commit.  An Update proposal can be regarded as a "lazy" version of this
 operation, where only the leaf changes and intermediate nodes are blanked out.<a href="#section-10.2-7" class="pilcrow">¶</a></p>
 <p id="section-10.2-8">The <code>path</code> field of a Commit message MUST be populated if the Commit covers at
 least one Update or Remove proposal, i.e., if the length of the <code>updates</code> or
-<code>removes vectors is greater than zero.  The </code>path<code> field MUST also be populated
+<code>removes</code> vectors is greater than zero.  The <code>path</code> field MUST also be populated
 if the Commit covers no proposals at all (i.e., if all three proposal vectors
-are empty).  The </code>path<code> field MAY be omitted if the Commit covers only Add
-proposals.  In pseudocode, the logic for whether the </code>path` field is required is
+are empty).  The <code>path</code> field MAY be omitted if the Commit covers only Add
+proposals.  In pseudocode, the logic for whether the <code>path</code> field is required is
 as follows:<a href="#section-10.2-8" class="pilcrow">¶</a></p>
 <div class="artwork art-text alignLeft" id="section-10.2-9">
 <pre>
@@ -3698,9 +3697,9 @@ once it has been created; such a behavior could be implemented as an extension.<
 <a href="#section-12" class="section-number selfRef">12. </a><a href="#name-sequencing-of-state-changes" class="section-name selfRef">Sequencing of State Changes</a>
       </h2>
 <p id="section-12-1">Each Commit message is premised on a given starting state,
-indicated in its <code>prior_epoch</code> field.  If the changes implied by a
-Commit messages are made starting from a different state, the
-results will be incorrect.<a href="#section-12-1" class="pilcrow">¶</a></p>
+indicated by the <code>epoch</code> field of the enclosing MLSPlaintext
+message. If the changes implied by a Commit messages are made
+starting from a different state, the results will be incorrect.<a href="#section-12-1" class="pilcrow">¶</a></p>
 <p id="section-12-2">This need for sequencing is not a problem as long as each time a
 group member sends a Commit message, it is based on the most
 current state of the group.  In practice, however, there is a risk
