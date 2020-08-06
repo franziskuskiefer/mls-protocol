@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-08-04T00:36:23.600262+00:00",
+  "timestamp": "2020-08-06T00:36:17.099855+00:00",
   "repo": "mlswg/mls-protocol",
   "labels": [
     {
@@ -3707,9 +3707,17 @@
       "labels": [],
       "body": "The not-protocol parts of the document, including security considerations and some of the operational considerations, are mostly untouched since the beginning of this work.  As we get the protocol firmed up, we should revisit these parts to make sure they're up to date and give an accurate reflection of the concerns around the protocol.",
       "createdAt": "2020-07-24T21:10:56Z",
-      "updatedAt": "2020-07-24T21:10:56Z",
+      "updatedAt": "2020-08-04T11:57:03Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "ericcornelissen",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "One particular thing related to this that I noticed is that in the [Confidentiality of the Group Secrets section](https://github.com/mlswg/mls-protocol/blob/c3db39266505e9d202158d642d65918d35870e77/draft-ietf-mls-protocol.md#confidentiality-of-the-group-secrets) the first sentence:\r\n\r\n> Group secrets are derived from (i) previous group secrets, and (ii) the root key of a ratcheting tree. [...]\r\n\r\nis outdated as (ii) can now also be an all-zero vector, namely if `path` is not required and not set (as introduced in  #331 if I'm not mistaken).",
+          "createdAt": "2020-08-04T11:57:03Z",
+          "updatedAt": "2020-08-04T11:57:03Z"
+        }
+      ]
     },
     {
       "number": 366,
@@ -3723,7 +3731,7 @@
       "labels": [],
       "body": "[This issue is part of a feature breakdown based on #336]\r\n\r\nApplications might want to signal to group members  processing a commit that they should take certain actions in addition to ratcheting the group forward.  The most obvious example is folding in a PSK for the epoch, but you can also imagine addressing things like transcript consistency or updatable PKE through this channel.\r\n\r\nThis should be straightforward syntactically, but will also require updating the extensibility section to make clear that Commit extensions can also in principle affect the GroupContext extensions.  In other words:\r\n\r\n* Each group member associates a list of extensions with the group, which are confirmed via the GroupContext\r\n* New joiners get configured with these via extensions in the GroupInfo\r\n* Existing members can find out about changes to the group's extensions via extensions in the Commit",
       "createdAt": "2020-07-24T22:03:25Z",
-      "updatedAt": "2020-08-03T21:44:57Z",
+      "updatedAt": "2020-08-04T07:36:02Z",
       "closedAt": null,
       "comments": [
         {
@@ -3753,6 +3761,20 @@
           "body": "On PSK injections: My thinking here is that PSKs are a per-epoch decision, in that you can inject a different set of PSKs at each epoch.  Since the Commit is the thing that starts a new epoch, it signals what PSKs to use for that epoch.  A few illustrative cases:\r\n\r\n- A \"meeting password\" might get injected on every commit\r\n- ... or you might only inject it in commits where you have an Add, to verify that the new guy has it\r\n- In a scenario where you have some OOB PSK distribution (say to add more PQ safety), you would inject a PSK every epoch, but a different one in each epoch\r\n- When re-starting a group or branching a subgroup, you would incorporate the resumption secret from the previous group, but then might not need a PSK ever again.",
           "createdAt": "2020-08-03T21:44:57Z",
           "updatedAt": "2020-08-03T21:44:57Z"
+        },
+        {
+          "author": "kkohbrok",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I see, thanks for the clarification. My understanding of extensions was that their advantage is that they're dynamic and can be defined and used after MLS is defined, i.e. to keep the standard extensible. I know that in the TLS context, extensions are used for all sorts of basic protocol behaviour, but my understanding was that was more something that has evolved over time rather than it being \"by-design\".\r\n\r\nIs there any reason for Proposals to be limited to TreeKEM operations (other than that being their historic purpose)? Because otherwise it seems a little odd to me not to use them for core MLS operations such as PSK injection.",
+          "createdAt": "2020-08-04T07:31:57Z",
+          "updatedAt": "2020-08-04T07:31:57Z"
+        },
+        {
+          "author": "kkohbrok",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Otherwise, I agree with your take on PSK injections. They should definitely be part of the commit and it should be possible to inject them ad-hoc. Although for the re-starting or branching use-case, I think they should be part of the Welcome message, but I think we're having that discussion on the mailing list already.",
+          "createdAt": "2020-08-04T07:36:02Z",
+          "updatedAt": "2020-08-04T07:36:02Z"
         }
       ]
     },
@@ -25364,6 +25386,32 @@
       "mergeCommit": {
         "oid": "a775172284bc6ca7a5196e7c7be7b1bcf01ca183"
       },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 384,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDYyNTcyMTE5",
+      "title": "Fix formatting issue in Commit section",
+      "url": "https://github.com/mlswg/mls-protocol/pull/384",
+      "state": "OPEN",
+      "author": "ericcornelissen",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "There was a missing grave accent in one of the paragraphs of [the Commit section](https://github.com/mlswg/mls-protocol/blob/c3db39266505e9d202158d642d65918d35870e77/draft-ietf-mls-protocol.md#commit) causing some formatting issues - see below - this fixes that.\r\n\r\n**Before**:\r\n\r\n![paragraph before](https://user-images.githubusercontent.com/3742559/89263277-9fc21c80-d639-11ea-9bd1-19e377fa3628.png)\r\n\r\n**After**:\r\n\r\n![paragraph after](https://user-images.githubusercontent.com/3742559/89263328-b9fbfa80-d639-11ea-8d5d-3b1c27c7d884.png)\r\n\r\n",
+      "createdAt": "2020-08-04T07:04:58Z",
+      "updatedAt": "2020-08-04T07:04:58Z",
+      "baseRepository": "mlswg/mls-protocol",
+      "baseRefName": "master",
+      "baseRefOid": "39455d2ea5e8fb42e8f0f0624bddd8c56675da0e",
+      "headRepository": "ericcornelissen/mls-protocol",
+      "headRefName": "formatting/issue-in-commit",
+      "headRefOid": "2347a2a6d3ee2cabf6a34a07088590adcdf9a435",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
       "comments": [],
       "reviews": []
     }
