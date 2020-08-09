@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-08-06T00:36:17.099855+00:00",
+  "timestamp": "2020-08-09T00:38:51.012231+00:00",
   "repo": "mlswg/mls-protocol",
   "labels": [
     {
@@ -25392,28 +25392,106 @@
     {
       "number": 384,
       "id": "MDExOlB1bGxSZXF1ZXN0NDYyNTcyMTE5",
-      "title": "Fix formatting issue in Commit section",
+      "title": "4 editorial edits to the draft",
       "url": "https://github.com/mlswg/mls-protocol/pull/384",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "ericcornelissen",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
-      "body": "There was a missing grave accent in one of the paragraphs of [the Commit section](https://github.com/mlswg/mls-protocol/blob/c3db39266505e9d202158d642d65918d35870e77/draft-ietf-mls-protocol.md#commit) causing some formatting issues - see below - this fixes that.\r\n\r\n**Before**:\r\n\r\n![paragraph before](https://user-images.githubusercontent.com/3742559/89263277-9fc21c80-d639-11ea-9bd1-19e377fa3628.png)\r\n\r\n**After**:\r\n\r\n![paragraph after](https://user-images.githubusercontent.com/3742559/89263328-b9fbfa80-d639-11ea-8d5d-3b1c27c7d884.png)\r\n\r\n",
+      "body": "A couple of minor editorial changes to the current draft, namely:\r\n\r\n<details>\r\n<summary>There was a missing grave accent in one of the paragraphs of <a href=\"https://github.com/mlswg/mls-protocol/blob/c3db39266505e9d202158d642d65918d35870e77/draft-ietf-mls-protocol.md#commit\">the Commit section</a> causing some formatting issues</summary>\r\n\r\n**Before**:\r\n\r\n![paragraph before](https://user-images.githubusercontent.com/3742559/89263277-9fc21c80-d639-11ea-9bd1-19e377fa3628.png)\r\n\r\n**After**:\r\n\r\n![paragraph after](https://user-images.githubusercontent.com/3742559/89263328-b9fbfa80-d639-11ea-8d5d-3b1c27c7d884.png)\r\n\r\n</details>\r\n\r\n<details>\r\n<summary>Fix typo Pre-Shared Keys section</summary>\r\n\r\n\r\n[...], it does not necessarily provide the same [...] guarantees ~than~ as a Commit message.\r\n\r\n</details>\r\n\r\n\r\n<details>\r\n<summary>Resolve remaining reference to <code>prior_epoch</code></summary>\r\n\r\nIn the Sequencing section there was a reference to a `prior_epoch` field that was introduced in 2fa6ed3c6afc7d308905255b4cabe154a48d1e4b. However, in 69e12cd61378aae4a81199c28a16e2802666b6e3, it was removed from the struct where it was added. That entire struct was then removed in 27c9c28f9634a06a9b7921ea9c15e276f8c9ff6f, after which the trail runs cold. So I wasn't able to figure out exactly what it must be based on what on what it originally was. Hence, I replaced it with something that makes sense in context.\r\n\r\nI based the new text on the following line found in the <a href=\"https://github.com/mlswg/mls-protocol/blob/39455d2ea5e8fb42e8f0f0624bddd8c56675da0e/draft-ietf-mls-protocol.md#commit\">(current) Commit section</a>:\r\n\r\n> Verify that the `epoch` field of the enclosing MLSPlaintext message is\r\n> equal to the `epoch` field of the current GroupContext object\r\n\r\n</details>\r\n\r\n\r\n<details>\r\n<summary>Rewrite paragraph on the <code>new_member</code> SenderType</summary>\r\n\r\nI found the phrase \" In such cases\" after the sentence \"Proposals with types other than Add MUST NOT be sent with this sender type\" slightly confusing and awkward. To improve this I rewrote the paragraph.\r\n\r\n</details>",
       "createdAt": "2020-08-04T07:04:58Z",
-      "updatedAt": "2020-08-04T07:04:58Z",
+      "updatedAt": "2020-08-07T08:36:54Z",
       "baseRepository": "mlswg/mls-protocol",
       "baseRefName": "master",
       "baseRefOid": "39455d2ea5e8fb42e8f0f0624bddd8c56675da0e",
       "headRepository": "ericcornelissen/mls-protocol",
       "headRefName": "formatting/issue-in-commit",
-      "headRefOid": "2347a2a6d3ee2cabf6a34a07088590adcdf9a435",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "db7028e06b776de0cf514d351e4f9f169d9d18fb",
+      "closedAt": "2020-08-06T18:01:27Z",
+      "mergedAt": "2020-08-06T18:01:27Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "d1d5f56a5d83781042d19c830497ab5aa104907f"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDYyNDc4MjI3",
+          "commit": {
+            "abbreviatedOid": "6ea4861"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Couple of nits on your nits",
+          "createdAt": "2020-08-06T12:40:01Z",
+          "updatedAt": "2020-08-06T12:41:32Z",
+          "comments": [
+            {
+              "originalPosition": 19,
+              "body": "```suggestion\r\nMUST be Add. The MLSPlaintext MUST be signed with the private key corresponding\r\n```",
+              "createdAt": "2020-08-06T12:40:01Z",
+              "updatedAt": "2020-08-06T17:55:48Z"
+            },
+            {
+              "originalPosition": 44,
+              "body": "```suggestion\r\n```",
+              "createdAt": "2020-08-06T12:40:42Z",
+              "updatedAt": "2020-08-06T17:55:48Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 385,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDYzOTU3NTQ2",
+      "title": "Require the initial init_secret to be a random value",
+      "url": "https://github.com/mlswg/mls-protocol/pull/385",
+      "state": "MERGED",
+      "author": "ericcornelissen",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This suggestion is based on a discussion in the MLS mailing list [[1]](https://mailarchive.ietf.org/arch/msg/mls/qrpAoK7aNSzKxX4O60pOLvM3cp8). It prevents issues that currently arrise when the very first commit of a group is an \"add-only\" commit because both the `commit_secret` and `init_secret` would be **0**.\r\n\r\nLet me know if the wording or anything else should be changed.\r\n\r\n/cc @bifurcation\r\n\r\n---\r\n\r\n1. https://mailarchive.ietf.org/arch/msg/mls/qrpAoK7aNSzKxX4O60pOLvM3cp8",
+      "createdAt": "2020-08-06T11:09:18Z",
+      "updatedAt": "2020-08-07T08:38:02Z",
+      "baseRepository": "mlswg/mls-protocol",
+      "baseRefName": "master",
+      "baseRefOid": "39455d2ea5e8fb42e8f0f0624bddd8c56675da0e",
+      "headRepository": "ericcornelissen/mls-protocol",
+      "headRefName": "random-first-init-secret",
+      "headRefOid": "5a34af6b36509dd1eff4ca4abbedd31288fe904f",
+      "closedAt": "2020-08-06T13:35:34Z",
+      "mergedAt": "2020-08-06T13:35:34Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "4829451c5a21cd7b85d59407bd46fcd2a194283d"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDYyNDc2ODQ3",
+          "commit": {
+            "abbreviatedOid": "d66463a"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "lgtm with one minor thing fixed",
+          "createdAt": "2020-08-06T12:38:04Z",
+          "updatedAt": "2020-08-06T12:38:47Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "```suggestion\r\n  * Init secret: a fresh random value of size `KDF.Nh`\r\n```\r\n\r\n... just to ensure you have enough entropy here.",
+              "createdAt": "2020-08-06T12:38:04Z",
+              "updatedAt": "2020-08-06T12:59:35Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
