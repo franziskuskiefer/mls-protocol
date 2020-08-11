@@ -1251,7 +1251,8 @@ Internet-Draft                     MLS                       August 2020
    signature field.
 
    enum {
-       mls10(0),
+       reserved(0),
+       mls10(1),
        (255)
    } ProtocolVersion;
 
@@ -1268,7 +1269,7 @@ Internet-Draft                     MLS                       August 2020
        CipherSuite cipher_suite;
        HPKEPublicKey hpke_init_key;
        Credential credential;
-       Extension extensions<8..2^16-1>;
+       Extension extensions<8..2^32-1>;
        opaque signature<0..2^16-1>;
    } KeyPackage;
 
@@ -1279,9 +1280,8 @@ Internet-Draft                     MLS                       August 2020
    while still only advertising one version / ciphersuite per
    KeyPackage.
 
-   As the "KeyPackage" is a structure which is stored in the Ratchet
-   Tree and updated depending on the evolution of this tree, each
-   modification of its content MUST be reflected by a change of its
+
+
 
 
 
@@ -1290,6 +1290,9 @@ Barnes, et al.          Expires 12 February 2021               [Page 23]
 Internet-Draft                     MLS                       August 2020
 
 
+   As the "KeyPackage" is a structure which is stored in the Ratchet
+   Tree and updated depending on the evolution of this tree, each
+   modification of its content MUST be reflected by a change of its
    signature.  This allow other members to control the validity of the
    KeyPackage at any time and in particular in the case of a newcomer
    joining the group.
@@ -1334,9 +1337,6 @@ Internet-Draft                     MLS                       August 2020
    an explicit, application-defined identifier to a KeyPackage.
 
    opaque key_id<0..2^16-1>;
-
-
-
 
 
 
@@ -1432,7 +1432,7 @@ Internet-Draft                     MLS                       August 2020
        uint64 epoch;
        opaque tree_hash<0..255>;
        opaque confirmed_transcript_hash<0..255>;
-       Extension extensions<0..2^16-1>;
+       Extension extensions<0..2^32-1>;
    } GroupContext;
 
    The fields in this state have the following semantics:
@@ -1543,7 +1543,7 @@ Internet-Draft                     MLS                       August 2020
 
    struct {
        KeyPackage leaf_key_package;
-       DirectPathNode nodes<0..2^16-1>;
+       DirectPathNode nodes<0..2^32-1>;
    } DirectPath;
 
    The number of ciphertexts in the "encrypted_path_secret" vector MUST
@@ -1828,7 +1828,7 @@ Internet-Draft                     MLS                       August 2020
    necessary for the delivery service to examine such messages.
 
    enum {
-       invalid(0),
+       reserved(0),
        application(1),
        proposal(2),
        commit(3),
@@ -1836,7 +1836,7 @@ Internet-Draft                     MLS                       August 2020
    } ContentType;
 
    enum {
-       invalid(0),
+       reserved(0),
        member(1),
        preconfigured(2),
        new_member(3),
@@ -2213,7 +2213,7 @@ Internet-Draft                     MLS                       August 2020
    structure that indicates their type:
 
    enum {
-       invalid(0),
+       reserved(0),
        add(1),
        update(2),
        remove(3),
@@ -2650,7 +2650,7 @@ Internet-Draft                     MLS                       August 2020
      opaque tree_hash<0..255>;
      opaque confirmed_transcript_hash<0..255>;
      opaque interim_transcript_hash<0..255>;
-     Extension extensions<0..2^16-1>;
+     Extension extensions<0..2^32-1>;
      opaque confirmation<0..255>;
      uint32 signer_index;
      opaque signature<0..2^16-1>;
@@ -2808,8 +2808,9 @@ Internet-Draft                     MLS                       August 2020
    "ratchet_tree" object of the following form:
 
    enum {
-       leaf(0),
-       parent(1),
+       reserved(0),
+       leaf(1),
+       parent(2),
        (255)
    } NodeType;
 
@@ -2848,7 +2849,6 @@ Internet-Draft                     MLS                       August 2020
 
    *  In KeyPackages, to describe client capabilities and aspects of
       their participation in the group (once in the ratchet tree)
-
 
 
 
