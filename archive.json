@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-08-09T00:38:51.012231+00:00",
+  "timestamp": "2020-08-11T00:37:33.674862+00:00",
   "repo": "mlswg/mls-protocol",
   "labels": [
     {
@@ -3903,6 +3903,22 @@
           "updatedAt": "2020-08-03T21:28:30Z"
         }
       ]
+    },
+    {
+      "number": 386,
+      "id": "MDU6SXNzdWU2NzYxNzQ2OTk=",
+      "title": "Remove remaning raw Hash or add hash function to ciphersuite",
+      "url": "https://github.com/mlswg/mls-protocol/issues/386",
+      "state": "OPEN",
+      "author": "bifurcation",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "In #364, we changed from using HKDF to using the KDF from HPKE, which I thought removed the need for the ciphersuite to specify a hash function. As a result, ciphersuites no longer needed to specify a hash.\r\n\r\nHowever, the transcript computations still have a raw `Hash()` invocation, not a KDF invocation.  So we need to either:\r\n\r\n1. Change the transcript hash computations to use the KDF, or\r\n2. Clarify that ciphersuites still specify a hash function (as before)",
+      "createdAt": "2020-08-10T14:21:13Z",
+      "updatedAt": "2020-08-10T14:21:13Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -22537,13 +22553,13 @@
       ],
       "body": "Changes to key schedule and corresponding directions on use of PSKs for group recovery, re-initialization, sub-group branching, and external PSK injection.",
       "createdAt": "2020-05-16T19:48:40Z",
-      "updatedAt": "2020-06-17T22:54:38Z",
+      "updatedAt": "2020-08-10T19:20:37Z",
       "baseRepository": "mlswg/mls-protocol",
       "baseRefName": "master",
-      "baseRefOid": "c519e9d8ac723ed19fa114198abb09922d1027f7",
+      "baseRefOid": "d1d5f56a5d83781042d19c830497ab5aa104907f",
       "headRepository": "br-hale/mls-protocol",
       "headRefName": "exporters",
-      "headRefOid": "20145e49acce01dcedca7db2d05c57908a292202",
+      "headRefOid": "7bd759d19d91eee50be276cc21711aab81edb2bf",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -22574,7 +22590,7 @@
               "originalPosition": 532,
               "body": "There already is a struct called `KeyPackage`",
               "createdAt": "2020-05-19T16:06:11Z",
-              "updatedAt": "2020-05-20T05:37:27Z"
+              "updatedAt": "2020-08-10T19:18:08Z"
             }
           ]
         },
@@ -22594,7 +22610,7 @@
               "originalPosition": 532,
               "body": "Hm. Not sure how that got there. I don't think we intended renaming the struct. The change was supposed to be that the `psk`s are included in the Welcome message.",
               "createdAt": "2020-05-20T05:34:41Z",
-              "updatedAt": "2020-05-20T05:37:27Z"
+              "updatedAt": "2020-08-10T19:18:08Z"
             }
           ]
         },
@@ -22614,7 +22630,7 @@
               "originalPosition": 158,
               "body": "Over in TLS, we worked on an interface for injecting PSKs:\r\n\r\n   https://tools.ietf.org/html/draft-ietf-tls-external-psk-importer-05\r\n\r\nWe concluded binding the imported PSK to the target protocol and KDF was sufficient. Maybe the same thing should be done here, i.e., to ensure that an injected PSK for MLS v1.0 does not collide with one injected for a different version?",
               "createdAt": "2020-06-09T03:22:17Z",
-              "updatedAt": "2020-06-09T03:22:18Z"
+              "updatedAt": "2020-08-10T19:18:08Z"
             }
           ]
         },
@@ -22634,7 +22650,7 @@
               "originalPosition": 265,
               "body": "Are \"external\" PSKs fixed? Would it make sense for them to also include an epoch, to allow applications to roll them forward for some FS?",
               "createdAt": "2020-06-09T03:24:05Z",
-              "updatedAt": "2020-06-09T03:24:05Z"
+              "updatedAt": "2020-08-10T19:18:08Z"
             }
           ]
         },
@@ -22654,7 +22670,7 @@
               "originalPosition": 265,
               "body": "External PSKs are required to be of an \"equivalent security level\" (although that terminology was added to the draft a long time ago and not yet defined). As such, any FS guarantees or other requirements must be met before being injected. It does not make sense to ratchet external PSK forward per MLS spec, as then we would be trying to correlate the time of existence of the PSK to MLS (i.e. parallel ratcheting); in that case the PSK is no longer external to the protocol but somehow correlated to it. The nonce prevents reuse, but any additional guarantees should be met by the application, not the protocol (going back to meeting requirements before being injected). ",
               "createdAt": "2020-06-09T03:52:23Z",
-              "updatedAt": "2020-06-09T03:52:23Z"
+              "updatedAt": "2020-08-10T19:18:08Z"
             }
           ]
         },
@@ -22674,7 +22690,7 @@
               "originalPosition": 158,
               "body": "Adding the MLS version number to the PSK type sounds like a solid addition.",
               "createdAt": "2020-06-09T03:54:07Z",
-              "updatedAt": "2020-06-09T03:54:07Z"
+              "updatedAt": "2020-08-10T19:18:08Z"
             }
           ]
         },
@@ -22694,7 +22710,7 @@
               "originalPosition": 265,
               "body": "I\u2019m not sure I agree. You can certainly do the ratcheting outside of the protocol, but you can also do it inside. For example, send an epoch and psk_id, and hash forward the external PSK corresponding to the ID based on the epoch. Some applications might not be able to augment their external PSK provision machinery to ratchet, so handling it in the protocol can be appealing. Food for thought.",
               "createdAt": "2020-06-09T03:55:58Z",
-              "updatedAt": "2020-06-09T03:55:58Z"
+              "updatedAt": "2020-08-10T19:18:08Z"
             }
           ]
         },
@@ -22714,7 +22730,7 @@
               "originalPosition": 265,
               "body": "So the proposal would be to extend MLS to allow ratcheting of \"external\" PSKs that continuously get injected into the protocol?\r\n\r\nIt's interesting, but it seems to me like we'd be creating a degree of redundancy here. MLS doesn't have very good FS capabilities (although they can be improved by something like RTreeKEM), so it's tempting to create a secondary mechanism, i.e. ratcheting a PSK along the epoch-chain. However, then the FS guarantees hinge on the FS properties of whatever means was used to distribute the PSK. So what is a scenario where the means of PSK distribution gives you better FS than MLS? If you have this really good out-of-band distribution channel for PSKs, do you really still need MLS?\r\n\r\nI don't think it's a bad idea, but I'm not sure how often it will be used and if it warrants the added complexity in the protocol. But that's maybe an issue we should discuss on the list or in the next virtual interim? \r\n\r\nIn any case, I think it's a good idea that's worth thinking about and that might match the use case of a number of people, but it's relatively orthogonal enough to our PR. Maybe it would be worth a new github issue?",
               "createdAt": "2020-06-09T06:15:37Z",
-              "updatedAt": "2020-06-09T06:15:37Z"
+              "updatedAt": "2020-08-10T19:18:08Z"
             }
           ]
         },
@@ -22734,7 +22750,7 @@
               "originalPosition": 265,
               "body": "This proposal it about taking in an external PSK, and then maintaining it in sync to protocol ratcheting. As FS is the main benefit of this, the working assumption/use case that it addresses is one where:\r\n\r\nA) the application does not have the capability of aligning security level of the PSK to the current epoch but provides it directly to the protocol (which begs the question of whether the application is checking \"equivalent security level\" for the PSK to begin with) and \r\n\r\nB) the external PSK will be used at multiple epochs (FS benefits become relevant when the external PSK has already been used in a past epoch).\r\n\r\nThis is a very specific case. Although it has clear benefits, those benefits derive from poor application choices or machinery.\r\n\r\nMany of the MLS protocol design choices have been made with the explicit goal of separating out necessary protocol actions and peripheral behavior that can be determined by the application, even if it has security implications (e.g. the entire key management of the AS is out of scope). In the same way, this proposal seems to be more suited to the architecture than the core protocol. Perhaps you can draft a PR on the architecture document for this? \r\n\r\nI will add a new github issue so people get a chance to comment as a relevant, separate issue.\r\n",
               "createdAt": "2020-06-10T17:29:12Z",
-              "updatedAt": "2020-06-10T17:29:12Z"
+              "updatedAt": "2020-08-10T19:18:08Z"
             }
           ]
         },
@@ -22754,7 +22770,219 @@
               "originalPosition": 265,
               "body": "Yeah, it's certainly orthogonal. We can address it elsewhere (if at all)!",
               "createdAt": "2020-06-10T18:23:49Z",
-              "updatedAt": "2020-06-10T18:23:49Z"
+              "updatedAt": "2020-08-10T19:18:08Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDY0MDYzNzQ0",
+          "commit": {
+            "abbreviatedOid": "1646e19"
+          },
+          "author": "ericcornelissen",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-08-10T09:05:35Z",
+          "updatedAt": "2020-08-10T09:05:35Z",
+          "comments": [
+            {
+              "originalPosition": 78,
+              "body": "Seems like the `confirmation_key` got duplicated accidentally\r\n\r\n```suggestion\r\n| `confirmation_key`      | \"confirm\"     |\r\n```",
+              "createdAt": "2020-08-10T09:05:35Z",
+              "updatedAt": "2020-08-10T19:18:08Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDY0MDY1MjIy",
+          "commit": {
+            "abbreviatedOid": "1646e19"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-08-10T09:07:59Z",
+          "updatedAt": "2020-08-10T09:07:59Z",
+          "comments": [
+            {
+              "originalPosition": 78,
+              "body": "Whoops you're right. For some reason I can't commit your suggestion, but I'll change the PR accordingly.",
+              "createdAt": "2020-08-10T09:07:59Z",
+              "updatedAt": "2020-08-10T19:18:08Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDY0MzAyNjM4",
+          "commit": {
+            "abbreviatedOid": "1646e19"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-08-10T14:53:18Z",
+          "updatedAt": "2020-08-10T16:03:58Z",
+          "comments": [
+            {
+              "originalPosition": 183,
+              "body": "```suggestion\r\n```",
+              "createdAt": "2020-08-10T14:53:18Z",
+              "updatedAt": "2020-08-10T19:18:08Z"
+            },
+            {
+              "originalPosition": 110,
+              "body": "Nit: Please format OPEN ISSUEs with the `<!-- -->` bracketing as below.",
+              "createdAt": "2020-08-10T14:54:16Z",
+              "updatedAt": "2020-08-10T19:18:08Z"
+            },
+            {
+              "originalPosition": 134,
+              "body": "It's not \"either/or\" -- when you signal to the existing members in Commit, you MUST include the same instructions in the Welcome.  So I would rephrase this more declaratively:\r\n\r\n> The injection of one or more PSKs into the key schedule is signalied by including a PreSharedKeys value in two places: (1) As an extension in the Commit that initiates a new epoch, and (2) in the GroupSecrets object carried in the Welcome message sent to members added in that epoch.",
+              "createdAt": "2020-08-10T14:57:22Z",
+              "updatedAt": "2020-08-10T19:18:08Z"
+            },
+            {
+              "originalPosition": 165,
+              "body": "\"... or a GroupSecrets object with the `psks` field set\"",
+              "createdAt": "2020-08-10T14:58:25Z",
+              "updatedAt": "2020-08-10T19:18:08Z"
+            },
+            {
+              "originalPosition": 118,
+              "body": "This seems like a good spot to indicate that PSKs are typed.\r\n\r\n> Each PSK in MLS has a type that designates how it was provisioned.  External PSKs are provided by the application logic.  Resumption PSKs are derived from the MLS key schedule, and used in cases where it is necessary to authenticate a member's participation in a prior group state:",
+              "createdAt": "2020-08-10T15:01:37Z",
+              "updatedAt": "2020-08-10T19:18:08Z"
+            },
+            {
+              "originalPosition": 123,
+              "body": "Instead of \"reboot\", suggest \"carry entropy from the old group forward into a new group with the desired parameters\"",
+              "createdAt": "2020-08-10T15:02:56Z",
+              "updatedAt": "2020-08-10T19:18:08Z"
+            },
+            {
+              "originalPosition": 126,
+              "body": "Just to confirm, \"securely\" here means, \"continuing members can verify that the newly added member was a prior participant.\r\n\r\nNote that this will have some complexity in practice, since the continuing members *also* have to have been in the group at that time.  So you couldn't have the following sequence:\r\n\r\n```\r\nEpoch 1: Group = {A, B, C}\r\n=== B loses sync with group ===\r\nEpoch 2: D added, Group = {A, B, C, D}\r\nEpoch 3: B is re-added with PSK to prove that they were in epoch 1\r\n```\r\n\r\n... because D won't have the PSK.",
+              "createdAt": "2020-08-10T15:05:46Z",
+              "updatedAt": "2020-08-10T19:18:08Z"
+            },
+            {
+              "originalPosition": 162,
+              "body": "```suggestion\r\n```",
+              "createdAt": "2020-08-10T15:18:01Z",
+              "updatedAt": "2020-08-10T19:18:08Z"
+            },
+            {
+              "originalPosition": 139,
+              "body": "Nit: I'm not sure if the `-` is allowed in the TLS syntax, but folks tend to reuse notation in programming, and it's definitely not allowed in variable/const names in typical programming languages.  Suggest `reinit`.",
+              "createdAt": "2020-08-10T15:20:14Z",
+              "updatedAt": "2020-08-10T19:18:08Z"
+            },
+            {
+              "originalPosition": 139,
+              "body": "I wonder whether all of these specializations are necessary, or whether a single `resumption` case would suffice.  If you include the *destination* group ID / epoch in the label as well, then you would have even better separation/context than you do here.",
+              "createdAt": "2020-08-10T15:21:34Z",
+              "updatedAt": "2020-08-10T19:18:08Z"
+            },
+            {
+              "originalPosition": 152,
+              "body": "Explicitly enumerating the cases here will be better for future extensibility.",
+              "createdAt": "2020-08-10T15:21:58Z",
+              "updatedAt": "2020-08-10T19:18:08Z"
+            },
+            {
+              "originalPosition": 157,
+              "body": "```suggestion\r\n} PreSharedKeyID;\r\n```",
+              "createdAt": "2020-08-10T15:22:25Z",
+              "updatedAt": "2020-08-10T19:18:08Z"
+            },
+            {
+              "originalPosition": 175,
+              "body": "`PreSharedKey(type);` doesn't make sense syntactically.  I think you can just replace these top two fields with `PreSharedKey psk_id`, since that specifies both the type and the value.",
+              "createdAt": "2020-08-10T15:23:48Z",
+              "updatedAt": "2020-08-10T19:18:08Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDY0Mzg4MzQy",
+          "commit": {
+            "abbreviatedOid": "79ac9b9"
+          },
+          "author": "br-hale",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-08-10T16:28:58Z",
+          "updatedAt": "2020-08-10T16:28:58Z",
+          "comments": [
+            {
+              "originalPosition": 139,
+              "body": "Dash removed to address first comment.\r\n\r\nFor second comment: a single resumption case does not cover key differences between the three options here, and mixing them into one (which was considered at length) causes issues down the line. In reinit, the original group must be fully terminated as a requirement, which is not the case in branching and recovery. Branching \"copies\" a subset of the current group into a new one, and it is essential that members know that this is not done with recovery (where a member is added back in, but there is no divergence in history). If the PSKtype does not signal distinctions sufficiently well, then there will likely be group authentication attacks over the history of group evolution (i.e. disagreement on what has occurred).",
+              "createdAt": "2020-08-10T16:28:58Z",
+              "updatedAt": "2020-08-10T19:18:08Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDY0NDE0Nzky",
+          "commit": {
+            "abbreviatedOid": "2fa7ad4"
+          },
+          "author": "br-hale",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-08-10T17:04:56Z",
+          "updatedAt": "2020-08-10T17:04:57Z",
+          "comments": [
+            {
+              "originalPosition": 126,
+              "body": "Good observation. Clarification added.",
+              "createdAt": "2020-08-10T17:04:56Z",
+              "updatedAt": "2020-08-10T19:18:08Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDY0NTAyMDAw",
+          "commit": {
+            "abbreviatedOid": "6689044"
+          },
+          "author": "br-hale",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-08-10T19:13:20Z",
+          "updatedAt": "2020-08-10T19:13:21Z",
+          "comments": [
+            {
+              "originalPosition": 118,
+              "body": "Addressed.",
+              "createdAt": "2020-08-10T19:13:21Z",
+              "updatedAt": "2020-08-10T19:18:08Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDY0NTA2NDY0",
+          "commit": {
+            "abbreviatedOid": "7bd759d"
+          },
+          "author": "br-hale",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-08-10T19:20:36Z",
+          "updatedAt": "2020-08-10T19:20:37Z",
+          "comments": [
+            {
+              "originalPosition": 152,
+              "body": "Addressed, according to what you seem to be requesting.",
+              "createdAt": "2020-08-10T19:20:37Z",
+              "updatedAt": "2020-08-10T19:20:37Z"
             }
           ]
         }
@@ -25492,6 +25720,32 @@
           ]
         }
       ]
+    },
+    {
+      "number": 387,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDY1NjI1MDI2",
+      "title": "Make composite types 2^32 and make 0 invalid for enums",
+      "url": "https://github.com/mlswg/mls-protocol/pull/387",
+      "state": "OPEN",
+      "author": "Bren2010",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "- 0 is invalid for all enums except a few, and I wasn't sure if it mattered? So I made them consistent\r\n- `DirectPath.nodes` needs to be 2^32 to fit the largest DirectPathNode\r\n- Make the `extensions` array 2^32 as well to fit the largest Extension, and also 2^16 for *all* extensions seems small",
+      "createdAt": "2020-08-10T17:09:38Z",
+      "updatedAt": "2020-08-10T17:09:38Z",
+      "baseRepository": "mlswg/mls-protocol",
+      "baseRefName": "master",
+      "baseRefOid": "d1d5f56a5d83781042d19c830497ab5aa104907f",
+      "headRepository": "Bren2010/mls-protocol",
+      "headRefName": "brendan/2020.8.0",
+      "headRefOid": "63e14af675db46b8a39e04ecdc322e249a774686",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
