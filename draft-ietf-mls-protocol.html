@@ -818,7 +818,7 @@ address div.right {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Barnes, et al.</td>
-<td class="center">Expires 7 February 2021</td>
+<td class="center">Expires 12 February 2021</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -831,12 +831,12 @@ address div.right {
 <dd class="internet-draft">draft-ietf-mls-protocol-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2020-08-06" class="published">6 August 2020</time>
+<time datetime="2020-08-11" class="published">11 August 2020</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2021-02-07">7 February 2021</time></dd>
+<dd class="expires"><time datetime="2021-02-12">12 February 2021</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -907,7 +907,7 @@ in size ranging from two to thousands.<a href="#section-abstract-1" class="pilcr
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 7 February 2021.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 12 February 2021.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -2408,11 +2408,13 @@ struct {
     opaque signature&lt;0..2^16-1&gt;;
 } MLSPlaintextCommitAuthData;
 
+interim_transcript_hash_[0] = 0
+
 confirmed_transcript_hash_[n] =
-    Hash(interim_transcript_hash_[n-1] ||
+    Hash(interim_transcript_hash_[n] ||
         MLSPlaintextCommitContent_[n]);
 
-interim_transcript_hash_[n] =
+interim_transcript_hash_[n+1] =
     Hash(confirmed_transcript_hash_[n] ||
         MLSPlaintextCommitAuthData_[n]);
 </pre><a href="#section-7.6-8" class="pilcrow">¶</a>
@@ -2424,8 +2426,8 @@ signature fields are then included in the transcript for the next epoch.  The
 interim transcript hash is passed to new members in the GroupInfo struct, and
 enables existing members to incorporate a Commit message into the transcript
 without having to store the whole MLSPlaintextCommitAuthData structure.<a href="#section-7.6-9" class="pilcrow">¶</a></p>
-<p id="section-7.6-10">When a new group is created, the <code>interim_transcript_hash</code> field is set to the
-zero-length octet string.<a href="#section-7.6-10" class="pilcrow">¶</a></p>
+<p id="section-7.6-10">As shown above, when a new group is created, the <code>interim_transcript_hash</code> field
+is set to the zero-length octet string.<a href="#section-7.6-10" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="direct-paths">
@@ -4139,7 +4141,7 @@ uint16 CipherSuite;
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">HASH</td>
-              <td class="text-left" rowspan="1" colspan="1">The hash algorithm used for HPKE and the MLS KDF</td>
+              <td class="text-left" rowspan="1" colspan="1">The hash algorithm used for HPKE and the MLS transcript hash</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">SIG</td>
@@ -4282,7 +4284,10 @@ is REQUIRED for a Y-&gt;N transition.<a href="#section-15.1-8.3" class="pilcrow"
             </tr>
           </tbody>
         </table>
-<p id="section-15.1-13">It is advisable to keep the number of ciphersuites low to increase the chances
+<p id="section-15.1-13">The hash used for the MLS transcript hash is the one referenced in the
+ciphersuite name.  In the ciphersuites defined above, "SHA256" and "SHA512"
+refer to the SHA-256 and SHA-512 functions defined in <span>[<a href="#SHS" class="xref">SHS</a>]</span>.<a href="#section-15.1-13" class="pilcrow">¶</a></p>
+<p id="section-15.1-14">It is advisable to keep the number of ciphersuites low to increase the chances
 clients can interoperate in a federated environment, therefore the ciphersuites
 only inlcude modern, yet well-established algorithms.  Depending on their
 requirements, clients can choose between two security levels (roughly 128-bit
@@ -4292,15 +4297,15 @@ negotiations. Additionally clients that run predominantly on mobile processors
 can choose ChaCha20Poly1305 over AES-GCM for performance reasons. Since
 ChaCha20Poly1305 is not listed by FIPS 140-2 it is not paired with FIPS 140-2
 compliant curves. The security level of symmetric encryption algorithms and hash
-functions is paired with the security level of the curves.<a href="#section-15.1-13" class="pilcrow">¶</a></p>
-<p id="section-15.1-14">The mandatory-to-implement ciphersuite for MLS 1.0 is
+functions is paired with the security level of the curves.<a href="#section-15.1-14" class="pilcrow">¶</a></p>
+<p id="section-15.1-15">The mandatory-to-implement ciphersuite for MLS 1.0 is
 <code>MLS10\_128\_HPKE25519\_AES128GCM\_SHA256\_Ed25519</code> which uses
 Curve25519, HKDF over SHA2-256 and AES-128-GCM for HPKE,
 and AES-128-GCM with Ed25519 for symmetric encryption and
-signatures.<a href="#section-15.1-14" class="pilcrow">¶</a></p>
-<p id="section-15.1-15">Values with the first byte 255 (decimal) are reserved for Private Use.<a href="#section-15.1-15" class="pilcrow">¶</a></p>
-<p id="section-15.1-16">New ciphersuite values are assigned by IANA as described in
-<a href="#iana-considerations" class="xref">Section 15</a>.<a href="#section-15.1-16" class="pilcrow">¶</a></p>
+signatures.<a href="#section-15.1-15" class="pilcrow">¶</a></p>
+<p id="section-15.1-16">Values with the first byte 255 (decimal) are reserved for Private Use.<a href="#section-15.1-16" class="pilcrow">¶</a></p>
+<p id="section-15.1-17">New ciphersuite values are assigned by IANA as described in
+<a href="#iana-considerations" class="xref">Section 15</a>.<a href="#section-15.1-17" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="mls-extension-types">
@@ -4668,6 +4673,10 @@ thyla.van.der@merwe.tech<a href="#section-16-1.12.3" class="pilcrow">¶</a></p>
 <dt id="SECG">[SECG]</dt>
         <dd>
 <span class="refTitle">"Elliptic Curve Cryptography, Standards for Efficient Cryptography Group, ver. 2"</span>, <time datetime="2009" class="refDate">2009</time>, <span>&lt;<a href="https://secg.org/sec1-v2.pdf">https://secg.org/sec1-v2.pdf</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="SHS">[SHS]</dt>
+        <dd>
+<span class="refAuthor">Dang, Q.</span>, <span class="refTitle">"Secure Hash Standard"</span>, <span class="seriesInfo">DOI 10.6028/nist.fips.180-4</span>, <span class="seriesInfo">National Institute of Standards and Technology report</span>, <time datetime="2015-07" class="refDate">July 2015</time>, <span>&lt;<a href="https://doi.org/10.6028/nist.fips.180-4">https://doi.org/10.6028/nist.fips.180-4</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="signal">[signal]</dt>
       <dd>

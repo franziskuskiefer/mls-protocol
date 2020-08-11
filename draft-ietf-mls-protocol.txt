@@ -5,7 +5,7 @@
 Network Working Group                                          R. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Informational                             B. Beurdouche
-Expires: 7 February 2021                                           Inria
+Expires: 12 February 2021                                          Inria
                                                              J. Millican
                                                                 Facebook
                                                                 E. Omara
@@ -14,7 +14,7 @@ Expires: 7 February 2021                                           Inria
                                                     University of Oxford
                                                                R. Robert
                                                                     Wire
-                                                           6 August 2020
+                                                          11 August 2020
 
 
               The Messaging Layer Security (MLS) Protocol
@@ -53,7 +53,7 @@ Status of This Memo
 
 
 
-Barnes, et al.           Expires 7 February 2021                [Page 1]
+Barnes, et al.          Expires 12 February 2021                [Page 1]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -63,7 +63,7 @@ Internet-Draft                     MLS                       August 2020
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 7 February 2021.
+   This Internet-Draft will expire on 12 February 2021.
 
 Copyright Notice
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Barnes, et al.           Expires 7 February 2021                [Page 2]
+Barnes, et al.          Expires 12 February 2021                [Page 2]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -152,8 +152,8 @@ Internet-Draft                     MLS                       August 2020
    17. References  . . . . . . . . . . . . . . . . . . . . . . . . .  67
      17.1.  Normative References . . . . . . . . . . . . . . . . . .  67
      17.2.  Informative References . . . . . . . . . . . . . . . . .  68
-   Appendix A.  Tree Math  . . . . . . . . . . . . . . . . . . . . .  69
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  72
+   Appendix A.  Tree Math  . . . . . . . . . . . . . . . . . . . . .  70
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  73
 
 1.  Introduction
 
@@ -165,7 +165,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021                [Page 3]
+Barnes, et al.          Expires 12 February 2021                [Page 3]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -221,7 +221,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021                [Page 4]
+Barnes, et al.          Expires 12 February 2021                [Page 4]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -277,7 +277,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021                [Page 5]
+Barnes, et al.          Expires 12 February 2021                [Page 5]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -333,7 +333,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021                [Page 6]
+Barnes, et al.          Expires 12 February 2021                [Page 6]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -389,7 +389,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021                [Page 7]
+Barnes, et al.          Expires 12 February 2021                [Page 7]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -445,7 +445,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021                [Page 8]
+Barnes, et al.          Expires 12 February 2021                [Page 8]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -501,7 +501,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021                [Page 9]
+Barnes, et al.          Expires 12 February 2021                [Page 9]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -557,7 +557,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 10]
+Barnes, et al.          Expires 12 February 2021               [Page 10]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -613,7 +613,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 11]
+Barnes, et al.          Expires 12 February 2021               [Page 11]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -669,7 +669,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 12]
+Barnes, et al.          Expires 12 February 2021               [Page 12]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -725,7 +725,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 13]
+Barnes, et al.          Expires 12 February 2021               [Page 13]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -781,7 +781,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 14]
+Barnes, et al.          Expires 12 February 2021               [Page 14]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -837,7 +837,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 15]
+Barnes, et al.          Expires 12 February 2021               [Page 15]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -893,7 +893,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 16]
+Barnes, et al.          Expires 12 February 2021               [Page 16]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -949,7 +949,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 17]
+Barnes, et al.          Expires 12 February 2021               [Page 17]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -1005,7 +1005,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 18]
+Barnes, et al.          Expires 12 February 2021               [Page 18]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -1061,7 +1061,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 19]
+Barnes, et al.          Expires 12 February 2021               [Page 19]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -1117,7 +1117,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 20]
+Barnes, et al.          Expires 12 February 2021               [Page 20]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -1173,7 +1173,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 21]
+Barnes, et al.          Expires 12 February 2021               [Page 21]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -1229,7 +1229,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 22]
+Barnes, et al.          Expires 12 February 2021               [Page 22]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -1285,7 +1285,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 23]
+Barnes, et al.          Expires 12 February 2021               [Page 23]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -1341,7 +1341,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 24]
+Barnes, et al.          Expires 12 February 2021               [Page 24]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -1397,7 +1397,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 25]
+Barnes, et al.          Expires 12 February 2021               [Page 25]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -1453,7 +1453,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 26]
+Barnes, et al.          Expires 12 February 2021               [Page 26]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -1491,40 +1491,36 @@ Internet-Draft                     MLS                       August 2020
        opaque signature<0..2^16-1>;
    } MLSPlaintextCommitAuthData;
 
+   interim_transcript_hash_[0] = 0
+
    confirmed_transcript_hash_[n] =
-       Hash(interim_transcript_hash_[n-1] ||
+       Hash(interim_transcript_hash_[n] ||
            MLSPlaintextCommitContent_[n]);
 
-   interim_transcript_hash_[n] =
+   interim_transcript_hash_[n+1] =
        Hash(confirmed_transcript_hash_[n] ||
            MLSPlaintextCommitAuthData_[n]);
-
-
-
-
-
-
-
-
-
-
-
-Barnes, et al.           Expires 7 February 2021               [Page 27]
-
-Internet-Draft                     MLS                       August 2020
-
 
    Thus the "confirmed_transcript_hash" field in a GroupContext object
    represents a transcript over the whole history of MLSPlaintext Commit
    messages, up to the confirmation field in the current MLSPlaintext
    message.  The confirmation and signature fields are then included in
    the transcript for the next epoch.  The interim transcript hash is
+
+
+
+Barnes, et al.          Expires 12 February 2021               [Page 27]
+
+Internet-Draft                     MLS                       August 2020
+
+
    passed to new members in the GroupInfo struct, and enables existing
    members to incorporate a Commit message into the transcript without
    having to store the whole MLSPlaintextCommitAuthData structure.
 
-   When a new group is created, the "interim_transcript_hash" field is
-   set to the zero-length octet string.
+   As shown above, when a new group is created, the
+   "interim_transcript_hash" field is set to the zero-length octet
+   string.
 
 7.7.  Direct Paths
 
@@ -1560,20 +1556,19 @@ Internet-Draft                     MLS                       August 2020
    kem_output, context = SetupBaseS(node_public_key, "")
    ciphertext = context.Seal(group_context, path_secret)
 
-
-
-
-
-
-Barnes, et al.           Expires 7 February 2021               [Page 28]
-
-Internet-Draft                     MLS                       August 2020
-
-
    where "node_public_key" is the public key of the node that the path
    secret is being encrypted for, group_context is the current
    GroupContext object for the group, and the functions "SetupBaseS" and
    "Seal" are defined according to [I-D.irtf-cfrg-hpke].
+
+
+
+
+
+Barnes, et al.          Expires 12 February 2021               [Page 28]
+
+Internet-Draft                     MLS                       August 2020
+
 
    Decryption is performed in the corresponding way, using the private
    key of the resolution node and the ephemeral public key transmitted
@@ -1621,7 +1616,12 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 29]
+
+
+
+
+
+Barnes, et al.          Expires 12 February 2021               [Page 29]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -1677,7 +1677,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 30]
+Barnes, et al.          Expires 12 February 2021               [Page 30]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -1733,7 +1733,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 31]
+Barnes, et al.          Expires 12 February 2021               [Page 31]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -1789,7 +1789,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 32]
+Barnes, et al.          Expires 12 February 2021               [Page 32]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -1845,7 +1845,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 33]
+Barnes, et al.          Expires 12 February 2021               [Page 33]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -1901,7 +1901,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 34]
+Barnes, et al.          Expires 12 February 2021               [Page 34]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -1957,7 +1957,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 35]
+Barnes, et al.          Expires 12 February 2021               [Page 35]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2013,7 +2013,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 36]
+Barnes, et al.          Expires 12 February 2021               [Page 36]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2069,7 +2069,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 37]
+Barnes, et al.          Expires 12 February 2021               [Page 37]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2125,7 +2125,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 38]
+Barnes, et al.          Expires 12 February 2021               [Page 38]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2181,7 +2181,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 39]
+Barnes, et al.          Expires 12 February 2021               [Page 39]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2237,7 +2237,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 40]
+Barnes, et al.          Expires 12 February 2021               [Page 40]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2293,7 +2293,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 41]
+Barnes, et al.          Expires 12 February 2021               [Page 41]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2349,7 +2349,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 42]
+Barnes, et al.          Expires 12 February 2021               [Page 42]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2405,7 +2405,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 43]
+Barnes, et al.          Expires 12 February 2021               [Page 43]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2461,7 +2461,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 44]
+Barnes, et al.          Expires 12 February 2021               [Page 44]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2517,7 +2517,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 45]
+Barnes, et al.          Expires 12 February 2021               [Page 45]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2573,7 +2573,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 46]
+Barnes, et al.          Expires 12 February 2021               [Page 46]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2629,7 +2629,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 47]
+Barnes, et al.          Expires 12 February 2021               [Page 47]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2685,7 +2685,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 48]
+Barnes, et al.          Expires 12 February 2021               [Page 48]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2741,7 +2741,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 49]
+Barnes, et al.          Expires 12 February 2021               [Page 49]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2797,7 +2797,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 50]
+Barnes, et al.          Expires 12 February 2021               [Page 50]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2853,7 +2853,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 51]
+Barnes, et al.          Expires 12 February 2021               [Page 51]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2909,7 +2909,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 52]
+Barnes, et al.          Expires 12 February 2021               [Page 52]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2965,7 +2965,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 53]
+Barnes, et al.          Expires 12 February 2021               [Page 53]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3021,7 +3021,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 54]
+Barnes, et al.          Expires 12 February 2021               [Page 54]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3077,7 +3077,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 55]
+Barnes, et al.          Expires 12 February 2021               [Page 55]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3133,7 +3133,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 56]
+Barnes, et al.          Expires 12 February 2021               [Page 56]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3189,7 +3189,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 57]
+Barnes, et al.          Expires 12 February 2021               [Page 57]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3245,7 +3245,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 58]
+Barnes, et al.          Expires 12 February 2021               [Page 58]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3301,7 +3301,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 59]
+Barnes, et al.          Expires 12 February 2021               [Page 59]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3357,7 +3357,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 60]
+Barnes, et al.          Expires 12 February 2021               [Page 60]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3377,7 +3377,7 @@ Internet-Draft                     MLS                       August 2020
           |           | message protection                     |
           +-----------+----------------------------------------+
           | HASH      | The hash algorithm used for HPKE and   |
-          |           | the MLS KDF                            |
+          |           | the MLS transcript hash                |
           +-----------+----------------------------------------+
           | SIG       | The Signature algorithm used for       |
           |           | message authentication                 |
@@ -3413,7 +3413,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 61]
+Barnes, et al.          Expires 12 February 2021               [Page 61]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3463,17 +3463,25 @@ Internet-Draft                     MLS                       August 2020
 
                                  Table 5
 
-   It is advisable to keep the number of ciphersuites low to increase
-   the chances clients can interoperate in a federated environment,
-   therefore the ciphersuites only inlcude modern, yet well-established
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 62]
+
+
+
+Barnes, et al.          Expires 12 February 2021               [Page 62]
 
 Internet-Draft                     MLS                       August 2020
 
 
+   The hash used for the MLS transcript hash is the one referenced in
+   the ciphersuite name.  In the ciphersuites defined above, "SHA256"
+   and "SHA512" refer to the SHA-256 and SHA-512 functions defined in
+   [SHS].
+
+   It is advisable to keep the number of ciphersuites low to increase
+   the chances clients can interoperate in a federated environment,
+   therefore the ciphersuites only inlcude modern, yet well-established
    algorithms.  Depending on their requirements, clients can choose
    between two security levels (roughly 128-bit and 256-bit).  Within
    the security levels clients can choose between faster X25519/X448
@@ -3515,20 +3523,19 @@ Internet-Draft                     MLS                       August 2020
 
       -  GI: GroupInfo objects
 
+
+
+Barnes, et al.          Expires 12 February 2021               [Page 63]
+
+Internet-Draft                     MLS                       August 2020
+
+
    *  Recommended: Whether support for this extension is recommended by
       the IETF MLS WG.  Valid values are "Y" and "N".  The "Recommended"
       column is assigned a value of "N" unless explicitly requested, and
       adding a value with a "Recommended" value of "Y" requires
       Standards Action [RFC8126].  IESG Approval is REQUIRED for a Y->N
       transition.
-
-
-
-
-Barnes, et al.           Expires 7 February 2021               [Page 63]
-
-Internet-Draft                     MLS                       August 2020
-
 
    *  Reference: The document where this extension is defined
 
@@ -3571,6 +3578,14 @@ Internet-Draft                     MLS                       August 2020
    *  Recommended: Whether support for this extension is recommended by
       the IETF MLS WG.  Valid values are "Y" and "N".  The "Recommended"
       column is assigned a value of "N" unless explicitly requested, and
+
+
+
+Barnes, et al.          Expires 12 February 2021               [Page 64]
+
+Internet-Draft                     MLS                       August 2020
+
+
       adding a value with a "Recommended" value of "Y" requires
       Standards Action [RFC8126].  IESG Approval is REQUIRED for a Y->N
       transition.
@@ -3578,13 +3593,6 @@ Internet-Draft                     MLS                       August 2020
    *  Reference: The document where this extension is defined
 
    Initial contents:
-
-
-
-Barnes, et al.           Expires 7 February 2021               [Page 64]
-
-Internet-Draft                     MLS                       August 2020
-
 
        +=================+==============+=============+===========+
        | Value           | Name         | Recommended | Reference |
@@ -3622,6 +3630,18 @@ Internet-Draft                     MLS                       August 2020
    21 days can be brought to the IESG's attention for resolution using
    the iesg@ietf.org (mailto:iesg@ietf.org) mailing list.
 
+
+
+
+
+
+
+
+Barnes, et al.          Expires 12 February 2021               [Page 65]
+
+Internet-Draft                     MLS                       August 2020
+
+
    Criteria that SHOULD be applied by the MLS DEs includes determining
    whether the proposed registration duplicates existing functionality,
    whether it is likely to be of general applicability or useful only
@@ -3631,16 +3651,6 @@ Internet-Draft                     MLS                       August 2020
 
    IANA MUST only accept registry updates from the MLS DEs and SHOULD
    direct all requests for registration to the MLS DEs' mailing list.
-
-
-
-
-
-
-Barnes, et al.           Expires 7 February 2021               [Page 65]
-
-Internet-Draft                     MLS                       August 2020
-
 
    It is suggested that multiple MLS DEs be appointed who are able to
    represent the perspectives of different applications using this
@@ -3681,6 +3691,13 @@ Internet-Draft                     MLS                       August 2020
 
       britta.hale@nps.edu
 
+
+
+Barnes, et al.          Expires 12 February 2021               [Page 66]
+
+Internet-Draft                     MLS                       August 2020
+
+
    *  Srinivas Inguva
 
       Twitter
@@ -3690,13 +3707,6 @@ Internet-Draft                     MLS                       August 2020
    *  Konrad Kohbrok
 
       Aalto University
-
-
-
-Barnes, et al.           Expires 7 February 2021               [Page 66]
-
-Internet-Draft                     MLS                       August 2020
-
 
       konrad.kohbrok@datashrine.de
 
@@ -3734,6 +3744,16 @@ Internet-Draft                     MLS                       August 2020
 
 17.1.  Normative References
 
+
+
+
+
+
+Barnes, et al.          Expires 12 February 2021               [Page 67]
+
+Internet-Draft                     MLS                       August 2020
+
+
    [I-D.irtf-cfrg-hpke]
               Barnes, R., Bhargavan, K., Lipp, B., and C. Wood, "Hybrid
               Public Key Encryption", Work in Progress, Internet-Draft,
@@ -3745,14 +3765,6 @@ Internet-Draft                     MLS                       August 2020
               Hashing for Message Authentication", RFC 2104,
               DOI 10.17487/RFC2104, February 1997,
               <https://www.rfc-editor.org/info/rfc2104>.
-
-
-
-
-Barnes, et al.           Expires 7 February 2021               [Page 67]
-
-Internet-Draft                     MLS                       August 2020
-
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -3785,6 +3797,19 @@ Internet-Draft                     MLS                       August 2020
               Privacy Enhancing Technologies pp. 143-163, 2014,
               <https://doi.org/10.1007/978-3-319-08506-7_8>.
 
+
+
+
+
+
+
+
+
+Barnes, et al.          Expires 12 February 2021               [Page 68]
+
+Internet-Draft                     MLS                       August 2020
+
+
    [doubleratchet]
               Cohn-Gordon, K., Cremers, C., Dowling, B., Garratt, L.,
               and D. Stebila, "A Formal Security Analysis of the Signal
@@ -3802,14 +3827,6 @@ Internet-Draft                     MLS                       August 2020
    [I-D.ietf-mls-architecture]
               Omara, E., Beurdouche, B., Rescorla, E., Inguva, S., Kwon,
               A., and A. Duric, "The Messaging Layer Security (MLS)
-
-
-
-Barnes, et al.           Expires 7 February 2021               [Page 68]
-
-Internet-Draft                     MLS                       August 2020
-
-
               Architecture", Work in Progress, Internet-Draft, draft-
               ietf-mls-architecture-05, 26 July 2020,
               <http://www.ietf.org/internet-drafts/draft-ietf-mls-
@@ -3831,10 +3848,23 @@ Internet-Draft                     MLS                       August 2020
               Cryptography Group, ver. 2", 2009,
               <https://secg.org/sec1-v2.pdf>.
 
+   [SHS]      Dang, Q., "Secure Hash Standard",
+              DOI 10.6028/nist.fips.180-4, National Institute of
+              Standards and Technology report, July 2015,
+              <https://doi.org/10.6028/nist.fips.180-4>.
+
    [signal]   Perrin(ed), T. and M. Marlinspike, "The Double Ratchet
               Algorithm", 20 November 2016,
               <https://www.signal.org/docs/specifications/
               doubleratchet/>.
+
+
+
+
+Barnes, et al.          Expires 12 February 2021               [Page 69]
+
+Internet-Draft                     MLS                       August 2020
+
 
 Appendix A.  Tree Math
 
@@ -3858,13 +3888,6 @@ Appendix A.  Tree Math
    relation (where "x" is an arbitrary bit string):
 
    parent=01x => left=00x, right=10x
-
-
-
-Barnes, et al.           Expires 7 February 2021               [Page 69]
-
-Internet-Draft                     MLS                       August 2020
-
 
    The following python code demonstrates the tree computations
    necessary for MLS.  Test vectors can be derived from the diagram
@@ -3891,6 +3914,14 @@ def level(x):
     k = 0
     while ((x >> k) & 0x01) == 1:
         k += 1
+
+
+
+Barnes, et al.          Expires 12 February 2021               [Page 70]
+
+Internet-Draft                     MLS                       August 2020
+
+
     return k
 
 # The number of nodes needed to represent a tree with n leaves.
@@ -3913,14 +3944,6 @@ def left(x):
         raise Exception('leaf node has no children')
 
     return x ^ (0x01 << (k - 1))
-
-
-
-
-Barnes, et al.           Expires 7 February 2021               [Page 70]
-
-Internet-Draft                     MLS                       August 2020
-
 
 # The right child of an intermediate node. Depends on the number of
 # leaves because the straightforward calculation can take you beyond the
@@ -3948,6 +3971,13 @@ def parent(x, n):
     if x == root(n):
         raise Exception('root node has no parent')
 
+
+
+Barnes, et al.          Expires 12 February 2021               [Page 71]
+
+Internet-Draft                     MLS                       August 2020
+
+
     p = parent_step(x)
     while p >= node_width(n):
         p = parent_step(p)
@@ -3970,14 +4000,6 @@ def direct_path(x, n):
     d = []
     while x != r:
         x = parent(x, n)
-
-
-
-Barnes, et al.           Expires 7 February 2021               [Page 71]
-
-Internet-Draft                     MLS                       August 2020
-
-
         d.append(x)
     return d
 
@@ -4004,6 +4026,14 @@ def common_ancestor_semantic(x, y, n):
 
 # The common ancestor of two nodes is the lowest node that is in the
 # direct paths of both leaves.
+
+
+
+Barnes, et al.          Expires 12 February 2021               [Page 72]
+
+Internet-Draft                     MLS                       August 2020
+
+
 def common_ancestor_direct(x, y, _):
     # Handle cases where one is an ancestor of the other
     lx, ly = level(x)+1, level(y)+1
@@ -4028,12 +4058,6 @@ Authors' Addresses
    Email: rlb@ipv.sx
 
 
-
-Barnes, et al.           Expires 7 February 2021               [Page 72]
-
-Internet-Draft                     MLS                       August 2020
-
-
    Benjamin Beurdouche
    Inria
 
@@ -4056,6 +4080,14 @@ Internet-Draft                     MLS                       August 2020
    University of Oxford
 
    Email: me@katriel.co.uk
+
+
+
+
+
+Barnes, et al.          Expires 12 February 2021               [Page 73]
+
+Internet-Draft                     MLS                       August 2020
 
 
    Raphael Robert
@@ -4085,4 +4117,28 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.           Expires 7 February 2021               [Page 73]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Barnes, et al.          Expires 12 February 2021               [Page 74]
