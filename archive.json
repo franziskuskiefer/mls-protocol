@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-08-11T00:37:33.674862+00:00",
+  "timestamp": "2020-08-13T00:37:46.414225+00:00",
   "repo": "mlswg/mls-protocol",
   "labels": [
     {
@@ -3909,14 +3909,38 @@
       "id": "MDU6SXNzdWU2NzYxNzQ2OTk=",
       "title": "Remove remaning raw Hash or add hash function to ciphersuite",
       "url": "https://github.com/mlswg/mls-protocol/issues/386",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "bifurcation",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "In #364, we changed from using HKDF to using the KDF from HPKE, which I thought removed the need for the ciphersuite to specify a hash function. As a result, ciphersuites no longer needed to specify a hash.\r\n\r\nHowever, the transcript computations still have a raw `Hash()` invocation, not a KDF invocation.  So we need to either:\r\n\r\n1. Change the transcript hash computations to use the KDF, or\r\n2. Clarify that ciphersuites still specify a hash function (as before)",
       "createdAt": "2020-08-10T14:21:13Z",
-      "updatedAt": "2020-08-10T14:21:13Z",
+      "updatedAt": "2020-08-11T19:18:11Z",
+      "closedAt": "2020-08-11T19:18:11Z",
+      "comments": [
+        {
+          "author": "ericcornelissen",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "What about the `Hash()` call in the [Exporters section](https://github.com/mlswg/mls-protocol/blob/d1d5f56a5d83781042d19c830497ab5aa104907f/draft-ietf-mls-protocol.md#exporters) and the \"hashes\" for [Tree Hashes](https://github.com/mlswg/mls-protocol/blob/d1d5f56a5d83781042d19c830497ab5aa104907f/draft-ietf-mls-protocol.md#tree-hashes)?",
+          "createdAt": "2020-08-11T13:10:29Z",
+          "updatedAt": "2020-08-11T13:10:29Z"
+        }
+      ]
+    },
+    {
+      "number": 390,
+      "id": "MDU6SXNzdWU2Nzc0NTI2NTM=",
+      "title": "impossible to verify the group creation process for the joiner without knowing the random init_secret that the group creator used",
+      "url": "https://github.com/mlswg/mls-protocol/issues/390",
+      "state": "OPEN",
+      "author": "tomtau",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "https://github.com/mlswg/mls-protocol/pull/385#issuecomment-671949236",
+      "createdAt": "2020-08-12T07:09:17Z",
+      "updatedAt": "2020-08-12T07:09:17Z",
       "closedAt": null,
       "comments": []
     }
@@ -24572,18 +24596,33 @@
       "labels": [],
       "body": "",
       "createdAt": "2020-07-14T02:34:30Z",
-      "updatedAt": "2020-07-22T00:53:43Z",
+      "updatedAt": "2020-08-11T19:16:03Z",
       "baseRepository": "mlswg/mls-protocol",
       "baseRefName": "master",
-      "baseRefOid": "d68b832e69abcee6150eb69d5d82500f161175db",
+      "baseRefOid": "d1d5f56a5d83781042d19c830497ab5aa104907f",
       "headRepository": "mlswg/mls-protocol",
       "headRefName": "brendan/masking",
-      "headRefOid": "d379e371fbe5fa2f082bd0b68543eafc5d5952fa",
+      "headRefOid": "2caf85d769b484b58b17d2d6302150c4bfca415d",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Just to recap the options as I understand them:\r\n\r\na) Today:\r\n   encrypted_sender_data = AEAD(sender_data_key, sender_data_nonce, (groupID, epoch), sender_data)\r\n   encrypted_content = AEAD(app_key[i][j], app_key[i][j], (groupID, epoch, encrypted_sender_data), content)\r\n\r\nb) Sample sender data nonce from ciphertext (saves explicit nonce)\r\n   encrypted_content = AEAD(app_key[i][j], app_nonce[i][j], (groupID, epoch), content)\r\n   encrypted_sender_data = AEAD(sender_data_key, sample(encrypted_content), (groupID, epoch, encrypted_content), sender_data)\r\n\r\nc) Drop auth tag from content encryption (saves explicit nonce and content auth tag)\r\n   encrypted_content = Enc(app_key[i][j], app_nonce[i][j], content)\r\n   encrypted_sender_data = AEAD(sender_data_key, sample(encrypted_content), (groupID, epoch, encrypted_content), sender_data)",
+          "createdAt": "2020-08-11T16:41:40Z",
+          "updatedAt": "2020-08-11T16:41:40Z"
+        },
+        {
+          "author": "Bren2010",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Ok updated to strategy B",
+          "createdAt": "2020-08-11T19:16:03Z",
+          "updatedAt": "2020-08-11T19:16:03Z"
+        }
+      ],
       "reviews": [
         {
           "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDUxODg5NDAx",
@@ -24601,25 +24640,25 @@
               "originalPosition": 132,
               "body": "I think the overview steps are important to have here, especially since the ciphertext sampling makes the order of things a bit complex (you have to encrypt the content, then loop back to the sender data).  But I think we streamline a little bit:\r\n\r\n```\r\n* Set group_id, epoch, content_type and authenticated_data fields from the\r\n  MLSPlaintext object directly\r\n\r\n* Identify the key and key generation depending on the content type\r\n\r\n* Encrypt an MLSCiphertextContent for the ciphertext field using the key\r\n  identified and MLSPlaintext object\r\n\r\n* Encrypt the sender data using the sender data key for the epoch and a\r\n   nonce sampled from  encrypted MLSCiphertextContent.\r\n```",
               "createdAt": "2020-07-20T19:17:55Z",
-              "updatedAt": "2020-07-22T00:53:43Z"
+              "updatedAt": "2020-08-11T19:13:14Z"
             },
             {
               "originalPosition": 241,
               "body": "You've removed the AAD from the main content encryption, which seems wrong.  it seems like we should have the unencrypted sender data feed in the ciphertext AAD, and the ciphertext (or the derived nonce) in the sender data AAD.  Something like:\r\n\r\n```\r\n      /  group_id            \\\r\n      |  epoch               |--+\r\n   +--|  content_type        /  |\r\n   |  |  sender_data         <--+\r\n   |  \\  authenticated_data  \\__|\r\n   +-->  content             /\r\n\r\nstruct {\r\n    opaque group_id<0..255>;\r\n    uint64 epoch;\r\n    ContentType content_type;\r\n    opaque authenticated_data<0..2^32-1>; // <---\r\n    opaque ciphertext<0..2^32-1>;\r\n} SenderDataAAD;\r\n\r\nstruct {\r\n    opaque group_id<0..255>;\r\n    uint64 epoch;\r\n    ContentType content_type;\r\n    SenderData sender_data;\r\n    opaque authenticated_data<0..2^32-1>; // <--- \r\n} ContentAAD;\r\n```",
               "createdAt": "2020-07-20T19:24:04Z",
-              "updatedAt": "2020-07-22T00:53:43Z"
+              "updatedAt": "2020-08-11T19:13:14Z"
             },
             {
               "originalPosition": 281,
               "body": "Can't we just use the existing KDF we have on hand?",
               "createdAt": "2020-07-20T19:25:16Z",
-              "updatedAt": "2020-07-22T00:53:43Z"
+              "updatedAt": "2020-08-11T19:13:14Z"
             },
             {
               "originalPosition": 181,
               "body": "Since we're going to have an auth tag anyway, it seems like we could simplify this a fair bit by just using the ciphersuite's AEAD to encrypt the SenderData (as we do now), and just sampling the *nonce* from the ciphertext.\r\n\r\nThat obviously removes the need to do XOR in addition to normal AEAD, and may allow us to simplify the sampling as well.  Since the nonce only needs to be random and not secret, we might be able to get away with just using the first `nonce_size` bytes of the ciphertext (or HKDF-Extract thereof).  So it gets rid of the AES-ECB dependency as well.\r\n\r\nAnd since this changes from (AEAD + XOR + AEAD) to (AEAD + AEAD), we no longer need the `authentication_key`.\r\n\r\n```\r\nciphertext = AEAD.Seal(key=generation.key,\r\n                       nonce=generation.nonce,\r\n                       pt=content,\r\n                       aad=header_with_plaintext_sender_data)\r\nsender_data_nonce = ciphertext[:nonce_size]\r\nencrypted_sender_data = AEAD.Seal(key=sender_data_key,\r\n                                  nonce=sender_data_nonce,\r\n                                  pt=sender_data,\r\n                                  aad=header_without_sender_data_and_with_ciphertext)\r\n```",
               "createdAt": "2020-07-20T19:57:47Z",
-              "updatedAt": "2020-07-22T00:53:43Z"
+              "updatedAt": "2020-08-11T19:13:14Z"
             }
           ]
         },
@@ -24639,7 +24678,7 @@
               "originalPosition": 241,
               "body": "The ciphertext's auth tag is truncated so there's no point in having AAD on the content. All AAD is against the sender data.",
               "createdAt": "2020-07-22T00:28:58Z",
-              "updatedAt": "2020-07-22T00:53:43Z"
+              "updatedAt": "2020-08-11T19:13:14Z"
             }
           ]
         }
@@ -25684,11 +25723,11 @@
       "labels": [],
       "body": "This suggestion is based on a discussion in the MLS mailing list [[1]](https://mailarchive.ietf.org/arch/msg/mls/qrpAoK7aNSzKxX4O60pOLvM3cp8). It prevents issues that currently arrise when the very first commit of a group is an \"add-only\" commit because both the `commit_secret` and `init_secret` would be **0**.\r\n\r\nLet me know if the wording or anything else should be changed.\r\n\r\n/cc @bifurcation\r\n\r\n---\r\n\r\n1. https://mailarchive.ietf.org/arch/msg/mls/qrpAoK7aNSzKxX4O60pOLvM3cp8",
       "createdAt": "2020-08-06T11:09:18Z",
-      "updatedAt": "2020-08-07T08:38:02Z",
+      "updatedAt": "2020-08-12T06:12:52Z",
       "baseRepository": "mlswg/mls-protocol",
       "baseRefName": "master",
       "baseRefOid": "39455d2ea5e8fb42e8f0f0624bddd8c56675da0e",
-      "headRepository": "ericcornelissen/mls-protocol",
+      "headRepository": null,
       "headRefName": "random-first-init-secret",
       "headRefOid": "5a34af6b36509dd1eff4ca4abbedd31288fe904f",
       "closedAt": "2020-08-06T13:35:34Z",
@@ -25697,7 +25736,29 @@
       "mergeCommit": {
         "oid": "4829451c5a21cd7b85d59407bd46fcd2a194283d"
       },
-      "comments": [],
+      "comments": [
+        {
+          "author": "ericcornelissen",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I believe this change invalidates the last paragraph of the [Group Creation section](https://github.com/mlswg/mls-protocol/blob/d1d5f56a5d83781042d19c830497ab5aa104907f/draft-ietf-mls-protocol.md#group-creation), as it is impossible to verify the group creation process for the joiner without knowing the random `init_secret` that the group creator used.\r\n\r\n\r\n> A new member receiving a Welcome message can recognize group creation if the number of entries in the members array is equal to the number of leaves in the tree minus one. A client receiving a Welcome message SHOULD verify whether it is a newly created group, and if so, **SHOULD verify that the above process was followed by reconstructing the Add and Commit messages and verifying that the resulting transcript hashes and epoch secret match those found in the Welcome message.**",
+          "createdAt": "2020-08-11T13:32:49Z",
+          "updatedAt": "2020-08-11T13:32:49Z"
+        },
+        {
+          "author": "tomtau",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "maybe one alternative is to keep the zero `init_secret`, but make it compulsory to populate the path for this group creation welcome/commit (so that `commit_secret` isn't zero)?",
+          "createdAt": "2020-08-12T05:24:36Z",
+          "updatedAt": "2020-08-12T05:28:14Z"
+        },
+        {
+          "author": "ericcornelissen",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "That would also work @tomtau (I also suggested that as an alternative in my original report in the mailing list), to me it is a little bit less elegant though. Personally, I also wonder why it is necessary to verify that group creation just happened. (Moreover, this way of recognizing group creation would prevent any group from which all but one person left from continuing, which my be confusing to end-users)",
+          "createdAt": "2020-08-12T06:12:51Z",
+          "updatedAt": "2020-08-12T06:12:51Z"
+        }
+      ],
       "reviews": [
         {
           "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDYyNDc2ODQ3",
@@ -25726,26 +25787,263 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NDY1NjI1MDI2",
       "title": "Make composite types 2^32 and make 0 invalid for enums",
       "url": "https://github.com/mlswg/mls-protocol/pull/387",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "Bren2010",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "- 0 is invalid for all enums except a few, and I wasn't sure if it mattered? So I made them consistent\r\n- `DirectPath.nodes` needs to be 2^32 to fit the largest DirectPathNode\r\n- Make the `extensions` array 2^32 as well to fit the largest Extension, and also 2^16 for *all* extensions seems small",
       "createdAt": "2020-08-10T17:09:38Z",
-      "updatedAt": "2020-08-10T17:09:38Z",
+      "updatedAt": "2020-08-11T19:48:58Z",
       "baseRepository": "mlswg/mls-protocol",
       "baseRefName": "master",
       "baseRefOid": "d1d5f56a5d83781042d19c830497ab5aa104907f",
       "headRepository": "Bren2010/mls-protocol",
       "headRefName": "brendan/2020.8.0",
-      "headRefOid": "63e14af675db46b8a39e04ecdc322e249a774686",
+      "headRefOid": "83471ad6a95c7f1bb0c8ccb42f2eed2bdcc1f958",
+      "closedAt": "2020-08-11T19:48:58Z",
+      "mergedAt": "2020-08-11T19:48:58Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "4fc8afa1f7548ebf56bde9e2d45d0352c66fcf5b"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDY1MjMzODA5",
+          "commit": {
+            "abbreviatedOid": "63e14af"
+          },
+          "author": "seanturner",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-08-11T16:28:44Z",
+          "updatedAt": "2020-08-11T16:28:44Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "Change to reserved.",
+              "createdAt": "2020-08-11T16:28:44Z",
+              "updatedAt": "2020-08-11T18:45:44Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDY1MjMzOTU4",
+          "commit": {
+            "abbreviatedOid": "63e14af"
+          },
+          "author": "seanturner",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-08-11T16:28:53Z",
+          "updatedAt": "2020-08-11T16:28:54Z",
+          "comments": [
+            {
+              "originalPosition": 52,
+              "body": "Change to reserved.",
+              "createdAt": "2020-08-11T16:28:54Z",
+              "updatedAt": "2020-08-11T18:45:44Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDY1Mzc3OTc0",
+          "commit": {
+            "abbreviatedOid": "83471ad"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-08-11T19:48:51Z",
+          "updatedAt": "2020-08-11T19:48:51Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 388,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDY2MTc0NzI2",
+      "title": "Clarify the transcript hash computation",
+      "url": "https://github.com/mlswg/mls-protocol/pull/388",
+      "state": "MERGED",
+      "author": "bifurcation",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Addresses ambiguity pointed out on the mailing list by @ericcornelissen.\r\n\r\nFixes #386 ",
+      "createdAt": "2020-08-11T15:20:44Z",
+      "updatedAt": "2020-08-11T19:18:12Z",
+      "baseRepository": "mlswg/mls-protocol",
+      "baseRefName": "master",
+      "baseRefOid": "d1d5f56a5d83781042d19c830497ab5aa104907f",
+      "headRepository": "mlswg/mls-protocol",
+      "headRefName": "interim",
+      "headRefOid": "2c570160ae48c198a31ff3e9dedb27d1c0ed110a",
+      "closedAt": "2020-08-11T19:18:11Z",
+      "mergedAt": "2020-08-11T19:18:11Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "385c19416355b5f2900e3b499bdeb4e718b08348"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDY1MjI4NDMz",
+          "commit": {
+            "abbreviatedOid": "870674d"
+          },
+          "author": "raphaelrobert",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-08-11T16:22:24Z",
+          "updatedAt": "2020-08-11T16:22:25Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "Still not clear to me what `0` means here. ",
+              "createdAt": "2020-08-11T16:22:24Z",
+              "updatedAt": "2020-08-11T16:23:23Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDY1MzU1ODM4",
+          "commit": {
+            "abbreviatedOid": "2c57016"
+          },
+          "author": "Bren2010",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-08-11T19:14:20Z",
+          "updatedAt": "2020-08-11T19:14:20Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 389,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDY2MzI5NzQw",
+      "title": "#383: Enable Commit to cover new proposal types",
+      "url": "https://github.com/mlswg/mls-protocol/pull/389",
+      "state": "OPEN",
+      "author": "Bren2010",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-08-11T20:10:13Z",
+      "updatedAt": "2020-08-12T16:44:24Z",
+      "baseRepository": "mlswg/mls-protocol",
+      "baseRefName": "master",
+      "baseRefOid": "4fc8afa1f7548ebf56bde9e2d45d0352c66fcf5b",
+      "headRepository": "Bren2010/mls-protocol",
+      "headRefName": "brendan/2020.8.2",
+      "headRefOid": "3b27aa33ad45b93feac94d8a9014ce654888805d",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDY1Mzk5Mjk2",
+          "commit": {
+            "abbreviatedOid": "1a2ee8a"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-08-11T20:21:50Z",
+          "updatedAt": "2020-08-11T21:04:35Z",
+          "comments": [
+            {
+              "originalPosition": 113,
+              "body": "This algorithm doesn't validate that the `proposals` vector is in the proper order, which is the complexity I'm most worried about.  Do you have a proposed algorithm for that?",
+              "createdAt": "2020-08-11T20:21:50Z",
+              "updatedAt": "2020-08-12T16:44:24Z"
+            },
+            {
+              "originalPosition": 103,
+              "body": "It might be good to (1) break these out into bullets, and (2) state explicitly where other proposal types fit (presumably after Adds, in any order defined by the proposals?).",
+              "createdAt": "2020-08-11T21:03:07Z",
+              "updatedAt": "2020-08-12T16:44:24Z"
+            },
+            {
+              "originalPosition": 103,
+              "body": "As I mentioned on the call today, we need a way for clients to state their support for proposals, e.g., a `supported_proposals` field in the `capabilities` extension.",
+              "createdAt": "2020-08-11T21:04:32Z",
+              "updatedAt": "2020-08-12T16:44:24Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDY1NDI5NTYz",
+          "commit": {
+            "abbreviatedOid": "1a2ee8a"
+          },
+          "author": "Bren2010",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-08-11T21:07:16Z",
+          "updatedAt": "2020-08-11T21:07:16Z",
+          "comments": [
+            {
+              "originalPosition": 113,
+              "body": "Yes it does, line 1962 does that check",
+              "createdAt": "2020-08-11T21:07:16Z",
+              "updatedAt": "2020-08-12T16:44:24Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDY1NDMyMTEw",
+          "commit": {
+            "abbreviatedOid": "1a2ee8a"
+          },
+          "author": "Bren2010",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-08-11T21:11:35Z",
+          "updatedAt": "2020-08-11T21:11:35Z",
+          "comments": [
+            {
+              "originalPosition": 103,
+              "body": "I didn't state where other proposals go, because I thought extensions would want to decide for themselves.\r\n\r\nI think support for given proposals should be assumed if the client supports a given group extension",
+              "createdAt": "2020-08-11T21:11:35Z",
+              "updatedAt": "2020-08-12T16:44:24Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDY2MDkyMjUx",
+          "commit": {
+            "abbreviatedOid": "f76ad2e"
+          },
+          "author": "Bren2010",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-08-12T16:43:25Z",
+          "updatedAt": "2020-08-12T16:43:26Z",
+          "comments": [
+            {
+              "originalPosition": 113,
+              "body": "line 1967 now",
+              "createdAt": "2020-08-12T16:43:26Z",
+              "updatedAt": "2020-08-12T16:44:24Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
