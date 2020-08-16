@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-08-13T00:37:46.414225+00:00",
+  "timestamp": "2020-08-16T00:40:10.732765+00:00",
   "repo": "mlswg/mls-protocol",
   "labels": [
     {
@@ -3941,6 +3941,22 @@
       "body": "https://github.com/mlswg/mls-protocol/pull/385#issuecomment-671949236",
       "createdAt": "2020-08-12T07:09:17Z",
       "updatedAt": "2020-08-12T07:09:17Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 392,
+      "id": "MDU6SXNzdWU2NzkxMTczNjM=",
+      "title": "Is the path secret used as PRK when doing Kdf.Expand?",
+      "url": "https://github.com/mlswg/mls-protocol/issues/392",
+      "state": "OPEN",
+      "author": "yihuang",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "When evolving the ratchet tree, we'll do:\r\n```\r\npath_secret[n] = ExpandWithLabel(path_secret[n-1],\r\n                                   \"path\", \"\", KEM.Nsk)\r\n```\r\nDoes the `path_secret[n-1]` used as the `PRK` directly?\r\n```\r\n   HKDF-Expand(PRK, info, L) -> OKM\r\n```\r\nIf that's the case, does that mean ` KEM.Nsk` should be `>= Kdf.Nh`?\r\n\r\nOr should we do an extract before the expand?",
+      "createdAt": "2020-08-14T12:14:46Z",
+      "updatedAt": "2020-08-14T12:15:18Z",
       "closedAt": null,
       "comments": []
     }
@@ -25938,7 +25954,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2020-08-11T20:10:13Z",
-      "updatedAt": "2020-08-12T16:44:24Z",
+      "updatedAt": "2020-08-14T20:56:44Z",
       "baseRepository": "mlswg/mls-protocol",
       "baseRefName": "master",
       "baseRefOid": "4fc8afa1f7548ebf56bde9e2d45d0352c66fcf5b",
@@ -26042,6 +26058,181 @@
               "updatedAt": "2020-08-12T16:44:24Z"
             }
           ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDY3ODI1MDYx",
+          "commit": {
+            "abbreviatedOid": "3b27aa3"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-08-14T19:26:29Z",
+          "updatedAt": "2020-08-14T20:56:44Z",
+          "comments": [
+            {
+              "originalPosition": 113,
+              "body": "I see what you mean.  That also explains why you reordered the proposal definitions, which I found a bit puzzling :)  You've still got them in the wrong order, (Add, Update, Remove) instead of (Update, Remove, Add).\r\n\r\nI would prefer not to rely interpreting ProposalType values as integers / the order of the enum here.  Instead, how about something more explicit, like:\r\n\r\n```\r\ndef proposal_order(proposal_type):\r\n    if proposal_type == update:\r\n        return 1\r\n    elif proposal_type == remove:\r\n        return 2\r\n    elif proposal_type == add:\r\n        return 3\r\n    else:\r\n        return 4\r\n```",
+              "createdAt": "2020-08-14T19:26:29Z",
+              "updatedAt": "2020-08-14T20:56:44Z"
+            },
+            {
+              "originalPosition": 113,
+              "body": "At this point, though, I wonder what the utility is of requiring the proposals to be ordered.  We already require that the recipient MUST first apply the Updates, then Removes, then Adds.  It will remove the need for validation logic, and not make the processing logic much worse.\r\n\r\n```\r\napplied = set()\r\napplied = state.apply_updates(proposals, applied)\r\napplied = state.apply_removes(proposals, applied)\r\napplied = state.apply_adds(proposals, applied)\r\nif len(applied) != len(proposals):\r\n    raise Exception(\"Unsupported proposals\")\r\n```\r\n\r\nThis would get you to a point where new proposal types wouldn't require a *syntax* change, but would require different processing.  That doesn't seem awful, since new proposal types will have to be negotiated, and thus we can assume that if one is used, then everyone will have the right processing logic.",
+              "createdAt": "2020-08-14T19:40:07Z",
+              "updatedAt": "2020-08-14T20:56:44Z"
+            },
+            {
+              "originalPosition": 113,
+              "body": "In a related vein, this PR should:\r\n1. Extend the `capabilities` extension to have `supported_proposals`\r\n2. Add a note to the proposal processing step below that future proposal handling is defined by the future proposals.",
+              "createdAt": "2020-08-14T20:56:40Z",
+              "updatedAt": "2020-08-14T20:56:44Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 391,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDY3Njk5NDEx",
+      "title": "Rename DirectPath to UpdatePath",
+      "url": "https://github.com/mlswg/mls-protocol/pull/391",
+      "state": "OPEN",
+      "author": "chelseakomlo",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This is a simple rename of `DirectPath` to `UpdatePath` to be more descriptive of the action being performed by the message.\r\n\r\nI'll open a separate PR after this PIR is merged with updates to the spec where it uses `Commit` when instead it should say `UpdatePath` (since not every `Commit` actually ratchets forward key material, as I understand). Some examples of where these clarifications should happen are: \r\n\r\n- Line 1203 should instead say \"each MLS UpdatePath message\" \r\n- The sections \"Ratchet Tree Evolution\" and \"Sychronizing Views of the Tree\" should describe the process of generating the key material for an `UpdatePath` message\r\n\r\ncc @bifurcation ",
+      "createdAt": "2020-08-14T00:11:44Z",
+      "updatedAt": "2020-08-14T01:52:50Z",
+      "baseRepository": "mlswg/mls-protocol",
+      "baseRefName": "master",
+      "baseRefOid": "4fc8afa1f7548ebf56bde9e2d45d0352c66fcf5b",
+      "headRepository": "chelseakomlo/mls-protocol",
+      "headRefName": "direct-path-to-update-path",
+      "headRefOid": "09fcebc4d20fcb49e7ae3e4a9989b41b70af3fef",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "Bren2010",
+          "authorAssociation": "COLLABORATOR",
+          "body": "DirectPath corresponds to the graph theory term \"direct path\" of a leaf with the root",
+          "createdAt": "2020-08-14T00:20:13Z",
+          "updatedAt": "2020-08-14T00:20:13Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 393,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDY3OTgwNDIw",
+      "title": "Application messages MUST be encrypted",
+      "url": "https://github.com/mlswg/mls-protocol/pull/393",
+      "state": "OPEN",
+      "author": "raphaelrobert",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-08-14T13:20:20Z",
+      "updatedAt": "2020-08-15T11:56:20Z",
+      "baseRepository": "mlswg/mls-protocol",
+      "baseRefName": "master",
+      "baseRefOid": "4fc8afa1f7548ebf56bde9e2d45d0352c66fcf5b",
+      "headRepository": "mlswg/mls-protocol",
+      "headRefName": "raphaelrobert-message-encryption",
+      "headRefOid": "6855c706ed7b9a7e87a9da11b6c2c971c8c6cc88",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDY3ODIwMzc0",
+          "commit": {
+            "abbreviatedOid": "6855c70"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-08-14T19:17:27Z",
+          "updatedAt": "2020-08-14T19:17:37Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "I don't think this MUST makes sense -- for example, there may be cases where you want to take an MLS key exchange and protect application data with an exported key.\r\n\r\nInstead, can we just delete \"both application and\" here?  I think the intent of the sentence was to encourage encryption of handshake messages, not to say anything about application messages.",
+              "createdAt": "2020-08-14T19:17:28Z",
+              "updatedAt": "2020-08-14T19:17:37Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDY3OTY2Nzky",
+          "commit": {
+            "abbreviatedOid": "6855c70"
+          },
+          "author": "raphaelrobert",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-08-15T11:56:20Z",
+          "updatedAt": "2020-08-15T11:56:20Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "> I don't think this MUST makes sense -- for example, there may be cases where you want to take an MLS key exchange and protect application data with an exported key.\r\n\r\nIf you just want to use MLS for key exchange and then use key material from the exporter that's fine, but that's orthogonal to using Application Messages.\r\n\r\nI really want to make sure that client never send unencrypted Application Messages. If you don't care about confidentiality you can always use the AAD for that.",
+              "createdAt": "2020-08-15T11:56:20Z",
+              "updatedAt": "2020-08-15T11:56:20Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 394,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDY3OTg3Mjk4",
+      "title": "Confirmation fix",
+      "url": "https://github.com/mlswg/mls-protocol/pull/394",
+      "state": "MERGED",
+      "author": "raphaelrobert",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [],
+      "body": " This PR gets rid of the explicit HMAC reference and uses KDF.Extract instead (which internally uses HMAC). Also `confirmation` is renamed to `confirmation_tag`.",
+      "createdAt": "2020-08-14T13:33:50Z",
+      "updatedAt": "2020-08-14T19:14:25Z",
+      "baseRepository": "mlswg/mls-protocol",
+      "baseRefName": "master",
+      "baseRefOid": "4fc8afa1f7548ebf56bde9e2d45d0352c66fcf5b",
+      "headRepository": "mlswg/mls-protocol",
+      "headRefName": "raphaelrobert-hmac",
+      "headRefOid": "71e5cb48115be760667704af12837119b706dff2",
+      "closedAt": "2020-08-14T19:14:25Z",
+      "mergedAt": "2020-08-14T19:14:25Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "1982f307a772d17c0470ee492fcedf4cfafac62d"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDY3ODE4NzAx",
+          "commit": {
+            "abbreviatedOid": "71e5cb4"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "I don't love the extra `_tag`, but I can live with it.",
+          "createdAt": "2020-08-14T19:14:18Z",
+          "updatedAt": "2020-08-14T19:14:18Z",
+          "comments": []
         }
       ]
     }
