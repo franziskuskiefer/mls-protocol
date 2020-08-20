@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-08-16T00:40:10.732765+00:00",
+  "timestamp": "2020-08-20T00:39:02.316926+00:00",
   "repo": "mlswg/mls-protocol",
   "labels": [
     {
@@ -3933,15 +3933,15 @@
       "id": "MDU6SXNzdWU2Nzc0NTI2NTM=",
       "title": "impossible to verify the group creation process for the joiner without knowing the random init_secret that the group creator used",
       "url": "https://github.com/mlswg/mls-protocol/issues/390",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "tomtau",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "https://github.com/mlswg/mls-protocol/pull/385#issuecomment-671949236",
       "createdAt": "2020-08-12T07:09:17Z",
-      "updatedAt": "2020-08-12T07:09:17Z",
-      "closedAt": null,
+      "updatedAt": "2020-08-18T14:50:20Z",
+      "closedAt": "2020-08-18T14:50:20Z",
       "comments": []
     },
     {
@@ -3956,9 +3956,38 @@
       "labels": [],
       "body": "When evolving the ratchet tree, we'll do:\r\n```\r\npath_secret[n] = ExpandWithLabel(path_secret[n-1],\r\n                                   \"path\", \"\", KEM.Nsk)\r\n```\r\nDoes the `path_secret[n-1]` used as the `PRK` directly?\r\n```\r\n   HKDF-Expand(PRK, info, L) -> OKM\r\n```\r\nIf that's the case, does that mean ` KEM.Nsk` should be `>= Kdf.Nh`?\r\n\r\nOr should we do an extract before the expand?",
       "createdAt": "2020-08-14T12:14:46Z",
-      "updatedAt": "2020-08-14T12:15:18Z",
+      "updatedAt": "2020-08-19T03:37:18Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "Bren2010",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Yes, `path_secret[n-1]` is used as the PRK directly. Why does `Kdf.Nh` matter?",
+          "createdAt": "2020-08-18T16:11:36Z",
+          "updatedAt": "2020-08-18T16:11:36Z"
+        },
+        {
+          "author": "yihuang",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Because in https://tools.ietf.org/html/rfc5869, there's:\r\n```\r\n   HKDF-Expand(PRK, info, L) -> OKM\r\n...\r\n   Inputs:\r\n      PRK      a pseudorandom key of at least HashLen octets\r\n               (usually, the output from the extract step)\r\n```\r\n\r\nAnd length of `path_secret` is `KEM.Nsk`, so `KEM.Nsk >= Kdf.Nh`? unless we do an extract before expand?",
+          "createdAt": "2020-08-18T16:52:27Z",
+          "updatedAt": "2020-08-18T16:52:27Z"
+        },
+        {
+          "author": "Bren2010",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I believe the PRK is just used as an HMAC key in HKDF, so I don't think that's a hard requirement",
+          "createdAt": "2020-08-18T17:43:38Z",
+          "updatedAt": "2020-08-18T17:43:38Z"
+        },
+        {
+          "author": "yihuang",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> I believe the PRK is just used as an HMAC key in HKDF, so I don't think that's a hard requirement\r\n\r\nI'm not sure how hard the requirement is, the RFC didn't say it's a `SHOULD`, and [implementation added check on this](https://github.com/RustCrypto/KDFs/blob/master/hkdf/src/hkdf.rs#L128), so it'll cause confusion, or even panic program.",
+          "createdAt": "2020-08-19T03:35:48Z",
+          "updatedAt": "2020-08-19T03:37:18Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -24612,13 +24641,13 @@
       "labels": [],
       "body": "",
       "createdAt": "2020-07-14T02:34:30Z",
-      "updatedAt": "2020-08-11T19:16:03Z",
+      "updatedAt": "2020-08-19T01:46:59Z",
       "baseRepository": "mlswg/mls-protocol",
       "baseRefName": "master",
-      "baseRefOid": "d1d5f56a5d83781042d19c830497ab5aa104907f",
+      "baseRefOid": "bb6b3fa6ae3869275a16be24250e9ac26ddfe02a",
       "headRepository": "mlswg/mls-protocol",
       "headRefName": "brendan/masking",
-      "headRefOid": "2caf85d769b484b58b17d2d6302150c4bfca415d",
+      "headRefOid": "1e84b5c1b89afb555b8fd3c19a8b011349b64e9a",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -24630,13 +24659,6 @@
           "body": "Just to recap the options as I understand them:\r\n\r\na) Today:\r\n   encrypted_sender_data = AEAD(sender_data_key, sender_data_nonce, (groupID, epoch), sender_data)\r\n   encrypted_content = AEAD(app_key[i][j], app_key[i][j], (groupID, epoch, encrypted_sender_data), content)\r\n\r\nb) Sample sender data nonce from ciphertext (saves explicit nonce)\r\n   encrypted_content = AEAD(app_key[i][j], app_nonce[i][j], (groupID, epoch), content)\r\n   encrypted_sender_data = AEAD(sender_data_key, sample(encrypted_content), (groupID, epoch, encrypted_content), sender_data)\r\n\r\nc) Drop auth tag from content encryption (saves explicit nonce and content auth tag)\r\n   encrypted_content = Enc(app_key[i][j], app_nonce[i][j], content)\r\n   encrypted_sender_data = AEAD(sender_data_key, sample(encrypted_content), (groupID, epoch, encrypted_content), sender_data)",
           "createdAt": "2020-08-11T16:41:40Z",
           "updatedAt": "2020-08-11T16:41:40Z"
-        },
-        {
-          "author": "Bren2010",
-          "authorAssociation": "COLLABORATOR",
-          "body": "Ok updated to strategy B",
-          "createdAt": "2020-08-11T19:16:03Z",
-          "updatedAt": "2020-08-11T19:16:03Z"
         }
       ],
       "reviews": [
@@ -24656,25 +24678,25 @@
               "originalPosition": 132,
               "body": "I think the overview steps are important to have here, especially since the ciphertext sampling makes the order of things a bit complex (you have to encrypt the content, then loop back to the sender data).  But I think we streamline a little bit:\r\n\r\n```\r\n* Set group_id, epoch, content_type and authenticated_data fields from the\r\n  MLSPlaintext object directly\r\n\r\n* Identify the key and key generation depending on the content type\r\n\r\n* Encrypt an MLSCiphertextContent for the ciphertext field using the key\r\n  identified and MLSPlaintext object\r\n\r\n* Encrypt the sender data using the sender data key for the epoch and a\r\n   nonce sampled from  encrypted MLSCiphertextContent.\r\n```",
               "createdAt": "2020-07-20T19:17:55Z",
-              "updatedAt": "2020-08-11T19:13:14Z"
+              "updatedAt": "2020-08-19T01:46:59Z"
             },
             {
               "originalPosition": 241,
               "body": "You've removed the AAD from the main content encryption, which seems wrong.  it seems like we should have the unencrypted sender data feed in the ciphertext AAD, and the ciphertext (or the derived nonce) in the sender data AAD.  Something like:\r\n\r\n```\r\n      /  group_id            \\\r\n      |  epoch               |--+\r\n   +--|  content_type        /  |\r\n   |  |  sender_data         <--+\r\n   |  \\  authenticated_data  \\__|\r\n   +-->  content             /\r\n\r\nstruct {\r\n    opaque group_id<0..255>;\r\n    uint64 epoch;\r\n    ContentType content_type;\r\n    opaque authenticated_data<0..2^32-1>; // <---\r\n    opaque ciphertext<0..2^32-1>;\r\n} SenderDataAAD;\r\n\r\nstruct {\r\n    opaque group_id<0..255>;\r\n    uint64 epoch;\r\n    ContentType content_type;\r\n    SenderData sender_data;\r\n    opaque authenticated_data<0..2^32-1>; // <--- \r\n} ContentAAD;\r\n```",
               "createdAt": "2020-07-20T19:24:04Z",
-              "updatedAt": "2020-08-11T19:13:14Z"
+              "updatedAt": "2020-08-19T01:46:59Z"
             },
             {
               "originalPosition": 281,
               "body": "Can't we just use the existing KDF we have on hand?",
               "createdAt": "2020-07-20T19:25:16Z",
-              "updatedAt": "2020-08-11T19:13:14Z"
+              "updatedAt": "2020-08-19T01:46:59Z"
             },
             {
               "originalPosition": 181,
               "body": "Since we're going to have an auth tag anyway, it seems like we could simplify this a fair bit by just using the ciphersuite's AEAD to encrypt the SenderData (as we do now), and just sampling the *nonce* from the ciphertext.\r\n\r\nThat obviously removes the need to do XOR in addition to normal AEAD, and may allow us to simplify the sampling as well.  Since the nonce only needs to be random and not secret, we might be able to get away with just using the first `nonce_size` bytes of the ciphertext (or HKDF-Extract thereof).  So it gets rid of the AES-ECB dependency as well.\r\n\r\nAnd since this changes from (AEAD + XOR + AEAD) to (AEAD + AEAD), we no longer need the `authentication_key`.\r\n\r\n```\r\nciphertext = AEAD.Seal(key=generation.key,\r\n                       nonce=generation.nonce,\r\n                       pt=content,\r\n                       aad=header_with_plaintext_sender_data)\r\nsender_data_nonce = ciphertext[:nonce_size]\r\nencrypted_sender_data = AEAD.Seal(key=sender_data_key,\r\n                                  nonce=sender_data_nonce,\r\n                                  pt=sender_data,\r\n                                  aad=header_without_sender_data_and_with_ciphertext)\r\n```",
               "createdAt": "2020-07-20T19:57:47Z",
-              "updatedAt": "2020-08-11T19:13:14Z"
+              "updatedAt": "2020-08-19T01:46:59Z"
             }
           ]
         },
@@ -24694,7 +24716,7 @@
               "originalPosition": 241,
               "body": "The ciphertext's auth tag is truncated so there's no point in having AAD on the content. All AAD is against the sender data.",
               "createdAt": "2020-07-22T00:28:58Z",
-              "updatedAt": "2020-08-11T19:13:14Z"
+              "updatedAt": "2020-08-19T01:46:59Z"
             }
           ]
         }
@@ -25954,13 +25976,13 @@
       "labels": [],
       "body": "",
       "createdAt": "2020-08-11T20:10:13Z",
-      "updatedAt": "2020-08-14T20:56:44Z",
+      "updatedAt": "2020-08-18T16:04:38Z",
       "baseRepository": "mlswg/mls-protocol",
       "baseRefName": "master",
-      "baseRefOid": "4fc8afa1f7548ebf56bde9e2d45d0352c66fcf5b",
+      "baseRefOid": "bb6b3fa6ae3869275a16be24250e9ac26ddfe02a",
       "headRepository": "Bren2010/mls-protocol",
       "headRefName": "brendan/2020.8.2",
-      "headRefOid": "3b27aa33ad45b93feac94d8a9014ce654888805d",
+      "headRefOid": "d6dd20ee285c7671714dfa53fbb8a57387f7d88a",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -25983,19 +26005,19 @@
               "originalPosition": 113,
               "body": "This algorithm doesn't validate that the `proposals` vector is in the proper order, which is the complexity I'm most worried about.  Do you have a proposed algorithm for that?",
               "createdAt": "2020-08-11T20:21:50Z",
-              "updatedAt": "2020-08-12T16:44:24Z"
+              "updatedAt": "2020-08-18T15:59:22Z"
             },
             {
               "originalPosition": 103,
               "body": "It might be good to (1) break these out into bullets, and (2) state explicitly where other proposal types fit (presumably after Adds, in any order defined by the proposals?).",
               "createdAt": "2020-08-11T21:03:07Z",
-              "updatedAt": "2020-08-12T16:44:24Z"
+              "updatedAt": "2020-08-18T15:59:22Z"
             },
             {
               "originalPosition": 103,
               "body": "As I mentioned on the call today, we need a way for clients to state their support for proposals, e.g., a `supported_proposals` field in the `capabilities` extension.",
               "createdAt": "2020-08-11T21:04:32Z",
-              "updatedAt": "2020-08-12T16:44:24Z"
+              "updatedAt": "2020-08-18T15:59:22Z"
             }
           ]
         },
@@ -26015,7 +26037,7 @@
               "originalPosition": 113,
               "body": "Yes it does, line 1962 does that check",
               "createdAt": "2020-08-11T21:07:16Z",
-              "updatedAt": "2020-08-12T16:44:24Z"
+              "updatedAt": "2020-08-18T15:59:22Z"
             }
           ]
         },
@@ -26035,7 +26057,7 @@
               "originalPosition": 103,
               "body": "I didn't state where other proposals go, because I thought extensions would want to decide for themselves.\r\n\r\nI think support for given proposals should be assumed if the client supports a given group extension",
               "createdAt": "2020-08-11T21:11:35Z",
-              "updatedAt": "2020-08-12T16:44:24Z"
+              "updatedAt": "2020-08-18T15:59:22Z"
             }
           ]
         },
@@ -26055,7 +26077,7 @@
               "originalPosition": 113,
               "body": "line 1967 now",
               "createdAt": "2020-08-12T16:43:26Z",
-              "updatedAt": "2020-08-12T16:44:24Z"
+              "updatedAt": "2020-08-18T15:59:22Z"
             }
           ]
         },
@@ -26075,19 +26097,39 @@
               "originalPosition": 113,
               "body": "I see what you mean.  That also explains why you reordered the proposal definitions, which I found a bit puzzling :)  You've still got them in the wrong order, (Add, Update, Remove) instead of (Update, Remove, Add).\r\n\r\nI would prefer not to rely interpreting ProposalType values as integers / the order of the enum here.  Instead, how about something more explicit, like:\r\n\r\n```\r\ndef proposal_order(proposal_type):\r\n    if proposal_type == update:\r\n        return 1\r\n    elif proposal_type == remove:\r\n        return 2\r\n    elif proposal_type == add:\r\n        return 3\r\n    else:\r\n        return 4\r\n```",
               "createdAt": "2020-08-14T19:26:29Z",
-              "updatedAt": "2020-08-14T20:56:44Z"
+              "updatedAt": "2020-08-18T15:59:22Z"
             },
             {
               "originalPosition": 113,
               "body": "At this point, though, I wonder what the utility is of requiring the proposals to be ordered.  We already require that the recipient MUST first apply the Updates, then Removes, then Adds.  It will remove the need for validation logic, and not make the processing logic much worse.\r\n\r\n```\r\napplied = set()\r\napplied = state.apply_updates(proposals, applied)\r\napplied = state.apply_removes(proposals, applied)\r\napplied = state.apply_adds(proposals, applied)\r\nif len(applied) != len(proposals):\r\n    raise Exception(\"Unsupported proposals\")\r\n```\r\n\r\nThis would get you to a point where new proposal types wouldn't require a *syntax* change, but would require different processing.  That doesn't seem awful, since new proposal types will have to be negotiated, and thus we can assume that if one is used, then everyone will have the right processing logic.",
               "createdAt": "2020-08-14T19:40:07Z",
-              "updatedAt": "2020-08-14T20:56:44Z"
+              "updatedAt": "2020-08-18T15:59:22Z"
             },
             {
               "originalPosition": 113,
               "body": "In a related vein, this PR should:\r\n1. Extend the `capabilities` extension to have `supported_proposals`\r\n2. Add a note to the proposal processing step below that future proposal handling is defined by the future proposals.",
               "createdAt": "2020-08-14T20:56:40Z",
-              "updatedAt": "2020-08-14T20:56:44Z"
+              "updatedAt": "2020-08-18T15:59:22Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDY5NjA0OTk1",
+          "commit": {
+            "abbreviatedOid": "d6dd20e"
+          },
+          "author": "Bren2010",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-08-18T16:04:37Z",
+          "updatedAt": "2020-08-18T16:04:38Z",
+          "comments": [
+            {
+              "originalPosition": 113,
+              "body": "Added a note that the processing should be updated by extensions that add new proposals.\r\n\r\nI don't want to add a `supported_proposals` vector, because proposals can't be supported piecemeal. If you support an extension and that extension adds several proposals, you'd need to support them all",
+              "createdAt": "2020-08-18T16:04:38Z",
+              "updatedAt": "2020-08-18T16:04:38Z"
             }
           ]
         }
@@ -26233,6 +26275,95 @@
           "createdAt": "2020-08-14T19:14:18Z",
           "updatedAt": "2020-08-14T19:14:18Z",
           "comments": []
+        }
+      ]
+    },
+    {
+      "number": 395,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDY5NTQ3NDgy",
+      "title": "Remove requirement to verify the group creation process",
+      "url": "https://github.com/mlswg/mls-protocol/pull/395",
+      "state": "MERGED",
+      "author": "ericcornelissen",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #390\r\n\r\nAs discussed on [the mailing list](https://mailarchive.ietf.org/arch/msg/mls/CbBEhH5A7OyoP6Mf5FFXgSU0r30/) this removes the paragraph in the Group Creation section specifying that joiners SHOULD verify group creation if it is detected. A recent change to group creation - namely a random initial `init_secret` - makes it impossible to verify group creation.\r\n",
+      "createdAt": "2020-08-18T14:46:24Z",
+      "updatedAt": "2020-08-18T15:18:35Z",
+      "baseRepository": "mlswg/mls-protocol",
+      "baseRefName": "master",
+      "baseRefOid": "1982f307a772d17c0470ee492fcedf4cfafac62d",
+      "headRepository": "ericcornelissen/mls-protocol",
+      "headRefName": "update-group-creation",
+      "headRefOid": "76d115f8f3f4eee55feff5f09ee177820bf1d32f",
+      "closedAt": "2020-08-18T14:50:20Z",
+      "mergedAt": "2020-08-18T14:50:19Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "bb6b3fa6ae3869275a16be24250e9ac26ddfe02a"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDY5NTMzNzc5",
+          "commit": {
+            "abbreviatedOid": "76d115f"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-08-18T14:50:14Z",
+          "updatedAt": "2020-08-18T14:50:14Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 396,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDY5Njc4NjM2",
+      "title": "Authenticate group membership in MLSPlaintext.Signature",
+      "url": "https://github.com/mlswg/mls-protocol/pull/396",
+      "state": "OPEN",
+      "author": "bifurcation",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "[Jo\u00ebl pointed out on the list](https://mailarchive.ietf.org/arch/msg/mls/LFz5nC4BnNTf7-OGIac5_QdlCRs/) that MLSPlaintext does not currently authenticate the sender's membership on the group, and as a result, some important attacks arise.  Discussion on the list indicated that adding a MAC with a key derived from the key schedule would provide this authentication.  This PR implements that suggestion.",
+      "createdAt": "2020-08-18T18:57:31Z",
+      "updatedAt": "2020-08-19T08:21:07Z",
+      "baseRepository": "mlswg/mls-protocol",
+      "baseRefName": "master",
+      "baseRefOid": "bb6b3fa6ae3869275a16be24250e9ac26ddfe02a",
+      "headRepository": "mlswg/mls-protocol",
+      "headRefName": "member-pt",
+      "headRefOid": "61a606d63df7c475c7b39459fc6221e928ff30f1",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDcwMjMwNDYy",
+          "commit": {
+            "abbreviatedOid": "61a606d"
+          },
+          "author": "ericcornelissen",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-08-19T08:21:05Z",
+          "updatedAt": "2020-08-19T08:21:07Z",
+          "comments": [
+            {
+              "originalPosition": 50,
+              "body": "Looks like something went wrong here. The new `MLSPlaintextContext` and `MLSPlaintextContent` structs are not used and the `MLSPlaintextTBS` struct is now self-referencing.\r\n\r\nIf I had to guess, I think you meant:\r\n\r\n```suggestion\r\nstruct {\r\n    MLSPlaintextContext context;\r\n    MLSPlaintextContent content;\r\n} MLSPlaintextTBS;\r\n```",
+              "createdAt": "2020-08-19T08:21:06Z",
+              "updatedAt": "2020-08-19T08:21:07Z"
+            }
+          ]
         }
       ]
     }
