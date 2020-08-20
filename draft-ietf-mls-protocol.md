@@ -1617,7 +1617,8 @@ struct {
 
 The `membership_token` field in the MLSPlaintext object authenticates the
 sender's membership in the group.  For an MLSPlaintext with a sender type other
-than `member`, this field MUST be set to the zero-length octet string.
+than `member`, this field MUST be set to the zero-length octet string.  For
+messages sent by members, it MUST be set to the following value:
 
 ~~~~~
 membership_token = KDF.Extract(confirmation_key, MLSPlaintextTBS);
