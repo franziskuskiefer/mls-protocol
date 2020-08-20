@@ -1495,6 +1495,7 @@ struct {
           opaque confirmation_tag<0..255>;
     }
 
+    opaque membership_token<0..2^8-1>;
     opaque signature<0..2^16-1>;
 } MLSPlaintext;
 
@@ -1579,33 +1580,21 @@ MUST be less than the number of leaves in the tree.
 
 ## Content Signing and Encryption
 
-The signature field in an MLSPlaintext object authenticates the sender of the
-MLSPlaintext message.  The input to the signature is an MLSPlaintextTBS
-structure, which encodes the content and metadata of the message as well a
-context for the signature that associates to the group messages sent within the
-group.
-
-In cases where the sender is a member of the group, the context contains the
-GroupContext for the current epoch and a "membership token" that authenticates
-that the sender is a member of the group.  As a result, for messages sent within
-a group, the signature authenticates not only the member's individual identity,
-but also their membership in the group.
+The signature field in an MLSPlaintext object is computed using the
+signing private key corresponding to the credential at the leaf in
+the tree indicated by the sender field.  The signature covers the
+plaintext metadata and message content, which is all of
+MLSPlaintext except for the `signature` field.  The signature also covers the
+GroupContext for the current epoch, so that signatures are specific to a given
+group and epoch.
 
 ~~~~~
-membership_token = KDF.Extract(confirmation_key, MLSPlaintextContent);
-
 struct {
     select (MLSPlaintextTBS.sender.sender_type) {
         case member:
             GroupContext context;
-            opaque membership_token;
-
-        default:
-            struct{};
     }
-} MLSPlaintextContext;
 
-struct {
     opaque group_id<0..255>;
     uint64 epoch;
     Sender sender;
@@ -1623,22 +1612,22 @@ struct {
           Commit commit;
           opaque confirmation_tag<0..255>;
     }
-} MLSPlaintextContent;
-
-struct {
-    MLSPlaintextSignatureContext context;
-    MLSPlaintextTBS tbs;
 } MLSPlaintextTBS;
 ~~~~~
 
-<!-- OPEN ISSUE: group_id and epoch are duplicated in the TBS and in
-GroupContext. Think about how to de-duplicate. -->
+The `membership_token` field in the MLSPlaintext object authenticates the
+sender's membership in the group.
 
-The ciphertext field of the MLSCiphertext object is produced by
-supplying the inputs described below to the AEAD function specified
-by the ciphersuite in use.  The plaintext input contains content and
-signature of the MLSPlaintext, plus optional padding.  These values
-are encoded in the following form:
+~~~~~
+membership_token = KDF.Extract(confirmation_key, MLSPlaintextTBS);
+~~~~~
+
+The ciphertext field of the MLSCiphertext object is produced by supplying the
+inputs described below to the AEAD function specified by the ciphersuite in use.
+The plaintext input contains content and signature of the MLSPlaintext, plus
+optional padding. (The membership token is not included in the encrypted
+content, because the AEAD encryption authenticates the sender's membership in
+the group.) These values are encoded in the following form:
 
 ~~~~~
 struct {
