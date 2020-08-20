@@ -2021,7 +2021,8 @@ Internet-Draft                     MLS                       August 2020
    The "membership_token" field in the MLSPlaintext object authenticates
    the sender's membership in the group.  For an MLSPlaintext with a
    sender type other than "member", this field MUST be set to the zero-
-   length octet string.
+   length octet string.  For messages sent by members, it MUST be set to
+   the following value:
 
    membership_token = KDF.Extract(confirmation_key, MLSPlaintextTBS);
 
@@ -2063,9 +2064,8 @@ Internet-Draft                     MLS                       August 2020
    is lost or corrupted, a client might reuse a generation that has
    already been used, causing reuse of a key/nonce pair.
 
-   To avoid this situation, the sender of a message MUST generate a
-   fresh random 4-byte "reuse guard" value and XOR it with the first
-   four bytes of the nonce from the key schedule before using the nonce
+
+
 
 
 
@@ -2074,6 +2074,9 @@ Barnes, et al.          Expires 21 February 2021               [Page 37]
 Internet-Draft                     MLS                       August 2020
 
 
+   To avoid this situation, the sender of a message MUST generate a
+   fresh random 4-byte "reuse guard" value and XOR it with the first
+   four bytes of the nonce from the key schedule before using the nonce
    for encryption.  The sender MUST include the reuse guard in the
    "reuse_guard" field of the sender data object, so that the recipient
    of the message can use it to compute the nonce to be used for
@@ -2119,9 +2122,6 @@ Internet-Draft                     MLS                       August 2020
    The creator of a group MUST take the following steps to initialize
    the group:
 
-   *  Fetch KeyPackages for the members to be added, and select a
-      version and ciphersuite according to the capabilities of the
-      members.  To protect against downgrade attacks, the creator MUST
 
 
 
@@ -2130,6 +2130,9 @@ Barnes, et al.          Expires 21 February 2021               [Page 38]
 Internet-Draft                     MLS                       August 2020
 
 
+   *  Fetch KeyPackages for the members to be added, and select a
+      version and ciphersuite according to the capabilities of the
+      members.  To protect against downgrade attacks, the creator MUST
       use the "capabilities" extensions in these KeyPackages to verify
       that the chosen version and ciphersuite is the best option
       supported by all members.
@@ -2173,9 +2176,6 @@ Internet-Draft                     MLS                       August 2020
    introduced.  The only choices the creator makes here are its own
    KeyPackage, the leaf secret from which the Commit is built, and the
    intermediate key pairs along the direct path to the root.
-
-
-
 
 
 
