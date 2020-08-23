@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-08-20T00:39:02.316926+00:00",
+  "timestamp": "2020-08-23T00:41:19.903172+00:00",
   "repo": "mlswg/mls-protocol",
   "labels": [
     {
@@ -26140,24 +26140,26 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NDY3Njk5NDEx",
       "title": "Rename DirectPath to UpdatePath",
       "url": "https://github.com/mlswg/mls-protocol/pull/391",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "chelseakomlo",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "This is a simple rename of `DirectPath` to `UpdatePath` to be more descriptive of the action being performed by the message.\r\n\r\nI'll open a separate PR after this PIR is merged with updates to the spec where it uses `Commit` when instead it should say `UpdatePath` (since not every `Commit` actually ratchets forward key material, as I understand). Some examples of where these clarifications should happen are: \r\n\r\n- Line 1203 should instead say \"each MLS UpdatePath message\" \r\n- The sections \"Ratchet Tree Evolution\" and \"Sychronizing Views of the Tree\" should describe the process of generating the key material for an `UpdatePath` message\r\n\r\ncc @bifurcation ",
       "createdAt": "2020-08-14T00:11:44Z",
-      "updatedAt": "2020-08-14T01:52:50Z",
+      "updatedAt": "2020-08-20T16:03:46Z",
       "baseRepository": "mlswg/mls-protocol",
       "baseRefName": "master",
       "baseRefOid": "4fc8afa1f7548ebf56bde9e2d45d0352c66fcf5b",
       "headRepository": "chelseakomlo/mls-protocol",
       "headRefName": "direct-path-to-update-path",
       "headRefOid": "09fcebc4d20fcb49e7ae3e4a9989b41b70af3fef",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2020-08-20T16:03:46Z",
+      "mergedAt": "2020-08-20T16:03:46Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "9f52307a138e303b967eca3df9df966ee581e9ef"
+      },
       "comments": [
         {
           "author": "Bren2010",
@@ -26165,6 +26167,13 @@
           "body": "DirectPath corresponds to the graph theory term \"direct path\" of a leaf with the root",
           "createdAt": "2020-08-14T00:20:13Z",
           "updatedAt": "2020-08-14T00:20:13Z"
+        },
+        {
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "body": "\"Direct path\" is still a thing, and the object in question here operates along a direct path, but I think \"UpdatePath\" indicates more clearly what it's doing.",
+          "createdAt": "2020-08-20T16:03:42Z",
+          "updatedAt": "2020-08-20T16:03:42Z"
         }
       ],
       "reviews": []
@@ -26323,7 +26332,7 @@
     {
       "number": 396,
       "id": "MDExOlB1bGxSZXF1ZXN0NDY5Njc4NjM2",
-      "title": "Authenticate group membership in MLSPlaintext.Signature",
+      "title": "Authenticate group membership in MLSPlaintext",
       "url": "https://github.com/mlswg/mls-protocol/pull/396",
       "state": "OPEN",
       "author": "bifurcation",
@@ -26332,40 +26341,53 @@
       "labels": [],
       "body": "[Jo\u00ebl pointed out on the list](https://mailarchive.ietf.org/arch/msg/mls/LFz5nC4BnNTf7-OGIac5_QdlCRs/) that MLSPlaintext does not currently authenticate the sender's membership on the group, and as a result, some important attacks arise.  Discussion on the list indicated that adding a MAC with a key derived from the key schedule would provide this authentication.  This PR implements that suggestion.",
       "createdAt": "2020-08-18T18:57:31Z",
-      "updatedAt": "2020-08-19T08:21:07Z",
+      "updatedAt": "2020-08-20T18:54:29Z",
       "baseRepository": "mlswg/mls-protocol",
       "baseRefName": "master",
       "baseRefOid": "bb6b3fa6ae3869275a16be24250e9ac26ddfe02a",
       "headRepository": "mlswg/mls-protocol",
       "headRefName": "member-pt",
-      "headRefOid": "61a606d63df7c475c7b39459fc6221e928ff30f1",
+      "headRefOid": "02cb4f58fa99150f6e47467f46bc47bbbb4b4d2c",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": [
+      "reviews": []
+    },
+    {
+      "number": 397,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDcxMjQwODg2",
+      "title": "Always use path secrets with KDF.Expand",
+      "url": "https://github.com/mlswg/mls-protocol/pull/397",
+      "state": "OPEN",
+      "author": "bifurcation",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "@ericcornelissen pointed out on the mailing list that path secrets are currently used with both KDF.Expand and KEM.DeriveKeyPair.  This PR introduces an extra KDF.Expand call so that each key is used with exactly one algorithm.",
+      "createdAt": "2020-08-20T21:04:23Z",
+      "updatedAt": "2020-08-21T06:11:42Z",
+      "baseRepository": "mlswg/mls-protocol",
+      "baseRefName": "master",
+      "baseRefOid": "9f52307a138e303b967eca3df9df966ee581e9ef",
+      "headRepository": "mlswg/mls-protocol",
+      "headRefName": "re-expand",
+      "headRefOid": "c86c2a8262d47cf0c4b23da39d61b2ec4aa3f434",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
         {
-          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDcwMjMwNDYy",
-          "commit": {
-            "abbreviatedOid": "61a606d"
-          },
           "author": "ericcornelissen",
           "authorAssociation": "CONTRIBUTOR",
-          "state": "COMMENTED",
-          "body": "",
-          "createdAt": "2020-08-19T08:21:05Z",
-          "updatedAt": "2020-08-19T08:21:07Z",
-          "comments": [
-            {
-              "originalPosition": 50,
-              "body": "Looks like something went wrong here. The new `MLSPlaintextContext` and `MLSPlaintextContent` structs are not used and the `MLSPlaintextTBS` struct is now self-referencing.\r\n\r\nIf I had to guess, I think you meant:\r\n\r\n```suggestion\r\nstruct {\r\n    MLSPlaintextContext context;\r\n    MLSPlaintextContent content;\r\n} MLSPlaintextTBS;\r\n```",
-              "createdAt": "2020-08-19T08:21:06Z",
-              "updatedAt": "2020-08-19T08:21:07Z"
-            }
-          ]
+          "body": "I believe it was @chrisbrzuska who that [pointed this out](https://mailarchive.ietf.org/arch/msg/mls/EQLdrkuVBeB5ExDcFx4EMbJcpOg/), not me. Also, shouldn't the `node_priv[n]` and `node_pub[n]` derivation be updated as well?\r\n\r\n```diff\r\n- node_priv[n], node_pub[n] = KEM.DeriveKeyPair(path_secret[n])\r\n+ node_priv[n], node_pub[n] = KEM.DeriveKeyPair(node_secret[n])\r\n```",
+          "createdAt": "2020-08-21T06:11:41Z",
+          "updatedAt": "2020-08-21T06:11:41Z"
         }
-      ]
+      ],
+      "reviews": []
     }
   ]
 }
