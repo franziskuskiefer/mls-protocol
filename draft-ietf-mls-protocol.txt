@@ -114,46 +114,46 @@ Barnes, et al.          Expires 26 February 2021                [Page 2]
 Internet-Draft                     MLS                       August 2020
 
 
-     7.11. Exporters . . . . . . . . . . . . . . . . . . . . . . . .  32
+     7.11. Exporters . . . . . . . . . . . . . . . . . . . . . . . .  33
    8.  Message Framing . . . . . . . . . . . . . . . . . . . . . . .  33
-     8.1.  Metadata Encryption . . . . . . . . . . . . . . . . . . .  35
+     8.1.  Metadata Encryption . . . . . . . . . . . . . . . . . . .  36
      8.2.  Content Signing and Encryption  . . . . . . . . . . . . .  36
-   9.  Group Creation  . . . . . . . . . . . . . . . . . . . . . . .  38
-   10. Group Evolution . . . . . . . . . . . . . . . . . . . . . . .  39
-     10.1.  Proposals  . . . . . . . . . . . . . . . . . . . . . . .  40
-       10.1.1.  Add  . . . . . . . . . . . . . . . . . . . . . . . .  40
-       10.1.2.  Update . . . . . . . . . . . . . . . . . . . . . . .  41
-       10.1.3.  Remove . . . . . . . . . . . . . . . . . . . . . . .  42
-       10.1.4.  External Proposals . . . . . . . . . . . . . . . . .  42
-     10.2.  Commit . . . . . . . . . . . . . . . . . . . . . . . . .  43
-       10.2.1.  Welcoming New Members  . . . . . . . . . . . . . . .  48
-     10.3.  Ratchet Tree Extension . . . . . . . . . . . . . . . . .  51
-   11. Extensibility . . . . . . . . . . . . . . . . . . . . . . . .  52
-   12. Sequencing of State Changes . . . . . . . . . . . . . . . . .  53
-     12.1.  Server-Enforced Ordering . . . . . . . . . . . . . . . .  54
-     12.2.  Client-Enforced Ordering . . . . . . . . . . . . . . . .  55
-   13. Application Messages  . . . . . . . . . . . . . . . . . . . .  55
-     13.1.  Tree of Application Secrets  . . . . . . . . . . . . . .  56
-     13.2.  Deletion Schedule  . . . . . . . . . . . . . . . . . . .  57
-     13.3.  Further Restrictions . . . . . . . . . . . . . . . . . .  58
-     13.4.  Message Encryption and Decryption  . . . . . . . . . . .  58
-     13.5.  Delayed and Reordered Application messages . . . . . . .  59
-   14. Security Considerations . . . . . . . . . . . . . . . . . . .  59
-     14.1.  Confidentiality of the Group Secrets . . . . . . . . . .  60
-     14.2.  Authentication . . . . . . . . . . . . . . . . . . . . .  60
-     14.3.  Forward and post-compromise security . . . . . . . . . .  60
-     14.4.  InitKey Reuse  . . . . . . . . . . . . . . . . . . . . .  61
-   15. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  61
-     15.1.  MLS Ciphersuites . . . . . . . . . . . . . . . . . . . .  61
-     15.2.  MLS Extension Types  . . . . . . . . . . . . . . . . . .  64
-     15.3.  MLS Credential Types . . . . . . . . . . . . . . . . . .  65
-     15.4.  MLS Designated Expert Pool . . . . . . . . . . . . . . .  66
-   16. Contributors  . . . . . . . . . . . . . . . . . . . . . . . .  67
-   17. References  . . . . . . . . . . . . . . . . . . . . . . . . .  68
-     17.1.  Normative References . . . . . . . . . . . . . . . . . .  68
-     17.2.  Informative References . . . . . . . . . . . . . . . . .  69
-   Appendix A.  Tree Math  . . . . . . . . . . . . . . . . . . . . .  70
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  74
+   9.  Group Creation  . . . . . . . . . . . . . . . . . . . . . . .  39
+   10. Group Evolution . . . . . . . . . . . . . . . . . . . . . . .  40
+     10.1.  Proposals  . . . . . . . . . . . . . . . . . . . . . . .  41
+       10.1.1.  Add  . . . . . . . . . . . . . . . . . . . . . . . .  41
+       10.1.2.  Update . . . . . . . . . . . . . . . . . . . . . . .  42
+       10.1.3.  Remove . . . . . . . . . . . . . . . . . . . . . . .  43
+       10.1.4.  External Proposals . . . . . . . . . . . . . . . . .  43
+     10.2.  Commit . . . . . . . . . . . . . . . . . . . . . . . . .  44
+       10.2.1.  Welcoming New Members  . . . . . . . . . . . . . . .  49
+     10.3.  Ratchet Tree Extension . . . . . . . . . . . . . . . . .  52
+   11. Extensibility . . . . . . . . . . . . . . . . . . . . . . . .  53
+   12. Sequencing of State Changes . . . . . . . . . . . . . . . . .  54
+     12.1.  Server-Enforced Ordering . . . . . . . . . . . . . . . .  55
+     12.2.  Client-Enforced Ordering . . . . . . . . . . . . . . . .  56
+   13. Application Messages  . . . . . . . . . . . . . . . . . . . .  56
+     13.1.  Tree of Application Secrets  . . . . . . . . . . . . . .  57
+     13.2.  Deletion Schedule  . . . . . . . . . . . . . . . . . . .  58
+     13.3.  Further Restrictions . . . . . . . . . . . . . . . . . .  59
+     13.4.  Message Encryption and Decryption  . . . . . . . . . . .  59
+     13.5.  Delayed and Reordered Application messages . . . . . . .  60
+   14. Security Considerations . . . . . . . . . . . . . . . . . . .  60
+     14.1.  Confidentiality of the Group Secrets . . . . . . . . . .  61
+     14.2.  Authentication . . . . . . . . . . . . . . . . . . . . .  61
+     14.3.  Forward and post-compromise security . . . . . . . . . .  61
+     14.4.  InitKey Reuse  . . . . . . . . . . . . . . . . . . . . .  62
+   15. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  62
+     15.1.  MLS Ciphersuites . . . . . . . . . . . . . . . . . . . .  62
+     15.2.  MLS Extension Types  . . . . . . . . . . . . . . . . . .  65
+     15.3.  MLS Credential Types . . . . . . . . . . . . . . . . . .  66
+     15.4.  MLS Designated Expert Pool . . . . . . . . . . . . . . .  67
+   16. Contributors  . . . . . . . . . . . . . . . . . . . . . . . .  68
+   17. References  . . . . . . . . . . . . . . . . . . . . . . . . .  69
+     17.1.  Normative References . . . . . . . . . . . . . . . . . .  69
+     17.2.  Informative References . . . . . . . . . . . . . . . . .  70
+   Appendix A.  Tree Math  . . . . . . . . . . . . . . . . . . . . .  72
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  75
 
 1.  Introduction
 
@@ -1130,6 +1130,8 @@ Internet-Draft                     MLS                       August 2020
 
       -  An AEAD encryption algorithm
 
+   *  A message authentication code (MAC) algorithm
+
    *  A signature algorithm
 
    The HPKE parameters are used to instantiate HPKE [I-D.irtf-cfrg-hpke]
@@ -1167,8 +1169,6 @@ Internet-Draft                     MLS                       August 2020
 
    Credentials MAY also include information that allows a relying party
    to verify the identity / signing key binding.
-
-
 
 
 
@@ -1658,6 +1658,30 @@ Internet-Draft                     MLS                       August 2020
    A number of secrets are derived from the epoch secret for different
    purposes:
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Barnes, et al.          Expires 26 February 2021               [Page 30]
+
+Internet-Draft                     MLS                       August 2020
+
+
                   +====================+===============+
                   | Secret             | Label         |
                   +====================+===============+
@@ -1671,16 +1695,10 @@ Internet-Draft                     MLS                       August 2020
                   +--------------------+---------------+
                   | confirmation_key   | "confirm"     |
                   +--------------------+---------------+
+                  | membership_key     | "membership"  |
+                  +--------------------+---------------+
 
                                  Table 2
-
-
-
-
-Barnes, et al.          Expires 26 February 2021               [Page 30]
-
-Internet-Draft                     MLS                       August 2020
-
 
 7.9.  Pre-Shared Keys
 
@@ -1713,6 +1731,13 @@ Internet-Draft                     MLS                       August 2020
 
    *  Handshake messages (Proposal and Commit)
 
+
+
+Barnes, et al.          Expires 26 February 2021               [Page 31]
+
+Internet-Draft                     MLS                       August 2020
+
+
    *  Application messages
 
    The sender information used to look up the key for the content
@@ -1726,17 +1751,6 @@ Internet-Draft                     MLS                       August 2020
    For handshake and application messages, a sequence of keys is derived
    via a "sender ratchet".  Each sender has their own sender ratchet,
    and each step along the ratchet is called a "generation".
-
-
-
-
-
-
-
-Barnes, et al.          Expires 26 February 2021               [Page 31]
-
-Internet-Draft                     MLS                       August 2020
-
 
    A sender ratchet starts from a per-sender base secret.  For
    application keys, the base secret is derived as described in
@@ -1762,6 +1776,24 @@ Internet-Draft                     MLS                       August 2020
    ratchet tree is the same as the index of the leaf in the AS Tree used
    to initialize the sender's ratchet.
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+Barnes, et al.          Expires 26 February 2021               [Page 32]
+
+Internet-Draft                     MLS                       August 2020
+
+
    ratchet_secret_[N]_[j]
          |
          +--> DeriveAppSecret(., "nonce", N, j, AEAD.nonce_length)
@@ -1784,15 +1816,6 @@ Internet-Draft                     MLS                       August 2020
    The main MLS key schedule provides an "exporter_secret" which can be
    used by an application as the basis to derive new secrets called
    "exported_value" outside the MLS layer.
-
-
-
-
-
-Barnes, et al.          Expires 26 February 2021               [Page 32]
-
-Internet-Draft                     MLS                       August 2020
-
 
    MLS-Exporter(Label, Context, key_length) =
           ExpandWithLabel(DeriveSecret(exporter_secret, Label),
@@ -1818,6 +1841,15 @@ Internet-Draft                     MLS                       August 2020
    group, as well as signing to authenticate the sender within the
    group.
 
+
+
+
+
+Barnes, et al.          Expires 26 February 2021               [Page 33]
+
+Internet-Draft                     MLS                       August 2020
+
+
    The two main structures involved are MLSPlaintext and MLSCiphertext.
    MLSCiphertext represents a signed and encrypted message, with
    protections for both the content of the message and related metadata.
@@ -1842,14 +1874,6 @@ Internet-Draft                     MLS                       August 2020
        preconfigured(2),
        new_member(3),
        (255)
-
-
-
-Barnes, et al.          Expires 26 February 2021               [Page 33]
-
-Internet-Draft                     MLS                       August 2020
-
-
    } SenderType;
 
    struct {
@@ -1874,9 +1898,18 @@ Internet-Draft                     MLS                       August 2020
            case commit:
              Commit commit;
              opaque confirmation_tag<0..255>;
+
+
+
+Barnes, et al.          Expires 26 February 2021               [Page 34]
+
+Internet-Draft                     MLS                       August 2020
+
+
        }
 
        opaque signature<0..2^16-1>;
+       opaque membership_tag<0..2^8-1>;
    } MLSPlaintext;
 
    struct {
@@ -1899,13 +1932,6 @@ Internet-Draft                     MLS                       August 2020
    *  Set group_id, epoch, content_type and authenticated_data fields
       from the MLSPlaintext object directly
 
-
-
-Barnes, et al.          Expires 26 February 2021               [Page 34]
-
-Internet-Draft                     MLS                       August 2020
-
-
    *  Randomly generate the sender_data_nonce field
 
    *  Identify the key and key generation depending on the content type
@@ -1924,6 +1950,17 @@ Internet-Draft                     MLS                       August 2020
 
    The following sections describe the encryption and signing processes
    in detail.
+
+
+
+
+
+
+
+Barnes, et al.          Expires 26 February 2021               [Page 35]
+
+Internet-Draft                     MLS                       August 2020
+
 
 8.1.  Metadata Encryption
 
@@ -1950,18 +1987,6 @@ Internet-Draft                     MLS                       August 2020
    The Additional Authenticated Data (AAD) for the SenderData ciphertext
    computation is its prefix in the MLSCiphertext, namely:
 
-
-
-
-
-
-
-
-Barnes, et al.          Expires 26 February 2021               [Page 35]
-
-Internet-Draft                     MLS                       August 2020
-
-
    struct {
        opaque group_id<0..255>;
        uint64 epoch;
@@ -1983,6 +2008,15 @@ Internet-Draft                     MLS                       August 2020
    except for the "signature" field.  The signature also covers the
    GroupContext for the current epoch, so that signatures are specific
    to a given group and epoch.
+
+
+
+
+
+Barnes, et al.          Expires 26 February 2021               [Page 36]
+
+Internet-Draft                     MLS                       August 2020
+
 
    struct {
        select (MLSPlaintextTBS.sender.sender_type) {
@@ -2009,20 +2043,36 @@ Internet-Draft                     MLS                       August 2020
        }
    } MLSPlaintextTBS;
 
+   struct {
+     MLSPlaintextTBS tbs;
+     opaque signature<0..2^16-1>;
+   } MLSPlaintextTBM;
 
+   The "membership_tag" field in the MLSPlaintext object authenticates
+   the sender's membership in the group.  For an MLSPlaintext with a
+   sender type other than "member", this field MUST be set to the zero-
+   length octet string.  For messages sent by members, it MUST be set to
+   the following value:
 
+   membership_tag = MAC(membership_key, MLSPlaintextTBM);
 
-
-Barnes, et al.          Expires 26 February 2021               [Page 36]
-
-Internet-Draft                     MLS                       August 2020
-
+   When the "membership_tag" field is non-empty, it MUST be verified
+   before verifying the signature or processing the message content.
 
    The ciphertext field of the MLSCiphertext object is produced by
    supplying the inputs described below to the AEAD function specified
    by the ciphersuite in use.  The plaintext input contains content and
-   signature of the MLSPlaintext, plus optional padding.  These values
-   are encoded in the following form:
+   signature of the MLSPlaintext, plus optional padding.  (The
+   membership token is not included in the encrypted content, because
+   the AEAD encryption authenticates the sender's membership in the
+   group.)  These values are encoded in the following form:
+
+
+
+Barnes, et al.          Expires 26 February 2021               [Page 37]
+
+Internet-Draft                     MLS                       August 2020
+
 
    struct {
        select (MLSCiphertext.content_type) {
@@ -2069,7 +2119,13 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 37]
+
+
+
+
+
+
+Barnes, et al.          Expires 26 February 2021               [Page 38]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2125,7 +2181,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 38]
+Barnes, et al.          Expires 26 February 2021               [Page 39]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2181,7 +2237,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 39]
+Barnes, et al.          Expires 26 February 2021               [Page 40]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2237,7 +2293,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 40]
+Barnes, et al.          Expires 26 February 2021               [Page 41]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2293,7 +2349,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 41]
+Barnes, et al.          Expires 26 February 2021               [Page 42]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2349,7 +2405,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 42]
+Barnes, et al.          Expires 26 February 2021               [Page 43]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2405,7 +2461,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 43]
+Barnes, et al.          Expires 26 February 2021               [Page 44]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2461,7 +2517,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 44]
+Barnes, et al.          Expires 26 February 2021               [Page 45]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2517,7 +2573,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 45]
+Barnes, et al.          Expires 26 February 2021               [Page 46]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2573,7 +2629,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 46]
+Barnes, et al.          Expires 26 February 2021               [Page 47]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2618,8 +2674,8 @@ Internet-Draft                     MLS                       August 2020
    The confirmation tag value confirms that the members of the group
    have arrived at the same state of the group:
 
-MLSPlaintext.confirmation_tag =
-    KDF.Extract(confirmation_key, GroupContext.confirmed_transcript_hash)
+   MLSPlaintext.confirmation_tag =
+       MAC(confirmation_key, GroupContext.confirmed_transcript_hash)
 
 
 
@@ -2629,7 +2685,7 @@ MLSPlaintext.confirmation_tag =
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 47]
+Barnes, et al.          Expires 26 February 2021               [Page 48]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2685,7 +2741,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 48]
+Barnes, et al.          Expires 26 February 2021               [Page 49]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2741,7 +2797,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 49]
+Barnes, et al.          Expires 26 February 2021               [Page 50]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2797,7 +2853,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 50]
+Barnes, et al.          Expires 26 February 2021               [Page 51]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2853,7 +2909,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 51]
+Barnes, et al.          Expires 26 February 2021               [Page 52]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2909,7 +2965,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 52]
+Barnes, et al.          Expires 26 February 2021               [Page 53]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2965,7 +3021,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 53]
+Barnes, et al.          Expires 26 February 2021               [Page 54]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3021,7 +3077,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 54]
+Barnes, et al.          Expires 26 February 2021               [Page 55]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3077,7 +3133,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 55]
+Barnes, et al.          Expires 26 February 2021               [Page 56]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3133,7 +3189,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 56]
+Barnes, et al.          Expires 26 February 2021               [Page 57]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3189,7 +3245,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 57]
+Barnes, et al.          Expires 26 February 2021               [Page 58]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3245,7 +3301,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 58]
+Barnes, et al.          Expires 26 February 2021               [Page 59]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3301,7 +3357,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 59]
+Barnes, et al.          Expires 26 February 2021               [Page 60]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3357,7 +3413,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 60]
+Barnes, et al.          Expires 26 February 2021               [Page 61]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3413,7 +3469,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 61]
+Barnes, et al.          Expires 26 February 2021               [Page 62]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3469,7 +3525,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 62]
+Barnes, et al.          Expires 26 February 2021               [Page 63]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3498,34 +3554,34 @@ Internet-Draft                     MLS                       August 2020
 
                                   Table 4
 
-   These ciphersuites map to HPKE primitives and TLS signature schemes
+   All of these ciphersuites use HMAC [RFC2104] as their MAC function,
+   with different hashes per ciphersuite.  The mapping of ciphersuites
+   to HPKE primitives, HMAC hash functions, and TLS signature schemes is
    as follows [I-D.irtf-cfrg-hpke] [RFC8446]:
 
-      +========+========+========+========+========================+
-      | Value  | KEM    | KDF    | AEAD   | Signature              |
-      +========+========+========+========+========================+
-      | 0x0001 | 0x0020 | 0x0001 | 0x0001 | ed25519                |
-      +--------+--------+--------+--------+------------------------+
-      | 0x0002 | 0x0010 | 0x0001 | 0x0001 | ecdsa_secp256r1_sha256 |
-      +--------+--------+--------+--------+------------------------+
-      | 0x0003 | 0x0020 | 0x0001 | 0x0003 | ed25519                |
-      +--------+--------+--------+--------+------------------------+
-      | 0x0004 | 0x0021 | 0x0003 | 0x0002 | ed448                  |
-      +--------+--------+--------+--------+------------------------+
-      | 0x0005 | 0x0012 | 0x0003 | 0x0002 | ecdsa_secp521r1_sha512 |
-      +--------+--------+--------+--------+------------------------+
-      | 0x0006 | 0x0021 | 0x0003 | 0x0003 | ed448                  |
-      +--------+--------+--------+--------+------------------------+
+   +======+========+========+========+========+========================+
+   |Value | KEM    | KDF    | AEAD   | HMAC   | Signature              |
+   |      |        |        |        | Hash   |                        |
+   +======+========+========+========+========+========================+
+   |0x0001| 0x0020 | 0x0001 | 0x0001 | SHA256 | ed25519                |
+   +------+--------+--------+--------+--------+------------------------+
+   |0x0002| 0x0010 | 0x0001 | 0x0001 | SHA256 | ecdsa_secp256r1_sha256 |
+   +------+--------+--------+--------+--------+------------------------+
+   |0x0003| 0x0020 | 0x0001 | 0x0003 | SHA256 | ed25519                |
+   +------+--------+--------+--------+--------+------------------------+
+   |0x0004| 0x0021 | 0x0003 | 0x0002 | SHA512 | ed448                  |
+   +------+--------+--------+--------+--------+------------------------+
+   |0x0005| 0x0012 | 0x0003 | 0x0002 | SHA512 | ecdsa_secp521r1_sha512 |
+   +------+--------+--------+--------+--------+------------------------+
+   |0x0006| 0x0021 | 0x0003 | 0x0003 | SHA512 | ed448                  |
+   +------+--------+--------+--------+--------+------------------------+
 
-                                 Table 5
-
-
-
+                                  Table 5
 
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 63]
+Barnes, et al.          Expires 26 February 2021               [Page 64]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3581,7 +3637,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 64]
+Barnes, et al.          Expires 26 February 2021               [Page 65]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3637,7 +3693,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 65]
+Barnes, et al.          Expires 26 February 2021               [Page 66]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3693,7 +3749,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 66]
+Barnes, et al.          Expires 26 February 2021               [Page 67]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3749,7 +3805,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 67]
+Barnes, et al.          Expires 26 February 2021               [Page 68]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3805,7 +3861,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 68]
+Barnes, et al.          Expires 26 February 2021               [Page 69]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3816,6 +3872,11 @@ Internet-Draft                     MLS                       August 2020
               draft-irtf-cfrg-hpke-05, 30 July 2020,
               <http://www.ietf.org/internet-drafts/draft-irtf-cfrg-hpke-
               05.txt>.
+
+   [RFC2104]  Krawczyk, H., Bellare, M., and R. Canetti, "HMAC: Keyed-
+              Hashing for Message Authentication", RFC 2104,
+              DOI 10.17487/RFC2104, February 1997,
+              <https://www.rfc-editor.org/info/rfc2104>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -3848,6 +3909,19 @@ Internet-Draft                     MLS                       August 2020
               Privacy Enhancing Technologies pp. 143-163, 2014,
               <https://doi.org/10.1007/978-3-319-08506-7_8>.
 
+
+
+
+
+
+
+
+
+Barnes, et al.          Expires 26 February 2021               [Page 70]
+
+Internet-Draft                     MLS                       August 2020
+
+
    [doubleratchet]
               Cohn-Gordon, K., Cremers, C., Dowling, B., Garratt, L.,
               and D. Stebila, "A Formal Security Analysis of the Signal
@@ -3858,14 +3932,6 @@ Internet-Draft                     MLS                       August 2020
    [HCJ16]    Husák, M., Čermák, M., Jirsík, T., and P. Čeleda, "HTTPS
               traffic analysis and client identification using passive
               SSL/TLS fingerprinting", DOI 10.1186/s13635-016-0030-7,
-
-
-
-Barnes, et al.          Expires 26 February 2021               [Page 69]
-
-Internet-Draft                     MLS                       August 2020
-
-
               EURASIP Journal on Information Security Vol. 2016,
               February 2016,
               <https://doi.org/10.1186/s13635-016-0030-7>.
@@ -3904,6 +3970,14 @@ Internet-Draft                     MLS                       August 2020
               <https://www.signal.org/docs/specifications/
               doubleratchet/>.
 
+
+
+
+Barnes, et al.          Expires 26 February 2021               [Page 71]
+
+Internet-Draft                     MLS                       August 2020
+
+
 Appendix A.  Tree Math
 
    One benefit of using left-balanced trees is that they admit a simple
@@ -3911,16 +3985,6 @@ Appendix A.  Tree Math
    even-numbered nodes, with the n-th leaf at 2*n.  Intermediate nodes
    are held in odd-numbered nodes.  For example, an 11-element tree has
    the following structure:
-
-
-
-
-
-
-Barnes, et al.          Expires 26 February 2021               [Page 70]
-
-Internet-Draft                     MLS                       August 2020
-
 
                                                 X
                         X
@@ -3962,6 +4026,14 @@ def level(x):
     k = 0
     while ((x >> k) & 0x01) == 1:
         k += 1
+
+
+
+Barnes, et al.          Expires 26 February 2021               [Page 72]
+
+Internet-Draft                     MLS                       August 2020
+
+
     return k
 
 # The number of nodes needed to represent a tree with n leaves.
@@ -3970,13 +4042,6 @@ def node_width(n):
         return 0
     else:
         return 2*(n - 1) + 1
-
-
-
-Barnes, et al.          Expires 26 February 2021               [Page 71]
-
-Internet-Draft                     MLS                       August 2020
-
 
 # The index of the root node of a tree with n leaves.
 def root(n):
@@ -4018,6 +4083,13 @@ def parent(x, n):
     if x == root(n):
         raise Exception('root node has no parent')
 
+
+
+Barnes, et al.          Expires 26 February 2021               [Page 73]
+
+Internet-Draft                     MLS                       August 2020
+
+
     p = parent_step(x)
     while p >= node_width(n):
         p = parent_step(p)
@@ -4026,14 +4098,6 @@ def parent(x, n):
 # The other child of the node's parent.
 def sibling(x, n):
     p = parent(x, n)
-
-
-
-Barnes, et al.          Expires 26 February 2021               [Page 72]
-
-Internet-Draft                     MLS                       August 2020
-
-
     if x < p:
         return right(p, n)
     else:
@@ -4074,6 +4138,14 @@ def common_ancestor_semantic(x, y, n):
 
 # The common ancestor of two nodes is the lowest node that is in the
 # direct paths of both leaves.
+
+
+
+Barnes, et al.          Expires 26 February 2021               [Page 74]
+
+Internet-Draft                     MLS                       August 2020
+
+
 def common_ancestor_direct(x, y, _):
     # Handle cases where one is an ancestor of the other
     lx, ly = level(x)+1, level(y)+1
@@ -4081,14 +4153,6 @@ def common_ancestor_direct(x, y, _):
       return y
     elif (ly <= lx) and (x>>lx == y>>lx):
       return x
-
-
-
-
-Barnes, et al.          Expires 26 February 2021               [Page 73]
-
-Internet-Draft                     MLS                       August 2020
-
 
     # Handle other cases
     xn, yn = x, y
@@ -4130,6 +4194,14 @@ Authors' Addresses
    Email: me@katriel.co.uk
 
 
+
+
+
+Barnes, et al.          Expires 26 February 2021               [Page 75]
+
+Internet-Draft                     MLS                       August 2020
+
+
    Raphael Robert
    Wire
 
@@ -4141,4 +4213,44 @@ Authors' Addresses
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 74]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Barnes, et al.          Expires 26 February 2021               [Page 76]
