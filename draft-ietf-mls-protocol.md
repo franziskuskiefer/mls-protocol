@@ -716,11 +716,18 @@ secret is used to derive a new secret value for the corresponding
 node, from which the node's key pair is derived.
 
 ~~~~~
+leaf_node_secret = ExpandWithLabel(leaf_secret,
+                                   "node", "", KEM.Nsk)
+leaf_priv, leaf_pub = KEM.DeriveKeyPair(leaf_node_secret)
+
+
 path_secret[0] = ExpandWithLabel(leaf_secret,
                                    "path", "", KEM.Nsk)
 path_secret[n] = ExpandWithLabel(path_secret[n-1],
                                    "path", "", KEM.Nsk)
-node_priv[n], node_pub[n] = KEM.DeriveKeyPair(path_secret[n])
+node_secret[n] = ExpandWithLabel(path_secret[n],
+                                   "node", "", KEM.Nsk)
+node_priv[n], node_pub[n] = KEM.DeriveKeyPair(node_secret[n])
 ~~~~~
 
 For example, suppose there is a group with four members:
@@ -740,15 +747,14 @@ If member B subsequently generates a Commit based on a secret
 of path secrets:
 
 ~~~~~
-
-   path_secret[1] --> node_priv[1], node_pub[1]
-        ^
-        |
-   path_secret[0] --> node_priv[0], node_pub[0]
-        ^
-        |
-   leaf_secret    --> leaf_priv, leaf_pub
-                   ~> leaf_key_package
+path_secret[1] --> node_secret[1] --> node_priv[1], node_pub[1]
+     ^
+     |
+path_secret[0] --> node_secret[0] --> node_priv[0], node_pub[0]
+     ^
+     |
+leaf_secret    --> leaf_node_secret --> leaf_priv, leaf_pub
+                                     ~> leaf_key_package
 ~~~~~
 
 After the Commit, the tree will have the following structure, where
@@ -1198,7 +1204,7 @@ without having to store the whole MLSPlaintextCommitAuthData structure.
 As shown above, when a new group is created, the `interim_transcript_hash` field
 is set to the zero-length octet string.
 
-## Direct Paths
+## Update Paths
 
 As described in {{commit}}, each MLS Commit message needs to
 transmit a KeyPackage leaf and node values along its direct path.
@@ -1216,12 +1222,12 @@ struct {
 struct {
     HPKEPublicKey public_key;
     HPKECiphertext encrypted_path_secret<0..2^32-1>;
-} DirectPathNode;
+} UpdatePathNode;
 
 struct {
     KeyPackage leaf_key_package;
-    DirectPathNode nodes<0..2^32-1>;
-} DirectPath;
+    UpdatePathNode nodes<0..2^32-1>;
+} UpdatePath;
 ~~~~~
 
 The number of ciphertexts in the `encrypted_path_secret` vector MUST
@@ -1449,10 +1455,11 @@ The two main structures involved are MLSPlaintext and MLSCiphertext.
 MLSCiphertext represents a signed and encrypted message, with
 protections for both the content of the message and related
 metadata.  MLSPlaintext represents a message that is only signed,
-and not encrypted.  Applications SHOULD use MLSCiphertext to encode
-both application and handshake messages, but MAY transmit handshake
-messages encoded as MLSPlaintext objects in cases where it is
-necessary for the delivery service to examine such messages.
+and not encrypted.  Applications MUST use MLSCiphertext to encrypt
+application messages and SHOULD use MLSCiphertext to encode
+handshake messages, but MAY transmit handshake messages encoded
+as MLSPlaintext objects in cases where it is necessary for the
+delivery service to examine such messages.
 
 ~~~~~
 enum {
@@ -1818,7 +1825,7 @@ new member is added.  Instead, the sender of the Commit message chooses a
 location for each added member and states it in the Commit message.
 
 An Add is applied after being included in a Commit message.  The position of the
-Add in the list of adds determines the leaf index `index` where the new member
+Add in the list of proposals determines the leaf index `index` where the new member
 will be added.  For the first Add in the Commit, `index` is the leftmost empty
 leaf in the tree, for the second Add, the next empty leaf to the right, etc.
 
@@ -1850,7 +1857,6 @@ A member of the group applies an Update message by taking the following steps:
   the Update proposal
 
 * Blank the intermediate nodes along the path from the sender's leaf to the root
-
 
 ### Remove
 
@@ -1914,11 +1920,8 @@ hash function from the group's ciphersuite.
 opaque ProposalID<0..255>;
 
 struct {
-    ProposalID updates<0..2^32-1>;
-    ProposalID removes<0..2^32-1>;
-    ProposalID adds<0..2^32-1>;
-
-    optional<DirectPath> path;
+    ProposalID proposals<0..2^32-1>;
+    optional<UpdatePath> path;
 } Commit;
 ~~~~~
 
@@ -1943,29 +1946,31 @@ that a valid proposal is omitted from the next Commit, the sender of the
 proposal SHOULD retransmit it in the new epoch.
 
 A member of the group MAY send a Commit that references no proposals at all,
-which would thus have empty vectors for `updates`, `removes`, and `adds`.  Such
+which would thus have an empty `proposals` vector.  Such
 a Commit resets the sender's leaf and the nodes along its direct path, and
 provides forward secrecy and post-compromise security with regard to the sender
 of the Commit.  An Update proposal can be regarded as a "lazy" version of this
 operation, where only the leaf changes and intermediate nodes are blanked out.
 
 The `path` field of a Commit message MUST be populated if the Commit covers at
-least one Update or Remove proposal, i.e., if the length of the `updates` or
-`removes` vectors is greater than zero.  The `path` field MUST also be populated
-if the Commit covers no proposals at all (i.e., if all three proposal vectors
-are empty).  The `path` field MAY be omitted if the Commit covers only Add
-proposals.  In pseudocode, the logic for whether the `path` field is required is
-as follows:
+least one Update or Remove proposal. The `path` field MUST also be populated
+if the Commit covers no proposals at all (i.e., if the proposals vector
+is empty). The `path` field MAY be omitted if the Commit covers only Add
+proposals.  In pseudocode, the logic for validating a Commit is as follows:
 
 ~~~~~
-haveUpdates = len(commit.Updates) > 0
-haveRemoves = len(commit.Removes) > 0
-haveAdds = len(commit.Adds) > 0
+hasUpdates = false
+hasRemoves = false
 
-haveUpdateOrRemove = haveUpdates || haveRemoves
-haveNoProposalsAtAll = !haveUpdateOrRemove && !haveAdds
+for i, id in commit.proposals:
+    proposal = proposalCache[id]
+    assert(proposal != null)
 
-pathRequired = haveUpdateOrRemove || haveNoProposalsAtAll
+    hasUpdates = hasUpdates || proposal.msg_type == update
+    hasRemoves = hasRemoves || proposal.msg_type == remove
+
+if len(commit.proposals) == 0 || hasUpdates || hasRemoves:
+  assert(commit.path != null)
 ~~~~~
 
 To summarize, a Commit can have three different configurations, with different
@@ -1985,29 +1990,33 @@ uses:
 A member of the group creates a Commit message and the corresponding Welcome
 message at the same time, by taking the following steps:
 
-* Construct an initial Commit object with `updates`, `removes`, and `adds`
-  fields populated from Proposals received during the current epoch, and empty
+* Construct an initial Commit object with the `proposals`
+  field populated from Proposals received during the current epoch, and empty
   `key_package` and `path` fields.
 
 * Generate a provisional GroupContext object by applying the proposals
-  referenced in the initial Commit object in the order provided, as described in
-  {{proposals}}. First the list of update proposals, then the list of remove
-  proposals, and last the list of add proposals. Add proposals are applied left
-  to right: Each Add proposal is applied at the leftmost unoccupied leaf, or
-  appended to the right edge of the tree if all leaves are occupied.
+  referenced in the initial Commit object, as described in {{proposals}}. Update
+  proposals are applied first, followed by Remove proposals, and then finally
+  Add proposals. Add proposals are applied in the order listed in the
+  `proposals` vector, and always to the leftmost unoccupied leaf in the tree, or
+  the right edge of the tree if all leaves are occupied.
+
+  * Note that the order in which different types of proposals are applied should
+    be updated by the implementation to include any new proposals added by
+    negotiated group extensions.
 
 * Decide whether to populate the `path` field: If the `path` field is required
   based on the proposals that are in the commit (see above), then it MUST be
   populated.  Otherwise, the sender MAY omit the `path` field at its discretion.
 
-* If populating the `path` field: Create a DirectPath using the new tree (which
+* If populating the `path` field: Create a UpdatePath using the new tree (which
   includes any new members).  The GroupContext for this operation uses the
   `group_id`, `epoch`, `tree_hash`, and `confirmed_transcript_hash` values in
   the initial GroupContext object.
 
-   * Assign this DirectPath to the `path` field in the Commit.
+   * Assign this UpdatePath to the `path` field in the Commit.
 
-   * Apply the DirectPath to the tree, as described in
+   * Apply the UpdatePath to the tree, as described in
      {{synchronizing-views-of-the-tree}}. Define `commit_secret` as the value
      `path_secret[n+1]` derived from the `path_secret[n]` value assigned to
      the root node.
@@ -2056,22 +2065,25 @@ A member of the group applies a Commit message by taking the following steps:
   the `sender` field.
 
 * Generate a provisional GroupContext object by applying the proposals
-  referenced in the commit object in the order provided, as described in
-  {{proposals}}. First the list of update proposals, then the list of remove
-  proposals, and last the list of add proposals. Add proposals are applied left
-  to right: Each Add proposal is applied at the leftmost unoccupied leaf, or
-  appended to the right edge of the tree if all leaves are occupied.
+  referenced in the initial Commit object, as described in {{proposals}}. Update
+  proposals are applied first, followed by Remove proposals, and then finally
+  Add proposals. Add proposals are applied in the order listed in the
+  `proposals` vector, and always to the leftmost unoccupied leaf in the tree, or
+  the right edge of the tree if all leaves are occupied.
 
-* Verify that the `path` value is populated if either of the `updates` or
-  `removes` vectors has length greater than zero, or if all of the `updates`,
-  `removes`, and `adds` vectors are empty.  Otherwise, the `path` value MAY be
-  omitted.
+  * Note that the order in which different types of proposals are applied should
+    be updated by the implementation to include any new proposals added by
+    negotiated group extensions.
+
+* Verify that the `path` value is populated if the `proposals` vector contains
+  any Update or Remove proposals, or if it's empty. Otherwise, the `path` value
+  MAY be omitted.
 
 * If the `path` value is populated: Process the `path` value using the ratchet
   tree the provisional GroupContext, to update the ratchet tree and generate the
   `commit_secret`:
 
-  * Apply the DirectPath to the tree, as described in
+  * Apply the UpdatePath to the tree, as described in
     {{synchronizing-views-of-the-tree}}, and store `key_package` at the
     Committer's leaf.
 
