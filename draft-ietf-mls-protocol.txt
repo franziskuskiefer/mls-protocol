@@ -123,7 +123,7 @@ Internet-Draft                     MLS                       August 2020
      10.1.  Proposals  . . . . . . . . . . . . . . . . . . . . . . .  40
        10.1.1.  Add  . . . . . . . . . . . . . . . . . . . . . . . .  40
        10.1.2.  Update . . . . . . . . . . . . . . . . . . . . . . .  41
-       10.1.3.  Remove . . . . . . . . . . . . . . . . . . . . . . .  42
+       10.1.3.  Remove . . . . . . . . . . . . . . . . . . . . . . .  41
        10.1.4.  External Proposals . . . . . . . . . . . . . . . . .  42
      10.2.  Commit . . . . . . . . . . . . . . . . . . . . . . . . .  43
        10.2.1.  Welcoming New Members  . . . . . . . . . . . . . . .  48
@@ -1906,22 +1906,16 @@ Barnes, et al.          Expires 26 February 2021               [Page 34]
 Internet-Draft                     MLS                       August 2020
 
 
-   *  Derive the sender_data_nonce from the ciphertext:
-
-ciphertext_sample = ciphertext[:AEAD.Nn]
-sender_data_key =
-    ExpandWithLabel(sender_data_secret, "sd nonce", ciphertext_sample, AEAD.Nn)
-
    *  Identify the key and key generation depending on the content type
-
-   *  Encrypt an MLSSenderData object for the encrypted_sender_data
-      field from MLSPlaintext and the key generation
 
    *  Generate and sign an MLSPlaintextTBS object from the MLSPlaintext
       object
 
    *  Encrypt an MLSCiphertextContent for the ciphertext field using the
       key identified, the signature, and MLSPlaintext object
+
+   *  Encrypt an MLSSenderData object for the encrypted_sender_data
+      field
 
    Decryption is done by decrypting the metadata, then the message, and
    then verifying the content signature.
@@ -1932,9 +1926,15 @@ sender_data_key =
 8.1.  Metadata Encryption
 
    The "sender data" used to look up the key for the content encryption
-   is encrypted under AEAD using the MLSCiphertext sender_data_nonce and
-   the sender_data_key from the keyschedule.  It is encoded as an object
-   of the following form:
+   is encrypted under AEAD using the sender_data_key from the key
+   schedule.  The nonce for sender data encryption is derived from the
+   encypted ciphertext:
+
+ciphertext_sample = ciphertext[:AEAD.Nn]
+sender_data_nonce =
+    ExpandWithLabel(sender_data_secret, "sd nonce", ciphertext_sample, AEAD.Nn)
+
+   A sender data object has the following form:
 
    struct {
        uint32 sender;
@@ -2095,8 +2095,7 @@ Internet-Draft                     MLS                       August 2020
        uint64 epoch;
        ContentType content_type;
        opaque authenticated_data<0..2^32-1>;
-       opaque sender_data_nonce<0..255>;
-       opaque encrypted_sender_data<0..255>;
+       MLSSenderData sender_data;
    } MLSCiphertextContentAAD;
 
    The ciphertext field of the MLSCiphertext object is produced by
@@ -2121,7 +2120,8 @@ Internet-Draft                     MLS                       August 2020
       that the chosen version and ciphersuite is the best option
       supported by all members.
 
-
+   *  Initialize a one-member group with the following initial values
+      (where "0" represents an all-zero vector of size Hash.length):
 
 
 
@@ -2129,9 +2129,6 @@ Barnes, et al.          Expires 26 February 2021               [Page 38]
 
 Internet-Draft                     MLS                       August 2020
 
-
-   *  Initialize a one-member group with the following initial values
-      (where "0" represents an all-zero vector of size Hash.length):
 
       -  Ratchet tree: A tree with a single node, a leaf containing an
          HPKE public key and credential for the creator
@@ -2177,6 +2174,9 @@ Internet-Draft                     MLS                       August 2020
    compromise security.  In MLS, each such change is accomplished by a
    two-step process:
 
+   1.  A proposal to make the change is broadcast to the group in a
+       Proposal message
+
 
 
 
@@ -2185,9 +2185,6 @@ Barnes, et al.          Expires 26 February 2021               [Page 39]
 
 Internet-Draft                     MLS                       August 2020
 
-
-   1.  A proposal to make the change is broadcast to the group in a
-       Proposal message
 
    2.  A member of the group broadcasts a Commit message that causes one
        or more proposed changes to enter into effect
@@ -2233,6 +2230,9 @@ Internet-Draft                     MLS                       August 2020
    An Add proposal requests that a client with a specified KeyPackage be
    added to the group.
 
+   struct {
+       KeyPackage key_package;
+   } Add;
 
 
 
@@ -2241,10 +2241,6 @@ Barnes, et al.          Expires 26 February 2021               [Page 40]
 
 Internet-Draft                     MLS                       August 2020
 
-
-   struct {
-       KeyPackage key_package;
-   } Add;
 
    The proposer of the Add does not control where in the group's ratchet
    tree the new member is added.  Instead, the sender of the Commit
@@ -2287,6 +2283,10 @@ Internet-Draft                     MLS                       August 2020
    *  Blank the intermediate nodes along the path from the sender's leaf
       to the root
 
+10.1.3.  Remove
+
+   A Remove proposal requests that the client at a specified index in
+   the tree be removed from the group.
 
 
 
@@ -2297,11 +2297,6 @@ Barnes, et al.          Expires 26 February 2021               [Page 41]
 
 Internet-Draft                     MLS                       August 2020
 
-
-10.1.3.  Remove
-
-   A Remove proposal requests that the client at a specified index in
-   the tree be removed from the group.
 
    struct {
        uint32 removed;
@@ -2346,6 +2341,11 @@ Internet-Draft                     MLS                       August 2020
    An external proposal MUST be sent as an MLSPlaintext object, since
    the sender will not have the keys necessary to construct an
    MLSCiphertext object.
+
+
+
+
+
 
 
 
