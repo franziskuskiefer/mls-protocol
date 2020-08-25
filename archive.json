@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-08-23T00:41:19.903172+00:00",
+  "timestamp": "2020-08-25T00:40:19.696231+00:00",
   "repo": "mlswg/mls-protocol",
   "labels": [
     {
@@ -26341,7 +26341,7 @@
       "labels": [],
       "body": "[Jo\u00ebl pointed out on the list](https://mailarchive.ietf.org/arch/msg/mls/LFz5nC4BnNTf7-OGIac5_QdlCRs/) that MLSPlaintext does not currently authenticate the sender's membership on the group, and as a result, some important attacks arise.  Discussion on the list indicated that adding a MAC with a key derived from the key schedule would provide this authentication.  This PR implements that suggestion.",
       "createdAt": "2020-08-18T18:57:31Z",
-      "updatedAt": "2020-08-20T18:54:29Z",
+      "updatedAt": "2020-08-24T21:15:10Z",
       "baseRepository": "mlswg/mls-protocol",
       "baseRefName": "master",
       "baseRefOid": "bb6b3fa6ae3869275a16be24250e9ac26ddfe02a",
@@ -26353,7 +26353,46 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDczODU2NTM0",
+          "commit": {
+            "abbreviatedOid": "02cb4f5"
+          },
+          "author": "Bren2010",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-08-24T21:05:59Z",
+          "updatedAt": "2020-08-24T21:15:10Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "You didn't fix this issue?",
+              "createdAt": "2020-08-24T21:05:59Z",
+              "updatedAt": "2020-08-24T21:15:10Z"
+            },
+            {
+              "originalPosition": 30,
+              "body": "\"contains the content\"",
+              "createdAt": "2020-08-24T21:11:12Z",
+              "updatedAt": "2020-08-24T21:15:10Z"
+            },
+            {
+              "originalPosition": 32,
+              "body": "\"the AEAD authenticates\"",
+              "createdAt": "2020-08-24T21:12:04Z",
+              "updatedAt": "2020-08-24T21:15:11Z"
+            },
+            {
+              "originalPosition": 25,
+              "body": "Using a KDF output for authentication feels wrong",
+              "createdAt": "2020-08-24T21:15:05Z",
+              "updatedAt": "2020-08-24T21:15:11Z"
+            }
+          ]
+        }
+      ]
     },
     {
       "number": 397,
@@ -26367,7 +26406,7 @@
       "labels": [],
       "body": "@ericcornelissen pointed out on the mailing list that path secrets are currently used with both KDF.Expand and KEM.DeriveKeyPair.  This PR introduces an extra KDF.Expand call so that each key is used with exactly one algorithm.",
       "createdAt": "2020-08-20T21:04:23Z",
-      "updatedAt": "2020-08-21T06:11:42Z",
+      "updatedAt": "2020-08-24T21:05:00Z",
       "baseRepository": "mlswg/mls-protocol",
       "baseRefName": "master",
       "baseRefOid": "9f52307a138e303b967eca3df9df966ee581e9ef",
