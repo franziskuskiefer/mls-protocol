@@ -1504,8 +1504,8 @@ struct {
           opaque confirmation_tag<0..255>;
     }
 
-    opaque membership_tag<0..2^8-1>;
     opaque signature<0..2^16-1>;
+    opaque membership_tag<0..2^8-1>;
 } MLSPlaintext;
 
 struct {
@@ -1622,6 +1622,11 @@ struct {
           opaque confirmation_tag<0..255>;
     }
 } MLSPlaintextTBS;
+
+struct {
+  MLSPlaintextTBS tbs;
+  opaque signature<0..2^16-1>;
+} MLSPlaintextTBM;
 ~~~~~
 
 The `membership_tag` field in the MLSPlaintext object authenticates the
@@ -1630,8 +1635,11 @@ than `member`, this field MUST be set to the zero-length octet string.  For
 messages sent by members, it MUST be set to the following value:
 
 ~~~~~
-membership_tag = MAC(membership_key, MLSPlaintextTBS);
+membership_tag = MAC(membership_key, MLSPlaintextTBM);
 ~~~~~
+
+When the `membership_tag` field is non-empty, it MUST be verified before
+verifying the signature or processing the message content.
 
 The ciphertext field of the MLSCiphertext object is produced by supplying the
 inputs described below to the AEAD function specified by the ciphersuite in use.
