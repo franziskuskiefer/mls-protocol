@@ -1822,10 +1822,11 @@ Internet-Draft                     MLS                       August 2020
    MLSCiphertext represents a signed and encrypted message, with
    protections for both the content of the message and related metadata.
    MLSPlaintext represents a message that is only signed, and not
-   encrypted.  Applications SHOULD use MLSCiphertext to encode both
-   application and handshake messages, but MAY transmit handshake
-   messages encoded as MLSPlaintext objects in cases where it is
-   necessary for the delivery service to examine such messages.
+   encrypted.  Applications MUST use MLSCiphertext to encrypt
+   application messages and SHOULD use MLSCiphertext to encode handshake
+   messages, but MAY transmit handshake messages encoded as MLSPlaintext
+   objects in cases where it is necessary for the delivery service to
+   examine such messages.
 
    enum {
        reserved(0),
@@ -1841,7 +1842,6 @@ Internet-Draft                     MLS                       August 2020
        preconfigured(2),
        new_member(3),
        (255)
-   } SenderType;
 
 
 
@@ -1849,6 +1849,8 @@ Barnes, et al.          Expires 26 February 2021               [Page 33]
 
 Internet-Draft                     MLS                       August 2020
 
+
+   } SenderType;
 
    struct {
        SenderType sender_type;
@@ -1897,14 +1899,14 @@ Internet-Draft                     MLS                       August 2020
    *  Set group_id, epoch, content_type and authenticated_data fields
       from the MLSPlaintext object directly
 
-   *  Randomly generate the sender_data_nonce field
-
 
 
 Barnes, et al.          Expires 26 February 2021               [Page 34]
 
 Internet-Draft                     MLS                       August 2020
 
+
+   *  Randomly generate the sender_data_nonce field
 
    *  Identify the key and key generation depending on the content type
 
@@ -1948,12 +1950,10 @@ Internet-Draft                     MLS                       August 2020
    The Additional Authenticated Data (AAD) for the SenderData ciphertext
    computation is its prefix in the MLSCiphertext, namely:
 
-   struct {
-       opaque group_id<0..255>;
-       uint64 epoch;
-       ContentType content_type;
-       opaque authenticated_data<0..2^32-1>;
-   } MLSSenderDataAAD;
+
+
+
+
 
 
 
@@ -1961,6 +1961,13 @@ Barnes, et al.          Expires 26 February 2021               [Page 35]
 
 Internet-Draft                     MLS                       August 2020
 
+
+   struct {
+       opaque group_id<0..255>;
+       uint64 epoch;
+       ContentType content_type;
+       opaque authenticated_data<0..2^32-1>;
+   } MLSSenderDataAAD;
 
    When parsing a SenderData struct as part of message decryption, the
    recipient MUST verify that the sender field represents an occupied
@@ -2002,13 +2009,6 @@ Internet-Draft                     MLS                       August 2020
        }
    } MLSPlaintextTBS;
 
-   The ciphertext field of the MLSCiphertext object is produced by
-   supplying the inputs described below to the AEAD function specified
-   by the ciphersuite in use.  The plaintext input contains content and
-   signature of the MLSPlaintext, plus optional padding.  These values
-   are encoded in the following form:
-
-
 
 
 
@@ -2017,6 +2017,12 @@ Barnes, et al.          Expires 26 February 2021               [Page 36]
 
 Internet-Draft                     MLS                       August 2020
 
+
+   The ciphertext field of the MLSCiphertext object is produced by
+   supplying the inputs described below to the AEAD function specified
+   by the ciphersuite in use.  The plaintext input contains content and
+   signature of the MLSPlaintext, plus optional padding.  These values
+   are encoded in the following form:
 
    struct {
        select (MLSCiphertext.content_type) {
@@ -2055,12 +2061,6 @@ Internet-Draft                     MLS                       August 2020
    "reuse_guard" field of the sender data object, so that the recipient
    of the message can use it to compute the nonce to be used for
    decryption.
-
-
-
-
-
-
 
 
 
