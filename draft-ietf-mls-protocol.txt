@@ -126,34 +126,34 @@ Internet-Draft                     MLS                       August 2020
        10.1.3.  Remove . . . . . . . . . . . . . . . . . . . . . . .  42
        10.1.4.  External Proposals . . . . . . . . . . . . . . . . .  42
      10.2.  Commit . . . . . . . . . . . . . . . . . . . . . . . . .  43
-       10.2.1.  Welcoming New Members  . . . . . . . . . . . . . . .  47
-     10.3.  Ratchet Tree Extension . . . . . . . . . . . . . . . . .  50
-   11. Extensibility . . . . . . . . . . . . . . . . . . . . . . . .  51
-   12. Sequencing of State Changes . . . . . . . . . . . . . . . . .  52
-     12.1.  Server-Enforced Ordering . . . . . . . . . . . . . . . .  53
-     12.2.  Client-Enforced Ordering . . . . . . . . . . . . . . . .  54
-   13. Application Messages  . . . . . . . . . . . . . . . . . . . .  54
-     13.1.  Tree of Application Secrets  . . . . . . . . . . . . . .  55
-     13.2.  Deletion Schedule  . . . . . . . . . . . . . . . . . . .  56
-     13.3.  Further Restrictions . . . . . . . . . . . . . . . . . .  57
-     13.4.  Message Encryption and Decryption  . . . . . . . . . . .  57
-     13.5.  Delayed and Reordered Application messages . . . . . . .  58
-   14. Security Considerations . . . . . . . . . . . . . . . . . . .  58
-     14.1.  Confidentiality of the Group Secrets . . . . . . . . . .  59
-     14.2.  Authentication . . . . . . . . . . . . . . . . . . . . .  59
-     14.3.  Forward and post-compromise security . . . . . . . . . .  59
-     14.4.  InitKey Reuse  . . . . . . . . . . . . . . . . . . . . .  60
-   15. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  60
-     15.1.  MLS Ciphersuites . . . . . . . . . . . . . . . . . . . .  60
-     15.2.  MLS Extension Types  . . . . . . . . . . . . . . . . . .  63
-     15.3.  MLS Credential Types . . . . . . . . . . . . . . . . . .  64
-     15.4.  MLS Designated Expert Pool . . . . . . . . . . . . . . .  65
-   16. Contributors  . . . . . . . . . . . . . . . . . . . . . . . .  66
-   17. References  . . . . . . . . . . . . . . . . . . . . . . . . .  67
-     17.1.  Normative References . . . . . . . . . . . . . . . . . .  67
-     17.2.  Informative References . . . . . . . . . . . . . . . . .  68
-   Appendix A.  Tree Math  . . . . . . . . . . . . . . . . . . . . .  69
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  73
+       10.2.1.  Welcoming New Members  . . . . . . . . . . . . . . .  48
+     10.3.  Ratchet Tree Extension . . . . . . . . . . . . . . . . .  51
+   11. Extensibility . . . . . . . . . . . . . . . . . . . . . . . .  52
+   12. Sequencing of State Changes . . . . . . . . . . . . . . . . .  53
+     12.1.  Server-Enforced Ordering . . . . . . . . . . . . . . . .  54
+     12.2.  Client-Enforced Ordering . . . . . . . . . . . . . . . .  55
+   13. Application Messages  . . . . . . . . . . . . . . . . . . . .  55
+     13.1.  Tree of Application Secrets  . . . . . . . . . . . . . .  56
+     13.2.  Deletion Schedule  . . . . . . . . . . . . . . . . . . .  57
+     13.3.  Further Restrictions . . . . . . . . . . . . . . . . . .  58
+     13.4.  Message Encryption and Decryption  . . . . . . . . . . .  58
+     13.5.  Delayed and Reordered Application messages . . . . . . .  59
+   14. Security Considerations . . . . . . . . . . . . . . . . . . .  59
+     14.1.  Confidentiality of the Group Secrets . . . . . . . . . .  60
+     14.2.  Authentication . . . . . . . . . . . . . . . . . . . . .  60
+     14.3.  Forward and post-compromise security . . . . . . . . . .  60
+     14.4.  InitKey Reuse  . . . . . . . . . . . . . . . . . . . . .  61
+   15. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  61
+     15.1.  MLS Ciphersuites . . . . . . . . . . . . . . . . . . . .  61
+     15.2.  MLS Extension Types  . . . . . . . . . . . . . . . . . .  64
+     15.3.  MLS Credential Types . . . . . . . . . . . . . . . . . .  65
+     15.4.  MLS Designated Expert Pool . . . . . . . . . . . . . . .  66
+   16. Contributors  . . . . . . . . . . . . . . . . . . . . . . . .  67
+   17. References  . . . . . . . . . . . . . . . . . . . . . . . . .  68
+     17.1.  Normative References . . . . . . . . . . . . . . . . . .  68
+     17.2.  Informative References . . . . . . . . . . . . . . . . .  69
+   Appendix A.  Tree Math  . . . . . . . . . . . . . . . . . . . . .  70
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  74
 
 1.  Introduction
 
@@ -2252,10 +2252,10 @@ Internet-Draft                     MLS                       August 2020
    Commit message.
 
    An Add is applied after being included in a Commit message.  The
-   position of the Add in the list of adds determines the leaf index
-   "index" where the new member will be added.  For the first Add in the
-   Commit, "index" is the leftmost empty leaf in the tree, for the
-   second Add, the next empty leaf to the right, etc.
+   position of the Add in the list of proposals determines the leaf
+   index "index" where the new member will be added.  For the first Add
+   in the Commit, "index" is the leftmost empty leaf in the tree, for
+   the second Add, the next empty leaf to the right, etc.
 
    *  If necessary, extend the tree to the right until it has at least
       index + 1 leaves
@@ -2369,10 +2369,7 @@ Internet-Draft                     MLS                       August 2020
    opaque ProposalID<0..255>;
 
    struct {
-       ProposalID updates<0..2^32-1>;
-       ProposalID removes<0..2^32-1>;
-       ProposalID adds<0..2^32-1>;
-
+       ProposalID proposals<0..2^32-1>;
        optional<UpdatePath> path;
    } Commit;
 
@@ -2399,9 +2396,12 @@ Internet-Draft                     MLS                       August 2020
    the sender of the proposal SHOULD retransmit it in the new epoch.
 
    A member of the group MAY send a Commit that references no proposals
-   at all, which would thus have empty vectors for "updates", "removes",
-   and "adds".  Such a Commit resets the sender's leaf and the nodes
-   along its direct path, and provides forward secrecy and post-
+   at all, which would thus have an empty "proposals" vector.  Such a
+   Commit resets the sender's leaf and the nodes along its direct path,
+   and provides forward secrecy and post-compromise security with regard
+   to the sender of the Commit.  An Update proposal can be regarded as a
+   "lazy" version of this operation, where only the leaf changes and
+   intermediate nodes are blanked out.
 
 
 
@@ -2410,28 +2410,25 @@ Barnes, et al.          Expires 26 February 2021               [Page 43]
 Internet-Draft                     MLS                       August 2020
 
 
-   compromise security with regard to the sender of the Commit.  An
-   Update proposal can be regarded as a "lazy" version of this
-   operation, where only the leaf changes and intermediate nodes are
-   blanked out.
-
    The "path" field of a Commit message MUST be populated if the Commit
-   covers at least one Update or Remove proposal, i.e., if the length of
-   the "updates" or "removes" vectors is greater than zero.  The "path"
-   field MUST also be populated if the Commit covers no proposals at all
-   (i.e., if all three proposal vectors are empty).  The "path" field
-   MAY be omitted if the Commit covers only Add proposals.  In
-   pseudocode, the logic for whether the "path" field is required is as
-   follows:
+   covers at least one Update or Remove proposal.  The "path" field MUST
+   also be populated if the Commit covers no proposals at all (i.e., if
+   the proposals vector is empty).  The "path" field MAY be omitted if
+   the Commit covers only Add proposals.  In pseudocode, the logic for
+   validating a Commit is as follows:
 
-   haveUpdates = len(commit.Updates) > 0
-   haveRemoves = len(commit.Removes) > 0
-   haveAdds = len(commit.Adds) > 0
+   hasUpdates = false
+   hasRemoves = false
 
-   haveUpdateOrRemove = haveUpdates || haveRemoves
-   haveNoProposalsAtAll = !haveUpdateOrRemove && !haveAdds
+   for i, id in commit.proposals:
+       proposal = proposalCache[id]
+       assert(proposal != null)
 
-   pathRequired = haveUpdateOrRemove || haveNoProposalsAtAll
+       hasUpdates = hasUpdates || proposal.msg_type == update
+       hasRemoves = hasRemoves || proposal.msg_type == remove
+
+   if len(commit.proposals) == 0 || hasUpdates || hasRemoves:
+     assert(commit.path != null)
 
    To summarize, a Commit can have three different configurations, with
    different uses:
@@ -2451,13 +2448,16 @@ Internet-Draft                     MLS                       August 2020
    A member of the group creates a Commit message and the corresponding
    Welcome message at the same time, by taking the following steps:
 
-   *  Construct an initial Commit object with "updates", "removes", and
-      "adds" fields populated from Proposals received during the current
-      epoch, and empty "key_package" and "path" fields.
+   *  Construct an initial Commit object with the "proposals" field
+      populated from Proposals received during the current epoch, and
+      empty "key_package" and "path" fields.
 
-   *  Generate a provisional GroupContext object by applying the
-      proposals referenced in the initial Commit object in the order
-      provided, as described in Section 10.1.  First the list of update
+
+
+
+
+
+
 
 
 
@@ -2466,10 +2466,17 @@ Barnes, et al.          Expires 26 February 2021               [Page 44]
 Internet-Draft                     MLS                       August 2020
 
 
-      proposals, then the list of remove proposals, and last the list of
-      add proposals.  Add proposals are applied left to right: Each Add
-      proposal is applied at the leftmost unoccupied leaf, or appended
-      to the right edge of the tree if all leaves are occupied.
+   *  Generate a provisional GroupContext object by applying the
+      proposals referenced in the initial Commit object, as described in
+      Section 10.1.  Update proposals are applied first, followed by
+      Remove proposals, and then finally Add proposals.  Add proposals
+      are applied in the order listed in the "proposals" vector, and
+      always to the leftmost unoccupied leaf in the tree, or the right
+      edge of the tree if all leaves are occupied.
+
+      -  Note that the order in which different types of proposals are
+         applied should be updated by the implementation to include any
+         new proposals added by negotiated group extensions.
 
    *  Decide whether to populate the "path" field: If the "path" field
       is required based on the proposals that are in the commit (see
@@ -2506,13 +2513,6 @@ Internet-Draft                     MLS                       August 2020
 
    *  Construct a GroupInfo reflecting the new state:
 
-      -  Group ID, epoch, tree, confirmed transcript hash, and interim
-         transcript hash from the new state
-
-      -  The confirmation_tag from the MLSPlaintext object
-
-      -  Sign the GroupInfo using the member's private signing key
-
 
 
 
@@ -2521,6 +2521,13 @@ Barnes, et al.          Expires 26 February 2021               [Page 45]
 
 Internet-Draft                     MLS                       August 2020
 
+
+      -  Group ID, epoch, tree, confirmed transcript hash, and interim
+         transcript hash from the new state
+
+      -  The confirmation_tag from the MLSPlaintext object
+
+      -  Sign the GroupInfo using the member's private signing key
 
       -  Encrypt the GroupInfo using the key and nonce derived from the
          "joiner_secret" for the new epoch (see Section 10.2.1)
@@ -2552,16 +2559,27 @@ Internet-Draft                     MLS                       August 2020
       tree indicated by the "sender" field.
 
    *  Generate a provisional GroupContext object by applying the
-      proposals referenced in the commit object in the order provided,
-      as described in Section 10.1.  First the list of update proposals,
-      then the list of remove proposals, and last the list of add
-      proposals.  Add proposals are applied left to right: Each Add
-      proposal is applied at the leftmost unoccupied leaf, or appended
-      to the right edge of the tree if all leaves are occupied.
+      proposals referenced in the initial Commit object, as described in
+      Section 10.1.  Update proposals are applied first, followed by
+      Remove proposals, and then finally Add proposals.  Add proposals
+      are applied in the order listed in the "proposals" vector, and
+      always to the leftmost unoccupied leaf in the tree, or the right
+      edge of the tree if all leaves are occupied.
 
-   *  Verify that the "path" value is populated if either of the
-      "updates" or "removes" vectors has length greater than zero, or if
-      all of the "updates", "removes", and "adds" vectors are empty.
+      -  Note that the order in which different types of proposals are
+         applied should be updated by the implementation to include any
+         new proposals added by negotiated group extensions.
+
+
+
+
+Barnes, et al.          Expires 26 February 2021               [Page 46]
+
+Internet-Draft                     MLS                       August 2020
+
+
+   *  Verify that the "path" value is populated if the "proposals"
+      vector contains any Update or Remove proposals, or if it's empty.
       Otherwise, the "path" value MAY be omitted.
 
    *  If the "path" value is populated: Process the "path" value using
@@ -2570,13 +2588,6 @@ Internet-Draft                     MLS                       August 2020
 
       -  Apply the UpdatePath to the tree, as described in Section 5.5,
          and store "key_package" at the Committer's leaf.
-
-
-
-Barnes, et al.          Expires 26 February 2021               [Page 46]
-
-Internet-Draft                     MLS                       August 2020
-
 
       -  Verify that the KeyPackage has a "parent_hash" extension and
          that its value matches the new parent of the sender's leaf
@@ -2610,6 +2621,19 @@ Internet-Draft                     MLS                       August 2020
 MLSPlaintext.confirmation_tag =
     KDF.Extract(confirmation_key, GroupContext.confirmed_transcript_hash)
 
+
+
+
+
+
+
+
+
+Barnes, et al.          Expires 26 February 2021               [Page 47]
+
+Internet-Draft                     MLS                       August 2020
+
+
 10.2.1.  Welcoming New Members
 
    The sender of a Commit message is responsible for sending a Welcome
@@ -2626,17 +2650,45 @@ MLSPlaintext.confirmation_tag =
    nonce are then encrypted to each new member using HPKE.  In the same
    encrypted package, the committer transmits the path secret for the
    lowest node contained in the direct paths of both the committer and
-
-
-
-Barnes, et al.          Expires 26 February 2021               [Page 47]
-
-Internet-Draft                     MLS                       August 2020
-
-
    the new member.  This allows the new member to compute private keys
    for nodes in its direct path that are being reset by the
    corresponding Commit.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Barnes, et al.          Expires 26 February 2021               [Page 48]
+
+Internet-Draft                     MLS                       August 2020
+
 
    struct {
      opaque group_id<0..255>;
@@ -2685,7 +2737,11 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 48]
+
+
+
+
+Barnes, et al.          Expires 26 February 2021               [Page 49]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2741,7 +2797,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 49]
+Barnes, et al.          Expires 26 February 2021               [Page 50]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2797,7 +2853,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 50]
+Barnes, et al.          Expires 26 February 2021               [Page 51]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2853,7 +2909,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 51]
+Barnes, et al.          Expires 26 February 2021               [Page 52]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2909,7 +2965,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 52]
+Barnes, et al.          Expires 26 February 2021               [Page 53]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -2965,7 +3021,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 53]
+Barnes, et al.          Expires 26 February 2021               [Page 54]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3021,7 +3077,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 54]
+Barnes, et al.          Expires 26 February 2021               [Page 55]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3077,7 +3133,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 55]
+Barnes, et al.          Expires 26 February 2021               [Page 56]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3133,7 +3189,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 56]
+Barnes, et al.          Expires 26 February 2021               [Page 57]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3189,7 +3245,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 57]
+Barnes, et al.          Expires 26 February 2021               [Page 58]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3245,7 +3301,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 58]
+Barnes, et al.          Expires 26 February 2021               [Page 59]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3301,7 +3357,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 59]
+Barnes, et al.          Expires 26 February 2021               [Page 60]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3357,7 +3413,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 60]
+Barnes, et al.          Expires 26 February 2021               [Page 61]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3413,7 +3469,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 61]
+Barnes, et al.          Expires 26 February 2021               [Page 62]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3469,7 +3525,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 62]
+Barnes, et al.          Expires 26 February 2021               [Page 63]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3525,7 +3581,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 63]
+Barnes, et al.          Expires 26 February 2021               [Page 64]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3581,7 +3637,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 64]
+Barnes, et al.          Expires 26 February 2021               [Page 65]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3637,7 +3693,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 65]
+Barnes, et al.          Expires 26 February 2021               [Page 66]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3693,7 +3749,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 66]
+Barnes, et al.          Expires 26 February 2021               [Page 67]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3749,7 +3805,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 67]
+Barnes, et al.          Expires 26 February 2021               [Page 68]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3805,7 +3861,7 @@ Internet-Draft                     MLS                       August 2020
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 68]
+Barnes, et al.          Expires 26 February 2021               [Page 69]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3861,7 +3917,7 @@ Appendix A.  Tree Math
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 69]
+Barnes, et al.          Expires 26 February 2021               [Page 70]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3917,7 +3973,7 @@ def node_width(n):
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 70]
+Barnes, et al.          Expires 26 February 2021               [Page 71]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -3973,7 +4029,7 @@ def sibling(x, n):
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 71]
+Barnes, et al.          Expires 26 February 2021               [Page 72]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -4029,7 +4085,7 @@ def common_ancestor_direct(x, y, _):
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 72]
+Barnes, et al.          Expires 26 February 2021               [Page 73]
 
 Internet-Draft                     MLS                       August 2020
 
@@ -4085,4 +4141,4 @@ Authors' Addresses
 
 
 
-Barnes, et al.          Expires 26 February 2021               [Page 73]
+Barnes, et al.          Expires 26 February 2021               [Page 74]
