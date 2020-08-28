@@ -626,6 +626,7 @@ Each node in a ratchet tree contains up to five values:
   {{views}})
 * A credential (only for leaf nodes)
 * A hash of the node's parent, as of the last time the node was changed.
+* A hash of the subtree below that node
 
 The conditions under which each of these values must or must not be
 present are laid out in {{views}}.
@@ -1044,7 +1045,7 @@ an explicit, application-defined identifier to a KeyPackage.
 opaque key_id<0..2^16-1>;
 ~~~~~
 
-## Parent Hash
+## Parent Hash Extension
 
 The `parent_hash` extension serves to bind a KeyPackage to all the nodes
 above it in the group's ratchet tree. This enforces the tree invariant, meaning
@@ -1059,6 +1060,8 @@ This extension MUST be present in all Updates that are sent as part of a Commit
 message. If the extension is present, clients MUST verify that `parent_hash`
 matches the hash of the leaf's parent node when represented as a ParentNode
 struct.
+
+<!-- OPEN ISSUE: How is the parent_hash computed? -->
 
 <!-- OPEN ISSUE: This scheme, in which the tree hash covers the parent hash, is
 designed to allow for more deniable deployments, since a signature by a member
@@ -1124,6 +1127,8 @@ struct {
 
 Note that the `node_index` field contains the index of the leaf among the nodes
 in the tree, not its index among the leaves; `node_index = 2 * leaf_index`.
+
+<!-- OPEN ISSUE: LeafNodeHashInput and ParentNodeHashInput aren't actually used anywhere in the spec. -->
 
 ## Group State
 
